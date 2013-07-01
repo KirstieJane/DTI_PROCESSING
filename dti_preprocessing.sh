@@ -31,6 +31,7 @@
 #------------------------------------------------------------------------------
 # Define usage function
 function usage {
+    echo "USAGE:"
     echo "dti_preprocessing <dti_data_folder> <sub_id>"
     echo "    eg: dti_preprocessing ${dti_dir} ${sub_id}"
     echo "    eg: dti_preprocessing /home/kw401/MRIMPACT/005/t1/DTI 005"
@@ -55,7 +56,7 @@ if [[ ! -d ${dir} ]]; then
 fi
 
 # Exit if subID is an empty string
-if [[ -n "${sub}" ]]; then
+if [[ -z ${sub} ]]; then
     echo "    SubID is blank"
     print_usage=1
 fi
