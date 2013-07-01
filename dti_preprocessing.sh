@@ -33,8 +33,8 @@
 function usage {
     echo "USAGE:"
     echo "dti_preprocessing <dti_data_folder> <sub_id>"
-    echo "    eg: dti_preprocessing ${dti_dir} ${sub_id}"
-    echo "    eg: dti_preprocessing /home/kw401/MRIMPACT/005/t1/DTI 005"
+    echo "    eg: dti_preprocessing \${dti_dir} \${sub_id}"
+    echo "    eg: dti_preprocessing /home/kw401/MRIMPACT//t1/DTI 005"
     exit
 }
 #------------------------------------------------------------------------------
@@ -42,6 +42,9 @@ function usage {
 #------------------------------------------------------------------------------
 # Assign arguments
 dir=$1
+if [[ ! -d /${dir} ]]; then
+    dir=`pwd`/${dir}
+fi
 sub=$2
 #------------------------------------------------------------------------------
 
