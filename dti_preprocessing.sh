@@ -8,19 +8,19 @@
 #                      eddy current correction, rotate bvecs, brain extraction,
 #                      dtifit, bedpostX and tbss 1 and 2
 #
+#              USAGE:  dti_preprocessing.sh <dti_data_folder> <sub_id>
+#                           eg: dti_preprocessing.sh ${dti_dir} ${sub_id}
+#                           eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1
+#
 #        PARAMETER 1:  DTI data folder (full path)
 #                           If you're using this script as part of another
 #                               eg: ${dti_dir}
 #                           If you're using this script alone
-#                               eg: /home/kw401/MRIMPACT/005/t1/DTI/
+#                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1 
 #
 #        PARAMETER 2:  sub_id
 #                           eg: ${subid}
-#                           eg: 005
-#
-#              USAGE:  dti_preprocessing <dti_data_folder> <sub_id>
-#                           eg: dti_preprocessing.sh ${dti_dir} ${sub_id}
-#                           eg: dti_preprocessing.sh /home/kw401/MRIMPACT/005/t1/DTI 005
+#                           eg: 1106t1
 #
 #             AUTHOR:  Kirstie Whitaker
 #                          kw401@cam.ac.uk
@@ -32,9 +32,9 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "dti_preprocessing <dti_data_folder> <sub_id>"
-    echo "    eg: dti_preprocessing \${dti_dir} \${sub_id}"
-    echo "    eg: dti_preprocessing /home/kw401/MRIMPACT//t1/DTI 005"
+    echo "dti_preprocessing.sh <dti_data_folder> <sub_id>"
+    echo "    eg: dti_preprocessing.sh \${dti_dir} \${sub_id}"
+    echo "    eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1"
     exit
 }
 #------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ sub=$2
 #------------------------------------------------------------------------------
 # Check inputs
 
-### Step 1: check arguements
+### Step 1: check arguments
 # Exit if dti directory doesn't exist
 if [[ ! -d ${dir} ]]; then
     echo "    No DTI directory"
@@ -72,8 +72,11 @@ fi
 ### Step 2: Check data
 # Make sure dti.nii.gz, bvals and bvecs_orig files exist
 if [[ ! -f ${dir}/dti.nii.gz ]]; then
-    echo "    No dti.nii.gz file"
-    print_usage=1
+    if [[ -f ${dir}/dti.nii ]]; then
+        gzip ${dir}/dti.nii
+    else
+        echo "    No dti.nii.gz file"
+        print_usage=1
 fi
 if [[ ! -f ${dir}/bvals ]]; then
     echo "    No bvals file"
@@ -89,6 +92,23 @@ if [[ ${print_usage} == 1 ]]; then
     usage
 fi
 #------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Set up the rot_bvecs_script
+
+# If you're Kirstie, then you're fine 
+rot_bvecs_script=(/home/kw401/CAMBRIDGE_SCRIPTS/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
+if [[ ! -w ${rot_bvecs_script} ]]; then
+    # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
+    # script into the same folder:
+    scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
+    rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
+    wget -O ${rot_bvecs_script} https://github.com/HappyPenguin/FSL_COMMUNITY_CODE/blob/master/fdt_rotate_bvecs.sh
+    # (Handily stolen from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in)
+fi
+
+# Make that script executable
+chmod +x ${rot_bvecs_script}
 
 #------------------------------------------------------------------------------
 # Get started
@@ -111,8 +131,6 @@ fi
 
 #------------------------------------------------------------------------------
 # Rotate bvecs
-# NOTE - the path to this script is hard coded
-rot_bvecs_script=(/home/kw401/CAMBRIDGE_SCRIPTS/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
 
 if [[ ! -f ${dir}/bvecs ]]; then
     echo "    Rotating bvecs"
@@ -145,6 +163,7 @@ if [[ ! -f ${dir}/FDT/${sub}_MO.nii.gz ]]; then
     
     fslmaths ${dir}/FDT/${sub}_L2.nii.gz -add ${dir}/FDT/${sub}_L3.nii.gz -div 2 \
         ${dir}/FDT/${sub}_L23.nii.gz
+
 else
    echo "    Tensor already fit"
 fi
