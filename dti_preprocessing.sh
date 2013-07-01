@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #==============================================================================
-#               NAME:  dti_preprocessing
+#               NAME:  dti_preprocessing.sh
 #
 #        DESCRIPTION:  This script takes an input directory that must contain
 #                      dti.nii.gz, bvals and bvecs_orig, and then runs  
@@ -19,8 +19,8 @@
 #                           eg: 005
 #
 #              USAGE:  dti_preprocessing <dti_data_folder> <sub_id>
-#                           eg: dti_preprocessing ${dti_dir} ${sub_id}
-#                           eg: dti_preprocessing /home/kw401/MRIMPACT/005/t1/DTI 005
+#                           eg: dti_preprocessing.sh ${dti_dir} ${sub_id}
+#                           eg: dti_preprocessing.sh /home/kw401/MRIMPACT/005/t1/DTI 005
 #
 #             AUTHOR:  Kirstie Whitaker
 #                          kw401@cam.ac.uk
