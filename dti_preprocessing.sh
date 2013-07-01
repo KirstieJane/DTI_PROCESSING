@@ -99,16 +99,21 @@ fi
 # If you're Kirstie, then you're fine 
 rot_bvecs_script=(/home/kw401/CAMBRIDGE_SCRIPTS/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
 if [[ ! -w ${rot_bvecs_script} ]]; then
+
     # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
     # script into the same folder:
     scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
-    rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
-    wget -O ${rot_bvecs_script} https://github.com/HappyPenguin/FSL_COMMUNITY_CODE/blob/master/fdt_rotate_bvecs.sh
     # (Handily stolen from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in)
+
+    rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
+
+    wget -O ${rot_bvecs_script} https://github.com/HappyPenguin/FSL_COMMUNITY_CODE/blob/master/fdt_rotate_bvecs.sh
+
 fi
 
 # Make that script executable
 chmod +x ${rot_bvecs_script}
+#------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
 # Get started
@@ -142,16 +147,32 @@ fi
 
 #------------------------------------------------------------------------------
 # Brain extract
-if [[ ! -f ${dir}/dti_ec_brain.nii.gz ]]; then
+if [[ ! -f ${dir}/dti_ec.nii.gz ]]; then
+    echo "    ERROR: Can't brain extract because eddy_correct has not been completed"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${dir}/dti_ec_brain.nii.gz ]]; then
     echo "    Brain extracting"
     bet ${dir}/dti_ec.nii.gz ${dir}/dti_ec_brain.nii.gz -f 0.15 -m > ${logdir}/bet
+
 else
     echo "    Brain already extracted"
 fi
 
 #------------------------------------------------------------------------------
 # DTIfit (FDT)
-if [[ ! -f ${dir}/FDT/${sub}_MO.nii.gz ]]; then
+if [[ ! -f ${dir}/dti_ec_brain_mask.nii.gz || ! -f ${dir}/bvecs ]]; then
+    echo "    ERROR: Can't fit tensor because brain extraction has not been completed"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${dir}/bvecs ]]; then
+    echo "    ERROR: Can't fit tensor because bvecs file doesn't exist"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${dir}/FDT/${sub}_MO.nii.gz ]]; then
     echo "    Fitting tensor"
     mkdir -p ${dir}/FDT
     dtifit -k ${dir}/dti_ec.nii.gz \
@@ -185,7 +206,12 @@ fi
 
 #------------------------------------------------------------------------------
 # TBSS 1 and 2
-if [[ ! -f ${dir}/TBSS/FA/reverse_fnirt_warp.nii.gz ]]; then
+if [[ ! -f ${dir}/FDT/${sub}_FA.nii.gz ]]; then
+    echo "    ERROR: Can't run TBSS as tensor has not been fit"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${dir}/TBSS/FA/reverse_fnirt_warp.nii.gz ]]; then
     echo "    Now starting tbss"
     if [[ ! -f ${dir}/TBSS/FA/${sub}_FA_FA_to_target_warp.nii.gz ]]; then
         echo "    Running TBSS"
