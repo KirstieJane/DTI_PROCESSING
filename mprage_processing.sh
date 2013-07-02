@@ -4,11 +4,10 @@
 #               NAME:  mprage_processing.sh
 #
 #        DESCRIPTION:  This script takes an input directory that contains
-#                      high_res.nii.gz and a text file containing the center
+#                      highres.nii.gz and a text file containing the center
 #                      of mass of this image (called center_of_mass, note the 
-#                      American spelling!) and runs FSL's bet (Brain Extraction
-#                      Tool) and fast (FMRIB's Automated Segmentation Tool),
-#                      as well as Freesurfer's recon-all.
+#                      American spelling!) and runs FSL's bet, fast, and 
+#                      FNIRT commands as well as Freesurfer's recon-all.
 #
 #              USAGE:  mprage_processing.sh <mprage_dir> <sub_id>
 #                           eg: mprage_processing.sh ${mprage_dir} ${sub_id}
@@ -72,12 +71,12 @@ if [[ ${print_usage} == 1 ]]; then
 fi
 
 ### Step 2: Check data
-# Make sure high_res_<subid> file exists
-if [[ ! -f ${dir}/high_res_${sub}.nii.gz ]]; then
-    if [[ -f ${dir}/high_res_${sub}.nii ]]; then
-        gzip ${dir}/high_res_${sub}.nii
+# Make sure highres_<subid> file exists
+if [[ ! -f ${dir}/highres_${sub}.nii.gz ]]; then
+    if [[ -f ${dir}/highres_${sub}.nii ]]; then
+        gzip ${dir}/highres_${sub}.nii
     else
-        echo "    No high_res_${sub}.nii.gz file"
+        echo "    No highres_${sub}.nii.gz file"
         print_usage=1
 fi
 
@@ -112,33 +111,96 @@ mkdir -p ${logdir}
 
 #------------------------------------------------------------------------------
 # Brain extract the mprage file
-if [[ ! -f ${mprage_dir}/high_res_brain_mask.nii.gz ]]; then
+if [[ ! -f ${mprage_dir}/highres_brain_mask.nii.gz ]]; then
     echo "    Brain extracting"
-    bet ${mprage_dir}/high_res.nii.gz ${mprage_dir}/high_res_brain.nii.gz \
-          -m -f 0.2 -c ${com[@]}
+    bet ${mprage_dir}/highres.nii.gz ${mprage_dir}/highres_brain.nii.gz \
+          -m -f 0.2 -c ${com[@]} >> ${logdir}/bet
 else
     echo "    Brain already extracted"
 
 #------------------------------------------------------------------------------
 # Segment the brain    
-if [[ ! -f ${mprage_dir}/high_res_brain_mask.nii.gz ]]; then
+if [[ ! -f ${mprage_dir}/highres_brain_mask.nii.gz ]]; then
     echo "    ERROR: Can't segment because brain extraction has not been completed"
     echo "    EXITING"
     exit
 
-elif [[ ! -f ${mprage_dir}/high_res_brain_seg_2.nii.gz ]]; then
+elif [[ ! -f ${mprage_dir}/highres_brain_seg_2.nii.gz ]]; then
     echo "    Segmenting"
-    fast -g -o ${mprage_dir}/high_res_brain ${mprage_dir}/high_res_brain.nii.gz
+    fast -g -o ${mprage_dir}/highres_brain \
+            ${mprage_dir}/highres_brain.nii.gz >> ${logdir}/fast
 
 else
     echo "    Brain already segmented"
 fi
 
 #------------------------------------------------------------------------------
+# Register to standard space
+# First flirt highres to MNI152
+if [[ ! -f ${mprage_dir}/highres_brain.nii.gz ]]; then
+    echo "    ERROR: Can't run registration because brain extraction has not been completed"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${mprage_dir}/highres_TO_MNI152.mat ]]; then
+    echo "    Flirting highres to MNI"
+    flirt -ref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain.nii.gz \
+            -in ${mprage_dir}/highres_brain.nii.gz \
+            -omat ${mprage_dir}/highres_TO_MNI152.mat
+
+else
+    echo "    Highres already flirted to MNI"
+
+fi
+
+# Invert this flirt transform
+if [[ ! -f ${mprage_dir}/highres_TO_MNI152.nii.gz ]]; then
+    echo "    ERROR: Can't invert transform as flirt has not been completed"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${mprage_dir}/MNI152_TO_highres.mat ]]; then
+    echo "    Inverting flirt transform"
+    convert_xfm -omat ${mprage_dir}/MNI152_TO_highres.mat \
+                -inverse ${mprage_dir}/highres_TO_MNI152.mat
+
+else
+    echo "    Inverse flirt transform already calculated"
+
+# Then fnirt highres to MNI152
+if [[ ! -f ${mprage_dir}/highres_TO_MNI152_nlwarp.nii.gz ]]; then
+    echo "Fnirting highres to MNI"
+    fnirt --in=${mprage_dir}/highres.nii.gz \
+            --aff=${mprage_dir}/highres_TO_MNI152.mat \
+            --cout=${mprage_dir}/highres_TO_MNI152_nlwarp \
+            --config=T1_2_MNI152_2mm
+else
+    echo "    Highres already fnirted to MNI"
+
+fi
+
+# And inverse this warp
+if [[ ! -f ${mprage_dir}/highres_TO_MNI152_nlwarp.nii.gz ]]; then
+    echo "    ERROR: Can't run registration because fnirt has not been completed"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${mprage_dir}/MNI152_TO_highres_nl.nii.gz ]]; then
+    echo "Inverting highres to MNI warp"
+    invwarp --ref=${mprage_dir}/highres.nii.gz \
+            --warp=${mprage_dir}/highres_TO_MNI152_nl.nii.gz \
+            --out=${mprage_dir}/MNI152_TO_highres_nl.nii.gz
+else
+    echo "    Inverse fnirt warp already calculated"
+
+fi
+
+
+#------------------------------------------------------------------------------
 # Run recon-all
-recon-all -all -i ${mprage_dir}/high_res_${sub}.nii.gz \
+recon-all -all -i ${mprage_dir}/highres_${sub}.nii.gz \
             -s SURF \
-            -sd ${mprage_dir}
+            -sd ${mprage_dir} >> ${logdir}/reconall
 
 #------------------------------------------------------------------------------
 # And you're done!
