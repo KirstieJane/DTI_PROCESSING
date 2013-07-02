@@ -16,7 +16,7 @@
 #                           If you're using this script as part of another
 #                               eg: ${dti_dir}
 #                           If you're using this script alone
-#                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1 
+#                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 
 #
 #        PARAMETER 2:  sub_id
 #                           eg: ${subid}
