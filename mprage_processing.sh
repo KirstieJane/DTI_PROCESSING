@@ -115,9 +115,9 @@ mkdir -p ${logdir}
 if [[ ! -f ${dir}/highres_orig.nii.gz ]]; then
     echo "    Calculating robust field of view"
     cp ${dir}/highres.nii.gz ${dir}/highres_orig.nii.gz
-    robustfov -i highres_orig.nii.gz \
-                -r highres.nii.gz \
-                -m robustfov.mat >> ${logdir}/robustfov
+    robustfov -i ${dir}/highres_orig.nii.gz \
+                -r ${dir}/highres.nii.gz \
+                -m ${dir}/robustfov.mat >> ${logdir}/robustfov
     
     # Update the center of mass:
     robustfov=(`cat ${dir}/robustfov.mat`)
