@@ -112,15 +112,15 @@ mkdir -p ${logdir}
 
 #------------------------------------------------------------------------------
 # Crop the 
-if [[ ! -f ${mprage_dir}/highres_orig.nii.gz ]]; then
+if [[ ! -f ${dir}/highres_orig.nii.gz ]]; then
     echo "    Calculating robust field of view"
-    cp ${mprage_dir}/highres.nii.gz ${mprage_dir}/highres_orig.nii.gz
+    cp ${dir}/highres.nii.gz ${dir}/highres_orig.nii.gz
     robustfov -i highres_orig.nii.gz \
                 -r highres.nii.gz \
                 -m robustfov.mat >> ${logdir}/robustfov
     
     # Update the center of mass:
-    robustfov=(`cat ${mprage_dir}/robustfov.mat`)
+    robustfov=(`cat ${dir}/robustfov.mat`)
     com[2]=`echo "${com[2]}-${robustfov[11]}" | bc`
 
 else
@@ -130,9 +130,9 @@ fi
 
 #------------------------------------------------------------------------------
 # Brain extract the mprage file
-if [[ ! -f ${mprage_dir}/highres_brain_mask.nii.gz ]]; then
+if [[ ! -f ${dir}/highres_brain_mask.nii.gz ]]; then
     echo "    Brain extracting"
-    bet ${mprage_dir}/highres.nii.gz ${mprage_dir}/highres_brain.nii.gz \
+    bet ${dir}/highres.nii.gz ${dir}/highres_brain.nii.gz \
           -m -f 0.2 -c ${com[@]} >> ${logdir}/bet
 else
     echo "    Brain already extracted"
@@ -141,15 +141,15 @@ fi
 
 #------------------------------------------------------------------------------
 # Segment the brain    
-if [[ ! -f ${mprage_dir}/highres_brain_mask.nii.gz ]]; then
+if [[ ! -f ${dir}/highres_brain_mask.nii.gz ]]; then
     echo "    ERROR: Can't segment because brain extraction has not been completed"
     echo "    EXITING"
     exit
 
-elif [[ ! -f ${mprage_dir}/highres_brain_seg_2.nii.gz ]]; then
+elif [[ ! -f ${dir}/highres_brain_seg_2.nii.gz ]]; then
     echo "    Segmenting"
-    fast -g -o ${mprage_dir}/highres_brain \
-            ${mprage_dir}/highres_brain.nii.gz >> ${logdir}/fast
+    fast -g -o ${dir}/highres_brain \
+            ${dir}/highres_brain.nii.gz >> ${logdir}/fast
 
 else
     echo "    Brain already segmented"
@@ -157,9 +157,9 @@ fi
 
 #------------------------------------------------------------------------------
 # Run recon-all
-recon-all -all -i ${mprage_dir}/highres_${sub}.nii.gz \
+recon-all -all -i ${dir}/highres_${sub}.nii.gz \
             -s SURF \
-            -sd ${mprage_dir} >> ${logdir}/reconall
+            -sd ${dir} >> ${logdir}/reconall
 
 #------------------------------------------------------------------------------
 # And you're done!
