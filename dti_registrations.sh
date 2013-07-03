@@ -1,16 +1,21 @@
 #!/bin/bash
 
 #==============================================================================
-#               NAME:  dti_preprocessing.sh
+#               NAME:  registrations.sh
 #
-#        DESCRIPTION:  This script takes an input directory that must contain
-#                      dti.nii.gz, bvals and bvecs_orig, and then runs  
-#                      eddy current correction, rotate bvecs, brain extraction,
-#                      dtifit, bedpostX and tbss 1 and 2
+#        DESCRIPTION:  This script takes, as an input directory, the
+#                      individual participant's DTI directory that was passed
+#                      to dti_preprocessing.sh and the MPRAGE directory that
+#                      was passed to mprage_processing.sh. It then creates a 
+#                      REG directory at the same level as the DTI directory
+#                      called REG_<DTI_basename> or REG if the basename is 
+#                      blank. This directory contains all the necessary
+#                      transformations to get between the following spaces:
+#                      DTI, FSL_highres, Freesurfer, MNI152.
 #
-#              USAGE:  dti_preprocessing.sh <dti_data_folder> <sub_id>
-#                           eg: dti_preprocessing.sh ${dti_dir} ${sub_id}
-#                           eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1
+#              USAGE:  registrations.sh <dti_data_folder> <mprage_data_folder>
+#                           eg: registrations.sh ${dti_dir} ${mprage_dir}
+#                           eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE
 #
 #        PARAMETER 1:  DTI data folder (full path)
 #                           If you're using this script as part of another
@@ -18,9 +23,11 @@
 #                           If you're using this script alone
 #                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 
 #
-#        PARAMETER 2:  sub_id
-#                           eg: ${subid}
-#                           eg: 1106t1
+#        PARAMETER 2:  MPRAGE data folder (full path)
+#                           If you're using this script as part of another
+#                               eg: ${mprage_dir}
+#                           If you're using this script alone
+#                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE
 #
 #             AUTHOR:  Kirstie Whitaker
 #                          kw401@cam.ac.uk
@@ -32,20 +39,24 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "dti_preprocessing.sh <dti_data_folder> <sub_id>"
-    echo "    eg: dti_preprocessing.sh \${dti_dir} \${sub_id}"
-    echo "    eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1"
+    echo "registrations.sh <dti_data_folder> <mprage_data_folder>"
+    echo "    eg: registrations.sh \${dti_dir} \${mprage_dir}"
+    echo "    eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE"
     exit
 }
 #------------------------------------------------------------------------------
  
 #------------------------------------------------------------------------------
 # Assign arguments
-dir=$1
-if [[ ! -d /${dir} ]]; then
-    dir=`pwd`/${dir}
+dti_dir=$1
+if [[ ! -d /${dti_dir} ]]; then
+    dir=`pwd`/${dti_dir}
 fi
-sub=$2
+
+mprage_dir=$2
+if [[ ! -d /${mprage_dir} ]]; then
+    dir=`pwd`/${mprage_dir}
+fi
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -53,16 +64,17 @@ sub=$2
 
 ### Step 1: check arguments
 # Exit if dti directory doesn't exist
-if [[ ! -d ${dir} ]]; then
+if [[ ! -d ${dti_dir} ]]; then
     echo "    No DTI directory"
     print_usage=1
 fi
 
-# Exit if subID is an empty string
-if [[ -z ${sub} ]]; then
-    echo "    SubID is blank"
+# Exit if mprage directory doesn't exist
+if [[ ! -d ${mprage_dir} ]]; then
+    echo "    No MPRAGE directory"
     print_usage=1
 fi
+
 
 # Print the usage if necessary
 if [[ ${print_usage} == 1 ]]; then
