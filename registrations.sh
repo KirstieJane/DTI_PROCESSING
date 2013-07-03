@@ -57,6 +57,9 @@ mprage_dir=$2
 if [[ ! -d /${mprage_dir} ]]; then
     dir=`pwd`/${mprage_dir}
 fi
+
+surf_dir=${mprage_dir}/SURF/
+
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -75,27 +78,29 @@ if [[ ! -d ${mprage_dir} ]]; then
     print_usage=1
 fi
 
-
 # Print the usage if necessary
 if [[ ${print_usage} == 1 ]]; then
     usage
 fi
 
 ### Step 2: Check data
-# Make sure dti.nii.gz, bvals and bvecs_orig files exist
-if [[ ! -f ${dir}/dti.nii.gz ]]; then
-    if [[ -f ${dir}/dti.nii ]]; then
-        gzip ${dir}/dti.nii
-    else
-        echo "    No dti.nii.gz file"
-        print_usage=1
-fi
-if [[ ! -f ${dir}/bvals ]]; then
-    echo "    No bvals file"
+# Make sure dti_ec_brain.nii.gz, highres_brain.nii.gz
+# orig.mgz files exist
+if [[ ! -f ${dti_dir}/dti_ec_brain.nii.gz ]]; then
+    echo "    No dti_ec_brain.nii.gz file"
+    echo "    Check that dti_preprocessing.sh has finished"
     print_usage=1
 fi
-if [[ ! -f ${dir}/bvecs_orig ]]; then
-    echo "    No bvecs_orig file"
+
+if [[ ! -f ${mprage_dir}/highres.nii.gz ]]; then
+    echo "    No highres.nii.gz file"
+    echo "    Check that mprage_processing.sh has finished"
+    print_usage=1
+fi
+
+if [[ ! -f ${surf_dir}/mri/orig.mgz ]]; then
+    echo "    No orig.mgz file"
+    echo "    Check that mprage_processing.sh has finished"
     print_usage=1
 fi
 
@@ -106,44 +111,102 @@ fi
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-# Set up the rot_bvecs_script
-
-# If you're Kirstie, then you're fine 
-rot_bvecs_script=(/home/kw401/CAMBRIDGE_SCRIPTS/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
-if [[ ! -w ${rot_bvecs_script} ]]; then
-
-    # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
-    # script into the same folder:
-    scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
-    # (Handily stolen from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in)
-
-    rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
-
-    wget -O ${rot_bvecs_script} https://github.com/HappyPenguin/FSL_COMMUNITY_CODE/blob/master/fdt_rotate_bvecs.sh
-
-fi
-
-# Make that script executable
-chmod +x ${rot_bvecs_script}
-#------------------------------------------------------------------------------
-
-#------------------------------------------------------------------------------
 # Get started
-echo "DIR: ${dir}"
-echo "SUBID: ${sub}"
+echo "DTI_DIR: ${dti_dir}"
+echo "MPRAGE_DIR: ${mprage_dir}"
 
+reg_dir=(`dirname ${dti_dir}`)
 # Make the LOGS dir
-logdir=${dir}/LOGS
+logdir=${reg_dir}/LOGS
 mkdir -p ${logdir}
 
 #------------------------------------------------------------------------------
-# Eddy correct to the first volume
-if [[ ! -f ${dir}/dti_ec.nii.gz ]]; then
-    echo "    Starting eddy correction step"
-    rm -f ${dir}/dti_ec.ecclog
-    eddy_correct ${dir}/dti.nii.gz ${dir}/dti_ec.nii.gz 0 > ${logdir}/eddycorrect
+# Register diffusion 
+#------------------------------------------------------------------------------
+# Register to standard space
+# First flirt highres to MNI152
+if [[ ! -f ${mprage_dir}/highres_brain.nii.gz ]]; then
+    echo "    ERROR: Can't run registration because brain extraction has not been completed"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${mprage_dir}/highres_TO_MNI152.mat ]]; then
+    echo "    Flirting highres to MNI"
+    flirt -ref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain.nii.gz \
+            -in ${mprage_dir}/highres_brain.nii.gz \
+            -omat ${mprage_dir}/highres_TO_MNI152.mat
+
 else
-    echo "    Eddy correction step already completed"
+    echo "    Highres already flirted to MNI"
+
+fi
+
+# Invert this flirt transform
+if [[ ! -f ${mprage_dir}/highres_TO_MNI152.nii.gz ]]; then
+    echo "    ERROR: Can't invert transform as flirt has not been completed"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${mprage_dir}/MNI152_TO_highres.mat ]]; then
+    echo "    Inverting flirt transform"
+    convert_xfm -omat ${mprage_dir}/MNI152_TO_highres.mat \
+                -inverse ${mprage_dir}/highres_TO_MNI152.mat
+
+else
+    echo "    Inverse flirt transform already calculated"
+
+# Then fnirt highres to MNI152
+if [[ ! -f ${mprage_dir}/highres_TO_MNI152_nlwarp.nii.gz ]]; then
+    echo "Fnirting highres to MNI"
+    fnirt --in=${mprage_dir}/highres.nii.gz \
+            --aff=${mprage_dir}/highres_TO_MNI152.mat \
+            --cout=${mprage_dir}/highres_TO_MNI152_nlwarp \
+            --config=T1_2_MNI152_2mm
+else
+    echo "    Highres already fnirted to MNI"
+
+fi
+
+# And inverse this warp
+if [[ ! -f ${mprage_dir}/highres_TO_MNI152_nlwarp.nii.gz ]]; then
+    echo "    ERROR: Can't run registration because fnirt has not been completed"
+    echo "    EXITING"
+    exit
+
+elif [[ ! -f ${mprage_dir}/MNI152_TO_highres_nl.nii.gz ]]; then
+    echo "Inverting highres to MNI warp"
+    invwarp --ref=${mprage_dir}/highres.nii.gz \
+            --warp=${mprage_dir}/highres_TO_MNI152_nl.nii.gz \
+            --out=${mprage_dir}/MNI152_TO_highres_nl.nii.gz
+else
+    echo "    Inverse fnirt warp already calculated"
+
+fi
+
+
+# First flirt high_res to MNI152
+if [[ ! -f ${mprage_dir}/high_res_TO_MNI152.mat ]]; then
+    echo "Flirting high_res to MNI"
+    flirt -ref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain.nii.gz \
+            -in ${mprage_dir}/high_res_brain.nii.gz \
+            -omat ${mprage_dir}/high_res_TO_MNI152.mat
+fi
+
+# Then fnirt high_res to MNI152
+if [[ ! -f ${mprage_dir}/high_res_TO_MNI152_nl.nii.gz ]]; then
+    echo "Fnirting high_res to MNI"
+    fnirt --in=${mprage_dir}/high_res.nii.gz \
+            --aff=${mprage_dir}/high_res_TO_MNI152.mat \
+            --cout=${mprage_dir}/high_res_TO_MNI152_nl \
+            --config=T1_2_MNI152_2mm
+fi
+
+# And inverse this warp
+if [[ ! -f ${mprage_dir}/MNI152_TO_high_res_nl.nii.gz ]]; then
+    echo "Inverting high_res to MNI warp"
+    invwarp --ref=${mprage_dir}/high_res.nii.gz \
+            --warp=${mprage_dir}/high_res_TO_MNI152_nl.nii.gz \
+            --out=${mprage_dir}/MNI152_TO_high_res_nl.nii.gz
 fi
 
 #------------------------------------------------------------------------------
