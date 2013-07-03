@@ -12,13 +12,14 @@ mkdir -p ${dir}/SCRIPTS
 
 ####
 # Download the code from GitHub
+rm -f ${dir}/SCRIPTS/DTI_PROCESSING
 wget -O ${dir}/SCRIPTS/DTI_PROCESSING https://github.com/HappyPenguin/DTI_PROCESSING/archive/master.zip
 
 ####
 # Unzip the DTI_PROCESSING
 #+ -o option forces overwrite
 #+ -f option only refreshes files that have changed
-unzip -of ${dir}/SCRIPTS/GitHubCode -d ${dir}/SCRIPTS/
+unzip -o ${dir}/SCRIPTS/DTI_PROCESSING -d ${dir}/SCRIPTS/
 
 ####
 # Make all files executable
@@ -34,8 +35,8 @@ dos2unix ${dir}/SCRIPTS/DTI_PROCESSING-master/*
 # Run the code!
 for sub in `cat ${sublist}`; do
     echo ${sub}
-    ${dir}/SCRIPTS/DTI_PROCESSING-master/dti_preprocessing.sh ${dir}/SUB_DATA/${sub}/DTI/ ${sub}
-    ${dir}/SCRIPTS/DTI_PROCESSING-master/mprage_preprocessing.sh ${dir}/SUB_DATA/${sub}/MPRAGE/ ${sub}
-    ${dir}/SCRIPTS/DTI_PROCESSING-master/dti_registrations.sh ${dir}/SUB_DATA/${sub}/DTI/ ${dir}/SUB_DATA/${sub}/MPRAGE/
+    #${dir}/SCRIPTS/DTI_PROCESSING-master/dti_preprocessing.sh ${dir}/SUB_DATA/${sub}/DTI/ ${sub}
+    ${dir}/SCRIPTS/DTI_PROCESSING-master/mprage_processing.sh ${dir}/SUB_DATA/${sub}/MPRAGE/ ${sub}
+    ${dir}/SCRIPTS/DTI_PROCESSING-master/registrations.sh ${dir}/SUB_DATA/${sub}/DTI/ ${dir}/SUB_DATA/${sub}/MPRAGE/ ${sub}
 
 done
