@@ -161,6 +161,7 @@ fi
 # Run recon-all
 ### Put in a little if loop here in case it has already been run??
 ### But freesurfer might just take care of this??
+echo "    Running freesurfer's recon-all"
 recon-all -all -i ${dir}/highres.nii.gz \
             -s SURF \
             -sd ${dir} >> ${logdir}/reconall
