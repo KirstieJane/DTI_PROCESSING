@@ -78,6 +78,7 @@ if [[ ! -f ${dir}/highres_${sub}.nii.gz ]]; then
     else
         echo "    No highres_${sub}.nii.gz file"
         print_usage=1
+    fi
 fi
 
 # And make sure there are 3 numbers in the center of mass file
