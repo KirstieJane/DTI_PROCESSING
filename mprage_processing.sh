@@ -71,7 +71,7 @@ if [[ ${print_usage} == 1 ]]; then
 fi
 
 ### Step 2: Check data
-# Make sure highres_<subid> file exists
+# Make sure highres file exists
 if [[ ! -f ${dir}/highres.nii.gz ]]; then
     if [[ -f ${dir}/highres.nii ]]; then
         gzip ${dir}/highres.nii
@@ -111,6 +111,24 @@ logdir=${dir}/LOGS
 mkdir -p ${logdir}
 
 #------------------------------------------------------------------------------
+# Crop the 
+if [[ ! -f ${mprage_dir}/highres_orig.nii.gz ]]; then
+    echo "    Calculating robust field of view"
+    cp ${mprage_dir}/highres.nii.gz ${mprage_dir}/highres_orig.nii.gz
+    robustfov -i highres_orig.nii.gz \
+                -r highres.nii.gz \
+                -m robustfov.mat >> ${logdir}/robustfov
+    
+    # Update the center of mass:
+    robustfov=(`cat ${mprage_dir}/robustfov.mat`)
+    com[2]=`echo "${com[2]}-${robustfov[11]}" | bc`
+
+else
+    echo "    Robust field of view already calculated"
+
+fi
+
+#------------------------------------------------------------------------------
 # Brain extract the mprage file
 if [[ ! -f ${mprage_dir}/highres_brain_mask.nii.gz ]]; then
     echo "    Brain extracting"
@@ -118,6 +136,8 @@ if [[ ! -f ${mprage_dir}/highres_brain_mask.nii.gz ]]; then
           -m -f 0.2 -c ${com[@]} >> ${logdir}/bet
 else
     echo "    Brain already extracted"
+
+fi
 
 #------------------------------------------------------------------------------
 # Segment the brain    
