@@ -72,11 +72,11 @@ fi
 
 ### Step 2: Check data
 # Make sure highres_<subid> file exists
-if [[ ! -f ${dir}/highres_${sub}.nii.gz ]]; then
-    if [[ -f ${dir}/highres_${sub}.nii ]]; then
-        gzip ${dir}/highres_${sub}.nii
+if [[ ! -f ${dir}/highres.nii.gz ]]; then
+    if [[ -f ${dir}/highres.nii ]]; then
+        gzip ${dir}/highres.nii
     else
-        echo "    No highres_${sub}.nii.gz file"
+        echo "    No highres.nii.gz file"
         print_usage=1
     fi
 fi
