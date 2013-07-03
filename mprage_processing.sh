@@ -112,9 +112,10 @@ mkdir -p ${logdir}
 
 #------------------------------------------------------------------------------
 # Crop the 
-if [[ ! -f ${dir}/highres_orig.nii.gz ]]; then
+if [[ ! -f ${dir}/robustfov.mat ]]; then
     echo "    Calculating robust field of view"
     cp ${dir}/highres.nii.gz ${dir}/highres_orig.nii.gz
+    
     robustfov -i ${dir}/highres_orig.nii.gz \
                 -r ${dir}/highres.nii.gz \
                 -m ${dir}/robustfov.mat >> ${logdir}/robustfov
