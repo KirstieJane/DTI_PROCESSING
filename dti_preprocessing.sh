@@ -77,6 +77,7 @@ if [[ ! -f ${dir}/dti.nii.gz ]]; then
     else
         echo "    No dti.nii.gz file"
         print_usage=1
+    fi
 fi
 if [[ ! -f ${dir}/bvals ]]; then
     echo "    No bvals file"
@@ -238,3 +239,4 @@ fi
 # And you're done!
 echo "--------------------------------"
 #------------------------------------------------------------------------------
+
