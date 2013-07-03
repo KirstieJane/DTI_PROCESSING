@@ -111,7 +111,8 @@ logdir=${dir}/LOGS
 mkdir -p ${logdir}
 
 #------------------------------------------------------------------------------
-# Crop the 
+# Crop the mprage to have a robust field of view so that there isn't
+# too much neck
 if [[ ! -f ${dir}/robustfov.mat ]]; then
     echo "    Calculating robust field of view"
     cp ${dir}/highres.nii.gz ${dir}/highres_orig.nii.gz
@@ -158,6 +159,8 @@ fi
 
 #------------------------------------------------------------------------------
 # Run recon-all
+### Put in a little if loop here in case it has already been run??
+### But freesurfer might just take care of this??
 recon-all -all -i ${dir}/highres_${sub}.nii.gz \
             -s SURF \
             -sd ${dir} >> ${logdir}/reconall
