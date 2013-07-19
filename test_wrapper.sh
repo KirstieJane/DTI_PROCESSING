@@ -35,7 +35,7 @@ dos2unix ${dir}/SCRIPTS/DTI_PROCESSING-master/*
 # Run the code!
 for sub in `cat ${sublist}`; do
     echo ${sub}
-    #${dir}/SCRIPTS/DTI_PROCESSING-master/dti_preprocessing.sh ${dir}/SUB_DATA/${sub}/DTI/ ${sub}
+    ${dir}/SCRIPTS/DTI_PROCESSING-master/dti_preprocessing.sh ${dir}/SUB_DATA/${sub}/DTI/ ${sub}
     ${dir}/SCRIPTS/DTI_PROCESSING-master/mprage_processing.sh ${dir}/SUB_DATA/${sub}/MPRAGE/ ${sub}
     ${dir}/SCRIPTS/DTI_PROCESSING-master/registrations.sh ${dir}/SUB_DATA/${sub}/DTI/ ${dir}/SUB_DATA/${sub}/MPRAGE/ ${sub}
 
