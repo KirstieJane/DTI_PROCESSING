@@ -108,7 +108,7 @@ if [[ ! -w ${rot_bvecs_script} ]]; then
 
     rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
 
-    wget -O ${rot_bvecs_script} https://github.com/HappyPenguin/FSL_COMMUNITY_CODE/blob/master/fdt_rotate_bvecs.sh
+    wget -O ${rot_bvecs_script} https://github.com/HappyPenguin/FSL_COMMUNITY_CODE/blob/master/fdt_rotate_bvecs.sh --no-check-certificate
 
 fi
 
