@@ -97,10 +97,14 @@ fi
 #------------------------------------------------------------------------------
 # Set up the rot_bvecs_script
 
-# If you're Kirstie, then you're fine 
+# If you're Kirstie, then you're fine
+# First try the bcni:
 rot_bvecs_script=(/home/kw401/CAMBRIDGE_SCRIPTS/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
 if [[ ! -w ${rot_bvecs_script} ]]; then
-
+    # Then try the cbu:
+    rot_bvecs_script=(/home/kw02/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
+    # And if it's not in either of those places
+elif [[ ! -w ${rot_bvecs_script} ]]; then
     # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
     # script into the same folder:
     scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
@@ -114,6 +118,9 @@ fi
 
 # Make that script executable
 chmod +x ${rot_bvecs_script}
+
+# And make sure that it's in unix form
+dos2unix ${rot_bvecs_script}
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
