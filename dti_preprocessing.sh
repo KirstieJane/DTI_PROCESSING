@@ -104,25 +104,23 @@ echo -e "\n\n\n\n"
 echo "==========BLABLABLA===================="
 
 if [[ ! -w ${rot_bvecs_script} ]]; then
-    echo "THE BCNI FILE DOESN'T EXIST"
     # Then try the cbu:
     rot_bvecs_script=(/home/kw02/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
     # And if it's not in either of those places
-elif [[ ! -f ${rot_bvecs_script} ]]; then
-    echo "THE CBU FILE DOESN'T EXIST"
-    echo -e "\n\n\n\n"
-    # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
-    # script into the same folder:
-    scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
-    # (Handily stolen from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in)
+    if [[ ! -f ${rot_bvecs_script} ]]; then
+        # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
+        # script into the same folder:
+        scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
+        # (Handily stolen from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in)
 
-    rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
+        rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
 
-    wget -O ${rot_bvecs_script} https://raw.github.com/HappyPenguin/FSL_COMMUNITY_CODE/master/fdt_rotate_bvecs.sh --no-check-certificate
-
+        wget -O ${rot_bvecs_script} https://raw.github.com/HappyPenguin/FSL_COMMUNITY_CODE/master/fdt_rotate_bvecs.sh --no-check-certificate
+    fi
 fi
 
 echo "THIS IS THE ROT_BVECS_SCRIPT: ${rot_bvecs_script}"
+echo -e "\n\n\n\n"
 
 # Make that script executable
 chmod +x ${rot_bvecs_script}
