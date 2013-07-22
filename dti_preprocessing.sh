@@ -100,13 +100,16 @@ fi
 # If you're Kirstie, then you're fine
 # First try the bcni:
 rot_bvecs_script=(/home/kw401/CAMBRIDGE_SCRIPTS/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
+echo -e "\n\n\n\n"
+echo "==========BLABLABLA===================="
+
 if [[ ! -w ${rot_bvecs_script} ]]; then
+    echo "THE BCNI FILE DOESN'T EXIST"
     # Then try the cbu:
     rot_bvecs_script=(/home/kw02/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
     # And if it's not in either of those places
-elif [[ ! -w ${rot_bvecs_script} ]]; then
-    echo -e "\n\n\n\n"
-    echo "==========BLABLABLA===================="
+elif [[ ! -f ${rot_bvecs_script} ]]; then
+    echo "THE CBU FILE DOESN'T EXIST"
     echo -e "\n\n\n\n"
     # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
     # script into the same folder:
@@ -118,6 +121,8 @@ elif [[ ! -w ${rot_bvecs_script} ]]; then
     wget -O ${rot_bvecs_script} https://raw.github.com/HappyPenguin/FSL_COMMUNITY_CODE/master/fdt_rotate_bvecs.sh --no-check-certificate
 
 fi
+
+echo "THIS IS THE ROT_BVECS_SCRIPT: ${rot_bvecs_script}"
 
 # Make that script executable
 chmod +x ${rot_bvecs_script}
