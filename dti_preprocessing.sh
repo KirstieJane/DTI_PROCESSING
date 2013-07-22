@@ -6,11 +6,11 @@
 #        DESCRIPTION:  This script takes an input directory that must contain
 #                      dti.nii.gz, bvals and bvecs_orig, and then runs  
 #                      eddy current correction, rotate bvecs, brain extraction,
-#                      dtifit, bedpostX and tbss 1 and 2
+#                      dtifit, bedpostX and tbss 1 and 2.
 #
-#              USAGE:  dti_preprocessing.sh <dti_data_folder> <sub_id>
-#                           eg: dti_preprocessing.sh ${dti_dir} ${sub_id}
-#                           eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1
+#              USAGE:  dti_preprocessing.sh <dti_data_folder> <sub_id> <bedpost_option>
+#                           eg: dti_preprocessing.sh ${dti_dir} ${sub_id} ${bedpost_option}
+#                           eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1 no
 #
 #        PARAMETER 1:  DTI data folder (full path)
 #                           If you're using this script as part of another
@@ -22,6 +22,12 @@
 #                           eg: ${subid}
 #                           eg: 1106t1
 #
+#        PARAMETER 3:  bedpost_option
+#                      Because bedpostx takes so long it might be better to skip it.
+#                      This it can be either yes or no. Capitalization doesn't matter.
+#                           eg: ${bedpost_option}
+#                           eg: no
+#
 #             AUTHOR:  Kirstie Whitaker
 #                          kw401@cam.ac.uk
 #
@@ -32,9 +38,9 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "dti_preprocessing.sh <dti_data_folder> <sub_id>"
-    echo "    eg: dti_preprocessing.sh \${dti_dir} \${sub_id}"
-    echo "    eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1"
+    echo "dti_preprocessing.sh <dti_data_folder> <sub_id> <bedpost_option"
+    echo "    eg: dti_preprocessing.sh \${dti_dir} \${sub_id} \${bedpost_option}"
+    echo "    eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1 no"
     exit
 }
 #------------------------------------------------------------------------------
@@ -46,6 +52,10 @@ if [[ ! -d /${dir} ]]; then
     dir=`pwd`/${dir}
 fi
 sub=$2
+
+# make bedpost_option all lower case so capitalision doesn't matter
+bedpost_option=`echo ${3} | tr '[:upper:]' '[:lower:]'`
+
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -62,6 +72,13 @@ fi
 if [[ -z ${sub} ]]; then
     echo "    SubID is blank"
     print_usage=1
+fi
+
+# Exit if the bedpost_option is neither yes nor no
+if [[ ${bedpost_option} != "yes" && ${bedpost_option} != "no" ]]; then
+    echo "    Bedpost option not recognised"
+    echo "    bedpost_option = ${bedpost_option}"
+    print usage=1
 fi
 
 # Print the usage if necessary
@@ -200,17 +217,20 @@ fi
 
 #------------------------------------------------------------------------------
 # BedpostX
-if [[ ! -f ${dir}/BEDPOSTX.bedpostX/dyads2.nii.gz ]]; then
-    echo "    Now starting bedpostX"
-    mkdir -p ${dir}/BEDPOSTX
-    cp ${dir}/bvals ${dir}/BEDPOSTX/
-    cp ${dir}/bvecs ${dir}/BEDPOSTX/
-    cp ${dir}/dti_ec_brain_mask.nii.gz \
-    ${dir}/BEDPOSTX/nodif_brain_mask.nii.gz
-    cp ${dir}/dti_ec.nii.gz ${dir}/BEDPOSTX/data.nii.gz
-    bedpostx ${dir}/BEDPOSTX/ > ${logdir}/bedpostx
-else
-    echo "    bedpostX already complete"
+# Only run this step if the bedpost_option is "yes"
+if [[ ${bedpost_option} == "yes"  ]]; then
+    if [[ ! -f ${dir}/BEDPOSTX.bedpostX/dyads2.nii.gz ]]; then
+        echo "    Now starting bedpostX"
+        mkdir -p ${dir}/BEDPOSTX
+        cp ${dir}/bvals ${dir}/BEDPOSTX/
+        cp ${dir}/bvecs ${dir}/BEDPOSTX/
+        cp ${dir}/dti_ec_brain_mask.nii.gz \
+        ${dir}/BEDPOSTX/nodif_brain_mask.nii.gz
+        cp ${dir}/dti_ec.nii.gz ${dir}/BEDPOSTX/data.nii.gz
+        bedpostx ${dir}/BEDPOSTX/ > ${logdir}/bedpostx
+    else
+        echo "    bedpostX already complete"
+    fi
 fi
 
 #------------------------------------------------------------------------------
