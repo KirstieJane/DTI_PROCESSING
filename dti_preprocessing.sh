@@ -100,8 +100,6 @@ fi
 # If you're Kirstie, then you're fine
 # First try the bcni:
 rot_bvecs_script=(/home/kw401/CAMBRIDGE_SCRIPTS/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
-echo -e "\n\n\n\n"
-echo "==========BLABLABLA===================="
 
 if [[ ! -w ${rot_bvecs_script} ]]; then
     # Then try the cbu:
@@ -118,9 +116,6 @@ if [[ ! -w ${rot_bvecs_script} ]]; then
         wget -O ${rot_bvecs_script} https://raw.github.com/HappyPenguin/FSL_COMMUNITY_CODE/master/fdt_rotate_bvecs.sh --no-check-certificate
     fi
 fi
-
-echo "THIS IS THE ROT_BVECS_SCRIPT: ${rot_bvecs_script}"
-echo -e "\n\n\n\n"
 
 # Make that script executable
 chmod +x ${rot_bvecs_script}
