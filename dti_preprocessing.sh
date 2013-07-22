@@ -105,6 +105,9 @@ if [[ ! -w ${rot_bvecs_script} ]]; then
     rot_bvecs_script=(/home/kw02/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
     # And if it's not in either of those places
 elif [[ ! -w ${rot_bvecs_script} ]]; then
+    echo -e "\n\n\n\n"
+    echo "==========BLABLABLA===================="
+    echo -e "\n\n\n\n"
     # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
     # script into the same folder:
     scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
