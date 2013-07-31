@@ -119,7 +119,7 @@ if [[ ! -f ${dir}/robustfov.mat ]]; then
     
     robustfov -i ${dir}/highres_orig.nii.gz \
                 -r ${dir}/highres.nii.gz \
-                -m ${dir}/robustfov.mat >> ${logdir}/robustfov
+                -m ${dir}/robustfov.mat >> ${logdir}/robustfov 2>> ${logdir}/errors_robustfov
     
     # Update the center of mass:
     robustfov=(`cat ${dir}/robustfov.mat`)
@@ -135,7 +135,7 @@ fi
 if [[ ! -f ${dir}/highres_brain_mask.nii.gz ]]; then
     echo "    Brain extracting"
     bet ${dir}/highres.nii.gz ${dir}/highres_brain.nii.gz \
-          -m -f 0.2 -c ${com[@]} >> ${logdir}/bet
+          -m -f 0.2 -c ${com[@]} >> ${logdir}/bet 2>> ${logdir}/errors_bet
 else
     echo "    Brain already extracted"
 
@@ -151,7 +151,7 @@ if [[ ! -f ${dir}/highres_brain_mask.nii.gz ]]; then
 elif [[ ! -f ${dir}/highres_brain_seg_2.nii.gz ]]; then
     echo "    Segmenting"
     fast -g -o ${dir}/highres_brain \
-            ${dir}/highres_brain.nii.gz >> ${logdir}/fast
+            ${dir}/highres_brain.nii.gz >> ${logdir}/fast 2>> ${logdir}/errors_fast
 
 else
     echo "    Brain already segmented"
@@ -164,7 +164,7 @@ fi
 echo "    Running freesurfer's recon-all"
 recon-all -all -i ${dir}/highres.nii.gz \
             -s SURF \
-            -sd ${dir} >> ${logdir}/reconall
+            -sd ${dir} >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
 
 #------------------------------------------------------------------------------
 # And you're done!
