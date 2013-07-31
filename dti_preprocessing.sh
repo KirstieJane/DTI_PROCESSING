@@ -138,7 +138,7 @@ fi
 chmod +x ${rot_bvecs_script}
 
 # And make sure that it's in unix form
-dos2unix ${rot_bvecs_script}
+dos2unix ${rot_bvecs_script} > /dev/null
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -155,7 +155,8 @@ mkdir -p ${logdir}
 if [[ ! -f ${dir}/dti_ec.nii.gz ]]; then
     echo "    Starting eddy correction step"
     rm -f ${dir}/dti_ec.ecclog
-    eddy_correct ${dir}/dti.nii.gz ${dir}/dti_ec.nii.gz 0 > ${logdir}/eddycorrect
+    eddy_correct ${dir}/dti.nii.gz ${dir}/dti_ec.nii.gz 0 \
+            > ${logdir}/eddycorrect 2> ${logdir}/errors_eddycorrect
 else
     echo "    Eddy correction step already completed"
 fi
@@ -166,7 +167,7 @@ fi
 if [[ ! -f ${dir}/bvecs ]]; then
     echo "    Rotating bvecs"
     ${rot_bvecs_script} ${dir}/bvecs_orig ${dir}/bvecs \
-        ${dir}/dti_ec.ecclog >> ${logdir}/eddycorrect
+        ${dir}/dti_ec.ecclog >> ${logdir}/eddycorrect 2> ${logdir}/errors_eddycorrect
 else
     echo "    Bvecs already rotated"
 fi
@@ -180,7 +181,8 @@ if [[ ! -f ${dir}/dti_ec.nii.gz ]]; then
 
 elif [[ ! -f ${dir}/dti_ec_brain.nii.gz ]]; then
     echo "    Brain extracting"
-    bet ${dir}/dti_ec.nii.gz ${dir}/dti_ec_brain.nii.gz -f 0.15 -m > ${logdir}/bet
+    bet ${dir}/dti_ec.nii.gz ${dir}/dti_ec_brain.nii.gz \
+            -f 0.15 -m > ${logdir}/bet 2> ${logdir}/errors_bet
 
 else
     echo "    Brain already extracted"
@@ -206,7 +208,7 @@ elif [[ ! -f ${dir}/FDT/${sub}_MO.nii.gz ]]; then
         -r ${dir}/bvecs \
         -b ${dir}/bvals \
         -o ${dir}/FDT/${sub} \
-        > ${logdir}/dtifit
+        > ${logdir}/dtifit 2> ${logdir}/errors_dtifit
     
     fslmaths ${dir}/FDT/${sub}_L2.nii.gz -add ${dir}/FDT/${sub}_L3.nii.gz -div 2 \
         ${dir}/FDT/${sub}_L23.nii.gz
@@ -227,7 +229,7 @@ if [[ ${bedpost_option} == "yes"  ]]; then
         cp ${dir}/dti_ec_brain_mask.nii.gz \
         ${dir}/BEDPOSTX/nodif_brain_mask.nii.gz
         cp ${dir}/dti_ec.nii.gz ${dir}/BEDPOSTX/data.nii.gz
-        bedpostx ${dir}/BEDPOSTX/ > ${logdir}/bedpostx
+        bedpostx ${dir}/BEDPOSTX/ > ${logdir}/bedpostx 2> ${logdir}/errors_bedpostx
     else
         echo "    bedpostX already complete"
     fi
@@ -248,9 +250,9 @@ elif [[ ! -f ${dir}/TBSS/FA/reverse_fnirt_warp.nii.gz ]]; then
         mkdir -p ${dir}/TBSS
         cp ${dir}/FDT/*FA* ${dir}/TBSS/
         cd ${dir}/TBSS/
-        tbss_1_preproc * > ${logdir}/tbss
-        tbss_2_reg -T >> ${logdir}/tbss
-    fi
+        tbss_1_preproc * > ${logdir}/tbss 2> ${logdir}/errors_tbss
+        tbss_2_reg -T >> ${logdir}/tbss 2>> ${logdir}/errors_tbss
+    fi 
     # Now create the inverse fnirt warp
     echo "    Inverting FNIRT warp"
     if [[ -d ${dir}/TBSS/FA && \
