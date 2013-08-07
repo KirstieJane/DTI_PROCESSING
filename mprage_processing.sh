@@ -164,11 +164,14 @@ fi
 echo "    Running freesurfer's recon-all"
 # If it's a brand new start:
 if [[ ! -f ${dir}/SURF/mri/orig/001.mgz ]]; then
+    echo "============ START FROM THE BEGINNING ============="
+    rm -r ${dir}/SURF
     recon-all -all -i ${dir}/highres.nii.gz \
                 -s SURF \
                 -sd ${dir} >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
 
 else
+    print '=============== MAKE ALL =============='
     recon-all -all -s SURF \
                 -sd ${dir} \
                 -make all >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
