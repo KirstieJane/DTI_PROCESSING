@@ -162,11 +162,18 @@ fi
 ### Put in a little if loop here in case it has already been run??
 ### But freesurfer might just take care of this??
 echo "    Running freesurfer's recon-all"
-recon-all -all -i ${dir}/highres.nii.gz \
-            -s SURF \
-            -sd ${dir} \
-            -make all >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
+# If it's a brand new start:
+if [[ ! -f ${dir}/SURF/mri/orig/001.mgz ]]; then
+    recon-all -all -i ${dir}/highres.nii.gz \
+                -s SURF \
+                -sd ${dir} >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
 
+else
+    recon-all -all -s SURF \
+                -sd ${dir} \
+                -make all >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
+fi   
+                
 #------------------------------------------------------------------------------
 # And you're done!
 echo "--------------------------------"
