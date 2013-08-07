@@ -164,7 +164,8 @@ fi
 echo "    Running freesurfer's recon-all"
 recon-all -all -i ${dir}/highres.nii.gz \
             -s SURF \
-            -sd ${dir} >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
+            -sd ${dir} \
+            -make all >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
 
 #------------------------------------------------------------------------------
 # And you're done!
