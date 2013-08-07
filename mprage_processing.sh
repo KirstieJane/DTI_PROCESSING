@@ -171,7 +171,7 @@ if [[ ! -f ${dir}/SURF/mri/orig/001.mgz ]]; then
                 -sd ${dir} >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
 
 else
-    print '=============== MAKE ALL =============='
+    echo '=============== MAKE ALL =============='
     recon-all -all -s SURF \
                 -sd ${dir} \
                 -make all >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
