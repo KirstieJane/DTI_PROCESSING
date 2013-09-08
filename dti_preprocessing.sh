@@ -78,7 +78,7 @@ fi
 if [[ ${bedpost_option} != "yes" && ${bedpost_option} != "no" ]]; then
     echo "    Bedpost option not recognised"
     echo "    bedpost_option = ${bedpost_option}"
-    print usage=1
+    print_usage=1
 fi
 
 # Print the usage if necessary
