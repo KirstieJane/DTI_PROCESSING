@@ -17,9 +17,9 @@
 #                      transformations to get between the following spaces:
 #                      DTI, FSL_highres, Freesurfer, MNI152.
 #
-#              USAGE:  registrations.sh <dti_data_folder> <mprage_data_folder> <eddy_b0_vol>
-#                           eg: registrations.sh ${dti_dir} ${mprage_dir} ${b0}
-#                           eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE 14
+#              USAGE:  registrations.sh <dti_data_folder> <mprage_data_folder> <dti_run> <eddy_b0_vol>
+#                           eg: registrations.sh ${dti_dir} ${mprage_dir} ${scan} ${b0}
+#                           eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE DTI_2A 14
 #
 #        PARAMETER 1:  DTI data folder (full path)
 #                           If you're using this script as part of another
@@ -33,7 +33,11 @@
 #                           If you're using this script alone
 #                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE
 #
-#        PARAMETER 3:  Eddy correct target volume
+#        PARAMETER 3:  DTI run
+#                           eg: ${scan}
+#                           eg: DTI_2A
+#
+#        PARAMETER 4:  Eddy correct target volume
 #                           eg: ${b0}
 #                           eg: 14
 #
@@ -47,9 +51,9 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "registrations.sh <dti_data_folder> <mprage_data_folder> <eddy_b0_vol>"
-    echo "    eg: registrations.sh \${dti_dir} \${mprage_dir} \${b0}"
-    echo "    eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE 14"
+    echo "registrations.sh <dti_data_folder> <mprage_data_folder> <dti_scan> <eddy_b0_vol>"
+    echo "    eg: registrations.sh \${dti_dir} \${mprage_dir} \${scan} \${b0}"
+    echo "    eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE DTI_2A 14"
     exit
 }
 #------------------------------------------------------------------------------
@@ -68,7 +72,9 @@ fi
 
 surf_dir=${mprage_dir}/SURF/
 
-eddy_b0_vol=$3
+scan=$3
+
+eddy_b0_vol=$4
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -141,11 +147,16 @@ mkdir -p ${logdir}
 #------------------------------------------------------------------------------
 # Register diffusion images to highres space using standard flirt
 
-if [[ ! -z ${eddy_b0_vol} ]]; then
-    dti_reg_dir=${reg_dir}/B0_${eddy_b0_vol}
+if [[ ! -z ${scan} ]]; then
+    dti_reg_dir=${reg_dir}/${scan}
     mkdir -p ${dti_reg_dir}
 else
     dti_reg_dir=${reg_dir}
+fi
+
+if [[ ! -z ${eddy_b0_vol} ]]; then
+    dti_reg_dir=${dti_reg_dir}/B0_${eddy_b0_vol}
+    mkdir -p ${dti_reg_dir}
 fi
     
 # b0 weighted file
