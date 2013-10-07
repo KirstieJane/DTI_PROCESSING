@@ -191,7 +191,7 @@ fi
 # Register diffusion images to highres space using BBR
 
 # b0 weighted file
-if [[ ! -f ${dti_reg_dir}/diffB0_TO_highres.mat ]]; then
+if [[ ! -f ${dti_reg_dir}/diffB0_TO_highres_BBR.mat ]]; then
     echo "    Flirting dti_ec_brain to highres using BBR"
     epi_reg --epi=${dti_dir}/dti_ec_brain.nii.gz \
             --t1=${mprage_dir}/highres.nii.gz \
