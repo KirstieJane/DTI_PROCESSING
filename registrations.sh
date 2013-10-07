@@ -305,7 +305,7 @@ fi
 
 #------------------------------------------------------------------------------
 # Concatenate the linear diffusion and highres registrations
-if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0.mat ]]; then
+if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat ]]; then
     echo "    Concatenating and inverting remaining transforms"
 
     # diffB0 to freesurfer
@@ -317,6 +317,14 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0.mat ]]; then
     convert_xfm -omat ${dti_reg_dir}/freesurfer_TO_diffB0.mat \
                 -inverse ${dti_reg_dir}/diffB0_TO_freesurfer.mat
 
+    # diffB0 BBR to freesurfer
+    convert_xfm -omat ${dti_reg_dir}/diffB0_TO_freesurfer_BBR.mat \
+                -concat ${dti_reg_dir}/diffB0_TO_highres_BBR.mat \
+                        ${reg_dir}/highres_TO_freesurfer.mat 
+
+    # freesurfer to diffB0 BBR
+    convert_xfm -omat ${dti_reg_dir}/freesurfer_TO_diffB0_BBR.mat \
+                -inverse ${dti_reg_dir}/diffB0_TO_freesurfer_BRR.mat
 
     # diffB0 to MNI152
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152.mat \
@@ -326,7 +334,16 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0.mat ]]; then
     # MNI152 to diffB0
     convert_xfm -omat ${dti_reg_dir}/MNI152_TO_diffB0.mat \
                 -inverse ${dti_reg_dir}/diffB0_TO_MNI152.mat
-            
+
+    # diffB0 to MNI152
+    convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152.mat \
+                -concat ${dti_reg_dir}/diffB0_TO_highres.mat \
+                        ${reg_dir}/highres_TO_MNI152.mat 
+
+    # MNI152 to diffB0
+    convert_xfm -omat ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat \
+                -inverse ${dti_reg_dir}/diffB0_TO_MNI152_BBR.mat
+                
 else
     echo "    Remaining transforms already calculated"
 
