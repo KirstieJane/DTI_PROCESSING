@@ -335,12 +335,12 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat ]]; then
     convert_xfm -omat ${dti_reg_dir}/MNI152_TO_diffB0.mat \
                 -inverse ${dti_reg_dir}/diffB0_TO_MNI152.mat
 
-    # diffB0 to MNI152
-    convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152.mat \
-                -concat ${dti_reg_dir}/diffB0_TO_highres.mat \
+    # diffB0 to MNI152 BBR
+    convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152_BBR.mat \
+                -concat ${dti_reg_dir}/diffB0_TO_highres_BBR.mat \
                         ${reg_dir}/highres_TO_MNI152.mat 
 
-    # MNI152 to diffB0
+    # MNI152 to diffB0 BBR
     convert_xfm -omat ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat \
                 -inverse ${dti_reg_dir}/diffB0_TO_MNI152_BBR.mat
                 
