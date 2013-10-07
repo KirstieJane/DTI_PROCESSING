@@ -132,7 +132,7 @@ echo "MPRAGE_DIR: ${mprage_dir}"
 echo "SURF_DIR: ${surf_dir}"
 
 # Define the registration directory
-reg_dir=(`dirname ${mprage_dir}`)
+reg_dir=(`dirname ${mprage_dir}`/REG)
 
 # Make the LOGS dir
 logdir=${reg_dir}/LOGS
