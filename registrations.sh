@@ -324,7 +324,7 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat ]]; then
 
     # freesurfer to diffB0 BBR
     convert_xfm -omat ${dti_reg_dir}/freesurfer_TO_diffB0_BBR.mat \
-                -inverse ${dti_reg_dir}/diffB0_TO_freesurfer_BRR.mat
+                -inverse ${dti_reg_dir}/diffB0_TO_freesurfer_BBR.mat
 
     # diffB0 to MNI152
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152.mat \
