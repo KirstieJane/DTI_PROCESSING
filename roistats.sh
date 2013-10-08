@@ -188,7 +188,34 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
 
     fi
     
+# Now we need to extract the FA and MD values
+for transform in MNI_DIFF_FA_DIRECT MNI_DIFF_VIA_HIGHRES_NL_BBR MNI_DIFF_VIA_HIGHRES_LIN ; do
+
+    mask_file=${dti_reg_dir}/${transform}/ROI_${roi_name}.nii.gz
+
+    stats_dir=${dti_dir}/ROI_VALUES/${transform}/
+    
+    if [[ ! -f ${stats_dir}/${roi_name}_MD.txt ]]; then 
+    
+        echo "    extracting stats values for ${transform} transform"
+        fslstats ${fa_file} -k ${mask_file} -M \
+                    > ${stats_dir}/${roi_name}_FA.txt
+                    
+        fslstats ${fa_file/FA/MD} -k ${mask_file} -M \
+                    > ${stats_dir}/${roi_name}_MD.txt
+
+        fslstats ${fa_file/FA/vol} -k ${mask_file} -V \
+                    > ${stats_dir}/${roi_name}_vol.txt
+    
+    else
+    
+        echo "    values already extracted for ${transform} transform"
+        
+    fi
+    
 done
+
+
 
 #------------------------------------------------------------------------------
 # And you're done!
