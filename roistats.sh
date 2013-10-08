@@ -124,16 +124,22 @@ mkdir -p ${masks_dir}
 mkdir -p ${dti_masks_dir}
 
 #------------------------------------------------------------------------------
+# Get started
+
+echo DTI_DIR: ${dti_dir}
 
 # First thing is to transform the ROI into the correct space
 
 for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     
     roi_name=`basename ${roi_file} .nii.gz`
+    echo "    ${roi_name}"
     
     # MNI to DIFF directly via nonlinear FA matching
-    if [[ -f ${dti_masks_dir}/MNI_DIFF_FA_DIRECT/ROI_${roi_name}.nii.gz \
+    if [[ ! -f ${dti_masks_dir}/MNI_DIFF_FA_DIRECT/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz ]]; then
+        
+        echo "        MNI to DIFF FA DIRECT"
 
         mkdir -p ${dti_masks_dir}/MNI_DIFF_FA_DIRECT
         
@@ -146,10 +152,12 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     fi
     
     # MNI to DIFF via highres nonlinear and BBR
-    if [[ -f ${masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR/ROI_${roi_name}.nii.gz \
+    if [[ ! -f ${masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/highres_TO_diffB0_BBR.mat \
             && -f ${reg_dir}/MNI152_TO_highres_nlwarp.nii.gz ]]; then
         
+        echo "        MNI to DIFF VIA HIGHRES NL BBR"
+
         mkdir -p ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR
         
         applywarp --ref=${dti_dir}/${sub}_FA.nii.gz \
@@ -162,9 +170,11 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     fi
     
     # MNI to DIFF via highres linear
-    if [[ -f ${masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
+    if [[ ! -f ${masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/MNI152_TO_diffB0.mat ]]; then
         
+        echo "        MNI to DIFF VIA HIGHRES LINEAR"
+
         mkdir -p ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN
         
         flirt -in ${roi_file} \
