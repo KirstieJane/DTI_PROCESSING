@@ -141,7 +141,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     if [[ ! -f ${dti_masks_dir}/MNI_DIFF_FA_DIRECT/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/MNI152_TO_diffFA_direct_NL.nii.gz ]]; then
         
-        echo "        MNI to DIFF FA DIRECT"
+        echo "        Registering MNI to DIFF FA DIRECT"
 
         mkdir -p ${dti_masks_dir}/MNI_DIFF_FA_DIRECT
         
@@ -154,11 +154,11 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     fi
     
     # MNI to DIFF via highres nonlinear and BBR
-    if [[ ! -f ${masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR/ROI_${roi_name}.nii.gz \
+    if [[ ! -f ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/highres_TO_diffB0_BBR.mat \
             && -f ${reg_dir}/MNI152_TO_highres_nlwarp.nii.gz ]]; then
         
-        echo "        MNI to DIFF VIA HIGHRES NL BBR"
+        echo "        Registering MNI to DIFF VIA HIGHRES NL BBR"
 
         mkdir -p ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR
         
@@ -172,10 +172,10 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     fi
     
     # MNI to DIFF via highres linear
-    if [[ ! -f ${masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
+    if [[ ! -f ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/MNI152_TO_diffB0.mat ]]; then
         
-        echo "        MNI to DIFF VIA HIGHRES LINEAR"
+        echo "        Registering MNI to DIFF VIA HIGHRES LINEAR"
 
         mkdir -p ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN
         
@@ -196,12 +196,10 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
         mask_file=${dti_masks_dir}/${transform}/ROI_${roi_name}.nii.gz
 
         stats_dir=${dti_dir}/ROI_VALUES/${transform}/
-        
-        echo ${stats_dir}
-        
+                
         if [[ ! -f ${stats_dir}/${roi_name}_MD.txt ]]; then 
         
-            echo "    extracting stats values for ${transform} transform"
+            echo "        extracting stats values for ${transform} transform"
         
             mkdir -p ${stats_dir}
             
@@ -216,7 +214,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
         
         else
         
-            echo "    values already extracted for ${transform} transform"
+            echo "        values already extracted for ${transform} transform"
             
         fi
         
