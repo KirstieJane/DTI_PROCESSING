@@ -197,6 +197,8 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
 
         stats_dir=${dti_dir}/ROI_VALUES/${transform}/
         
+        echo ${stats_dir}
+        
         if [[ ! -f ${stats_dir}/${roi_name}_MD.txt ]]; then 
         
             echo "    extracting stats values for ${transform} transform"
@@ -206,11 +208,11 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
             fslstats ${fa_file} -k ${mask_file} -M \
                         > ${stats_dir}/${roi_name}_FA.txt
                         
+            fslstats ${fa_file} -k ${mask_file} -V \
+                        > ${stats_dir}/${roi_name}_vol.txt
+
             fslstats ${fa_file/FA/MD} -k ${mask_file} -M \
                         > ${stats_dir}/${roi_name}_MD.txt
-
-            fslstats ${fa_file/FA/vol} -k ${mask_file} -V \
-                        > ${stats_dir}/${roi_name}_vol.txt
         
         else
         
