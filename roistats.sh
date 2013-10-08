@@ -123,6 +123,8 @@ dti_masks_dir=${dti_reg_dir/REG/MASKS}
 mkdir -p ${masks_dir}
 mkdir -p ${dti_masks_dir}
 
+fa_file=`ls -d ${fdt_dir}/*_FA.nii.gz`
+
 #------------------------------------------------------------------------------
 # Get started
 
@@ -143,7 +145,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
 
         mkdir -p ${dti_masks_dir}/MNI_DIFF_FA_DIRECT
         
-        applywarp --ref=${dti_dir}/${sub}_FA.nii.gz \
+        applywarp --ref=${fa_file} \
             --in=${roi_file} \
             --warp=${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz \
             --out=${dti_masks_dir}/MNI_DIFF_FA_DIRECT/ROI_${roi_name}.nii.gz \
@@ -160,7 +162,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
 
         mkdir -p ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR
         
-        applywarp --ref=${dti_dir}/${sub}_FA.nii.gz \
+        applywarp --ref=${fa_file} \
             --in=${roi_file} \
             --warp=${reg_dir}/MNI_TO_highres_nlwarp.nii.gz \
             --postmat=${dti_reg_dir}/highres_TO_diffB0_BBR.mat \
@@ -178,7 +180,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
         mkdir -p ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN
         
         flirt -in ${roi_file} \
-                -ref ${dti_dir}/${sub}_FA.nii.gz \
+                -ref ${fa_file} \
                 -applyxfm \
                 -init ${dti_reg_dir}/MNI152_TO_diffB0.mat \
                 -out ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
