@@ -313,6 +313,53 @@ else
 
 fi
 
+#------------------------------------------------------------------------------
+# Register the FA map directly to the FA MNI target
+if [[ ! -f ${dti_reg_dir}/diffFA_TO_MNI_direct_NL.nii.gz ]]; then
+    echo "    Copying nonlinear warp from tbss_dir"
+    
+    warp_file=(`ls -d ${dti_dir}/TBSS/FA/*_FA_FA_to_target_warp.nii.gz 2>/dev/null`)
+    
+    if [[ ! -f ${warp_file} ]]; then
+        echo "    ERROR: No warp file found in TBSS directory"
+        echo "    EXITING"
+    
+    else
+    
+        echo "    Copying nonlinear warp from tbss_dir"
+        
+        cp ${warp_file} ${dti_reg_dir}/diffFA_TO_MNI_direct_NL.nii.gz
+    
+    fi
+
+else
+
+    echo "    Nonlinear warp already copied over"
+    
+fi
+
+if [[ ! -f ${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz ]]; then
+    echo "    Copying nonlinear warp from tbss_dir"
+    
+    inv_warp_file=(`ls -d ${dti_dir}/TBSS/FA/reverse_fnirt_warp.nii.gz 2>/dev/null`)
+    
+    if [[ ! -f ${inv_warp_file} ]]; then
+        echo "    ERROR: No warp file found in TBSS directory"
+        echo "    EXITING"
+    
+    else
+    
+        echo "    Copying nonlinear warp from tbss_dir"
+        
+        cp ${inv_warp_file} ${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz
+    
+    fi
+
+else
+
+    echo "    Nonlinear inverse warp already copied over"
+    
+fi  
 
 #------------------------------------------------------------------------------
 # Concatenate the linear diffusion and highres registrations
