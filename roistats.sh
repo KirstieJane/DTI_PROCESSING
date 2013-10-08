@@ -188,10 +188,12 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
 
     fi
     
+#------------------------------------------------------------------------------
+
     # Now we need to extract the FA and MD values
     for transform in MNI_DIFF_FA_DIRECT MNI_DIFF_VIA_HIGHRES_NL_BBR MNI_DIFF_VIA_HIGHRES_LIN ; do
 
-        mask_file=${dti_reg_dir}/${transform}/ROI_${roi_name}.nii.gz
+        mask_file=${dti_masks_dir}/${transform}/ROI_${roi_name}.nii.gz
 
         stats_dir=${dti_dir}/ROI_VALUES/${transform}/
         
