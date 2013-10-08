@@ -315,7 +315,7 @@ fi
 
 #------------------------------------------------------------------------------
 # Register the FA map directly to the FA MNI target
-if [[ ! -f ${dti_reg_dir}/diffFA_TO_MNI_direct_NL.nii.gz ]]; then
+if [[ ! -f ${dti_reg_dir}/diffFA_TO_MNI152_direct_NL.nii.gz ]]; then
     echo "    Copying nonlinear warp from tbss_dir"
     
     warp_file=(`ls -d ${dti_dir}/TBSS/FA/*_FA_FA_to_target_warp.nii.gz 2>/dev/null`)
@@ -328,7 +328,7 @@ if [[ ! -f ${dti_reg_dir}/diffFA_TO_MNI_direct_NL.nii.gz ]]; then
     
         echo "    Copying nonlinear warp from tbss_dir"
         
-        cp ${warp_file} ${dti_reg_dir}/diffFA_TO_MNI_direct_NL.nii.gz
+        cp ${warp_file} ${dti_reg_dir}/diffFA_TO_MNI152_direct_NL.nii.gz
     
     fi
 
@@ -338,7 +338,7 @@ else
     
 fi
 
-if [[ ! -f ${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz ]]; then
+if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffFA_direct_NL.nii.gz ]]; then
     echo "    Copying nonlinear warp from tbss_dir"
     
     inv_warp_file=(`ls -d ${dti_dir}/TBSS/FA/reverse_fnirt_warp.nii.gz 2>/dev/null`)
@@ -351,7 +351,7 @@ if [[ ! -f ${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz ]]; then
     
         echo "    Copying nonlinear warp from tbss_dir"
         
-        cp ${inv_warp_file} ${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz
+        cp ${inv_warp_file} ${dti_reg_dir}/MNI152_TO_diffFA_direct_NL.nii.gz
     
     fi
 

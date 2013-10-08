@@ -139,7 +139,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     
     # MNI to DIFF directly via nonlinear FA matching
     if [[ ! -f ${dti_masks_dir}/MNI_DIFF_FA_DIRECT/ROI_${roi_name}.nii.gz \
-            && -f ${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz ]]; then
+            && -f ${dti_reg_dir}/MNI152_TO_diffFA_direct_NL.nii.gz ]]; then
         
         echo "        MNI to DIFF FA DIRECT"
 
@@ -147,7 +147,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
         
         applywarp --ref=${fa_file} \
             --in=${roi_file} \
-            --warp=${dti_reg_dir}/MNI_TO_diffFA_direct_NL.nii.gz \
+            --warp=${dti_reg_dir}/MNI152_TO_diffFA_direct_NL.nii.gz \
             --out=${dti_masks_dir}/MNI_DIFF_FA_DIRECT/ROI_${roi_name}.nii.gz \
             --interp=nn 
 
@@ -164,7 +164,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
         
         applywarp --ref=${fa_file} \
             --in=${roi_file} \
-            --warp=${reg_dir}/MNI_TO_highres_nlwarp.nii.gz \
+            --warp=${reg_dir}/MNI152_TO_highres_nlwarp.nii.gz \
             --postmat=${dti_reg_dir}/highres_TO_diffB0_BBR.mat \
             --out=${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR/ROI_${roi_name}.nii.gz \
             --interp=nn 
