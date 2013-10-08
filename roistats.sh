@@ -198,6 +198,9 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
         if [[ ! -f ${stats_dir}/${roi_name}_MD.txt ]]; then 
         
             echo "    extracting stats values for ${transform} transform"
+        
+            mkdir -p ${stats_dir}
+            
             fslstats ${fa_file} -k ${mask_file} -M \
                         > ${stats_dir}/${roi_name}_FA.txt
                         
