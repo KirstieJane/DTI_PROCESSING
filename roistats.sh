@@ -11,8 +11,8 @@
 #                      the values inside the ROI from each of the FDT files.
 #
 #              USAGE:  roistats.sh <rois_dir> <dti_data_folder> <reg_folder> <dti_run> <eddy_b0_vol> 
-#                           eg: registrations.sh ${rois_dir} ${dti_dir} ${mprage_dir} ${scan} ${b0}
-#                           eg: registrations.sh ROIS 1106/t1/DTI 1106/t1/MPRAGE DTI_2A 14
+#                           eg: registrations.sh ${rois_dir} ${dti_dir} ${reg_dir} ${scan} ${b0}
+#                           eg: registrations.sh ROIS 1106/t1/DTI 1106/t1/REG DTI_2A 14
 #
 #        PARAMETER 1:  ROIS  folder (full path)
 #                           If you're using this script as part of another
@@ -26,11 +26,11 @@
 #                           If you're using this script alone
 #                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 
 #
-#        PARAMETER 3:  MPRAGE data folder (full path)
+#        PARAMETER 3:  REG data folder (full path)
 #                           If you're using this script as part of another
-#                               eg: ${mprage_dir}
+#                               eg: ${reg_dir}
 #                           If you're using this script alone
-#                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE
+#                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/REG
 #
 #        PARAMETER 4:  DTI run
 #                           eg: ${scan}
@@ -50,9 +50,9 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "registrations.sh <rois_folder> <dti_data_folder> <mprage_data_folder> <dti_scan> <eddy_b0_vol>"
-    echo "    eg: registrations.sh \${rois_dir} \${dti_dir} \${mprage_dir} \${scan} \${b0}"
-    echo "    eg: registrations.sh ROIS 1106/t1/DTI 1106/t1/MPRAGE DTI_2A 14"
+    echo "registrations.sh <rois_folder> <dti_data_folder> <reg_folder> <dti_scan> <eddy_b0_vol>"
+    echo "    eg: registrations.sh \${rois_dir} \${dti_dir} \${reg_dir} \${scan} \${b0}"
+    echo "    eg: registrations.sh ROIS 1106/t1/DTI 1106/t1/REG DTI_2A 14"
     exit
 }
 #------------------------------------------------------------------------------

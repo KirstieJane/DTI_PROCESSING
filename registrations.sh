@@ -158,7 +158,7 @@ if [[ ! -z ${eddy_b0_vol} ]]; then
     dti_reg_dir=${dti_reg_dir}/B0_${eddy_b0_vol}
     mkdir -p ${dti_reg_dir}
 fi
-    
+
 # b0 weighted file
 if [[ ! -f ${dti_reg_dir}/diffB0_TO_highres.mat ]]; then
     echo "    Flirting dti_ec_brain to highres"
