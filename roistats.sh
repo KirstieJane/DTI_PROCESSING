@@ -119,7 +119,7 @@ fdt_dir=${dti_dir}/FDT
 highres_dir=${reg_dir/REG/MPRAGE}
 masks_dir=${reg_dir/REG/MASKS}
 dti_masks_dir=${dti_reg_dir/REG/MASKS}
-highres_masks_dir=${reg_dir}/MPRAGE/
+highres_masks_dir=${masks_dir}/MPRAGE/
 
 mkdir -p ${masks_dir}
 mkdir -p ${dti_masks_dir}
