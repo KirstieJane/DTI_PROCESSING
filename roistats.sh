@@ -157,7 +157,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     fi
     
     # MNI to DIFF via highres nonlinear and BBR
-    if [[ ! ${highres_masks_dir}/MNI_HIGHRES_NL/ROI_${roi_name}.nii.gz \
+    if [[ ! -f ${highres_masks_dir}/MNI_HIGHRES_NL/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/highres_TO_diffB0_BBR.mat \
             && -f ${reg_dir}/MNI152_TO_highres_nlwarp.nii.gz ]]; then
         
