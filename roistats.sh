@@ -116,14 +116,17 @@ if [[ ! -z ${eddy_b0_vol} ]]; then
 fi
 
 fdt_dir=${dti_dir}/FDT
-
+highres_dir=${reg_dir/REG/MPRAGE}
 masks_dir=${reg_dir/REG/MASKS}
 dti_masks_dir=${dti_reg_dir/REG/MASKS}
+highres_masks_dir=${reg_dir}/MPRAGE/
 
 mkdir -p ${masks_dir}
 mkdir -p ${dti_masks_dir}
+mkdir -p ${highres_masks_dir}
 
 fa_file=`ls -d ${fdt_dir}/*_FA.nii.gz`
+highres_file=`ls -d ${highres_dir}/highres.nii.gz`
 
 #------------------------------------------------------------------------------
 # Get started
@@ -154,7 +157,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
     fi
     
     # MNI to DIFF via highres nonlinear and BBR
-    if [[ ! -f ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR/ROI_${roi_name}.nii.gz \
+    if [[ ! ${highres_masks_dir}/MNI_HIGHRES_NL/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/highres_TO_diffB0_BBR.mat \
             && -f ${reg_dir}/MNI152_TO_highres_nlwarp.nii.gz ]]; then
         
@@ -169,10 +172,16 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
             --out=${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR/ROI_${roi_name}.nii.gz \
             --interp=nn 
 
+        applywarp --ref=${highres_file} \
+            --in=${roi_file} \
+            --warp=${reg_dir}/MNI152_TO_highres_nlwarp.nii.gz \
+            --out=${highres_masks_dir}/MNI_HIGHRES_NL/ROI_${roi_name}.nii.gz \
+            --interp=nn 
+        
     fi
     
     # MNI to DIFF via highres linear
-    if [[ ! -f ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
+    if [[ ! -f ${highres_masks_dir}/MNI_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
             && -f ${dti_reg_dir}/MNI152_TO_diffB0.mat ]]; then
         
         echo "        Registering MNI to DIFF VIA HIGHRES LINEAR"
@@ -184,6 +193,13 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
                 -applyxfm \
                 -init ${dti_reg_dir}/MNI152_TO_diffB0.mat \
                 -out ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
+                -interp nearestneighbour
+
+        flirt -in ${roi_file} \
+                -ref ${highres_file} \
+                -applyxfm \
+                -init ${reg_dir}/MNI152_TO_highres.mat \
+                -out ${highres_masks_dir}/MNI_HIGHRES_LIN/ROI_${roi_name}.nii.gz \
                 -interp nearestneighbour
 
     fi
