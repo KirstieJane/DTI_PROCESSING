@@ -164,6 +164,7 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
         echo "        Registering MNI to DIFF VIA HIGHRES NL BBR"
 
         mkdir -p ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_NL_BBR
+        mkdir -p ${highres_masks_dir}/MNI_HIGHRES_NL
         
         applywarp --ref=${fa_file} \
             --in=${roi_file} \
@@ -187,6 +188,8 @@ for roi_file in `ls -d ${rois_dir}/*nii.gz`; do
         echo "        Registering MNI to DIFF VIA HIGHRES LINEAR"
 
         mkdir -p ${dti_masks_dir}/MNI_DIFF_VIA_HIGHRES_LIN
+
+        mkdir -p ${highres_masks_dir}/MNI_HIGHRES_LIN
         
         flirt -in ${roi_file} \
                 -ref ${fa_file} \
