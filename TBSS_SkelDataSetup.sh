@@ -59,6 +59,10 @@
 # If no arguments are given then echo the usage and exit
 if [[ $# -ne 3 || $# -ne 4 ]]; then
     echo "Not enough options given"
+    echo "$1"
+    echo "$2"
+    echo "$3"
+    echo "$4"
     echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
     exit
 fi
