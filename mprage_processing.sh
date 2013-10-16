@@ -153,9 +153,14 @@ elif [[ ! -f ${dir}/highres_brain_seg_2.nii.gz ]]; then
     fast -g -o ${dir}/highres_brain \
             ${dir}/highres_brain.nii.gz >> ${logdir}/fast 2>> ${logdir}/errors_fast
 
+elif [[ ! -f ${dir}/highres_brain_wmseg.nii.gz ]]; then
+    echo "    Renaming white matter segmentation image"
+    fslmaths ${dir}/highres_brain_pve_2.nii.gz -thr 0.5 \
+                -bin ${dir}/highres_brain_wmseg.nii.gz
 else
     echo "    Brain already segmented"
 fi
+
 
 #------------------------------------------------------------------------------
 # Run recon-all
