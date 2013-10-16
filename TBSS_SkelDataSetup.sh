@@ -59,10 +59,6 @@
 # If no arguments are given then echo the usage and exit
 if [[ $# -ne 3 && $# -ne 4 ]]; then
     echo "Not enough options given"
-    echo "$1"
-    echo "$2"
-    echo "$3"
-    echo "$4"
     echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
     exit
 fi
@@ -125,7 +121,7 @@ mkdir -p ${skel_data_dir}
 for sub in `cat $sublist`; do
 
     # Print sub to screen so you can follow along as the script runs
-    echo -e "\tSUBID: Sub${sub}"
+    echo -e "\tSUBID: ${sub}"
         
     sub_dti_dir=(${data_dir}/SUB_DATA/${sub}/${dti_identifier}/)
     sub_fdt_dir=${sub_dti_dir}/FDT/
@@ -154,7 +150,7 @@ done # Close sub loop
 
 # You only want one copy of the target file, so just do it for the first subject
 # that has one of these files
-target_files=(`ls -d ${data_dir}/*/${dti_identifier}/TBSS/FA/target.nii.gz`)
+target_files=(`ls -d ${data_dir}/SUB_DATA/*/${dti_identifier}/TBSS/FA/target.nii.gz`)
 ln -t ${preproc_data_dir}/FA/ ${target_files[0]}
 
 # Run the rest of the tbss pipeline
