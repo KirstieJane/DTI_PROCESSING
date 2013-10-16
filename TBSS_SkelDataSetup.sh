@@ -58,6 +58,7 @@
 #------------------------------------------------------------------------------
 # If no arguments are given then echo the usage and exit
 if [[ $# -ne 3 || $# -ne 4 ]]; then
+    echo "Not enough options given"
     echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
     exit
 fi
@@ -122,7 +123,7 @@ for sub in `cat $sublist`; do
     # Print sub to screen so you can follow along as the script runs
     echo -e "\tSUBID: Sub${sub}"
         
-    sub_dti_dir=(${data_dir}/${sub}/${dti_identifier}/)
+    sub_dti_dir=(${data_dir}/SUB_DATA/${sub}/${dti_identifier}/)
     sub_fdt_dir=${sub_dti_dir}/FDT/
     sub_tbss_dir=${sub_dti_dir}/TBSS/
     
