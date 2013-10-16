@@ -196,9 +196,7 @@ if [[ ! -f ${dti_reg_dir}/diffB0_TO_highres_BBR.mat ]]; then
     epi_reg --epi=${dti_dir}/dti_ec_brain.nii.gz \
             --t1=${mprage_dir}/highres.nii.gz \
             --t1brain=${mprage_dir}/highres_brain.nii.gz \
-            --out=${dti_reg_dir}/diffB0_TO_highres_BBR \
-            --wmseg=${mprage_dir}/highres_brain_seg_2.nii.gz
-
+            --out=${dti_reg_dir}/diffB0_TO_highres_BBR 
 else
     echo "    dti_ec_brain already BBR flirted to highres"
 
