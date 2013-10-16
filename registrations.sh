@@ -75,6 +75,11 @@ surf_dir=${mprage_dir}/SURF/
 scan=$3
 
 eddy_b0_vol=$4
+
+# This is a stupid edit for if I'm running the code at the CBU
+if $0 == tcsh:
+    setenv FSLOUTPUTTYPE NIFTI_GZ
+fi
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
