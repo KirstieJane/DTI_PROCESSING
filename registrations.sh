@@ -77,7 +77,7 @@ scan=$3
 eddy_b0_vol=$4
 
 # This is a stupid edit for if I'm running the code at the CBU
-if $0 == tcsh:
+if [[ $0 == tcsh ]]; then
     setenv FSLOUTPUTTYPE NIFTI_GZ
 fi
 #------------------------------------------------------------------------------
