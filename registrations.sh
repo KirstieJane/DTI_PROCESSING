@@ -282,7 +282,7 @@ fi
 if [[ ! -f ${reg_dir}/highres_TO_MNI152_NL.nii.gz ]]; then
     echo "    Fnirting highres to MNI"
     fnirt --in=${mprage_dir}/highres.nii.gz \
-            --aff=${reg_dir}/highres_TO_MNI152.mat \
+            --aff=${reg_dir}/highres_TO_MNI152_2mm.mat \
             --cout=${reg_dir}/highres_TO_MNI152_NL \
             --config=T1_2_MNI152_2mm
 
