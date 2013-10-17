@@ -79,7 +79,7 @@ echo TBSS_DIR: ${tbss_dir}
 for group_path in `ls -d ${tbss_dir}/GLM/*`; do
     group=`basename ${group_path}`
     echo ${group}
-    subs_file=${group}/subs
+    subs_file=${group_path}/subs
     if [[ ! -f ${subs_file} ]]; then
         echo "Subs file doesn't exist - check!"
         exit
