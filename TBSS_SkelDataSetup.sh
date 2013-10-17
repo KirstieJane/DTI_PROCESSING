@@ -112,6 +112,13 @@ skel_data_dir=${data_dir}/${tbss_dir}/${dti_identifier}/SKELETON_DATA/
 mkdir -p ${preproc_data_dir}/FA
 mkdir -p ${skel_data_dir}
 
+# Don't run this script if it has already been completed
+if [[ -f ${preproc_data_dir}/stats/all_MO_skeletonised.nii.gz ]]; then
+    echo "TBSS data already pre-processed"
+    echo "If you want to run it again, DELETE the PRE_PROCESSING folder"
+    exit
+fi
+
 #
 #------------------------------------------------------------------------------
 # Ok, lets actually get started
