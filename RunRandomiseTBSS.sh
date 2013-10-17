@@ -106,17 +106,17 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
             done
             echo "Merging subject data"
             fslmerge -t ${infile} `cat $tbss_dir/temp_sublist`
+            # Now, multiply all "timeseries" by 1000 if they're "too small"
+            echo "Checking values - running fslstats"
+            st_dev=(`fslstats ${infile} -S`)
+            too_small=(`echo "${st_dev} < 0.001" | bc`)
+            if [[ ${too_small} == 1 ]]; then
+                fslmaths ${infile} -mul 1000 ${infile}
+            fi
             rm -f ${tbss_dir}/temp_sublist
         else
             echo "Data already merged"
         fi
-        # Now, multiply all "timeseries" by 1000 if they're "too small"
-         echo "Checking values - running fslstats"
-         st_dev=(`fslstats ${infile} -S`)
-         too_small=(`echo "${st_dev} < 0.001" | bc`)
-         if [[ ${too_small} == 1 ]]; then
-             fslmaths ${infile} -mul 1000 ${infile}
-         fi
     done
     
     # Now loop through your different designs and run randomise for all of them
@@ -167,7 +167,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                             -t ${con_file} \
                             ${ftest} \
                             -n ${n_perms} \
-                            --T2 -x ${demean} >> ${test_dir}/LOGS/${measure}_${n_perms}.log
+                            --T2 -x ${demean} & >> ${test_dir}/LOGS/${measure}_${n_perms}.log
                     rm ${outfile}_alreadystarted
                 else
 C                    echo "Randomise for ${test_name} ${measure} is already in progress"
@@ -175,7 +175,10 @@ C                    echo "Randomise for ${test_name} ${measure} is already in p
             else
                 echo "Data already exists"
             fi
-        
+            # You've put in an & so 5 jobs will run at the same time
+            # in order not to destroy the already flakey systems in Cambridge
+            # we're now going to...
+            wait
         done    # Close measure loop
         
     done # Close mat file loop
