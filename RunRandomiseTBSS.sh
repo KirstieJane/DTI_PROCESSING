@@ -160,14 +160,14 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                     else
                         ftest=' '
                     fi
-                    randomise -i ${infile} \
+                    randomise_parallel -i ${infile} \
                             -o ${outfile} \
                             -m ${mask_file} \
                             -d ${mat_file} \
                             -t ${con_file} \
                             ${ftest} \
                             -n ${n_perms} \
-                            --T2 -x ${demean} > ${test_dir}/LOGS/${measure}_${n_perms}.log &
+                            --T2 -x ${demean} > ${test_dir}/LOGS/${measure}_${n_perms}.log  2>&1 &
                 else
                     echo "Randomise for ${test_name} ${measure} is already in progress"
                 fi
