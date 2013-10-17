@@ -160,7 +160,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                     else
                         ftest=' '
                     fi
-                    randomise -i ${infile} \
+                    nohup randomise -i ${infile} \
                             -o ${outfile} \
                             -m ${mask_file} \
                             -d ${mat_file} \
