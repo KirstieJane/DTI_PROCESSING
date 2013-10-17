@@ -129,7 +129,8 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
     for mat_file in `cat ${tbss_dir}/GLM/${group}/matlist_sorted`; do
         test_name=(`basename ${mat_file} .mat`)
         con_file=${mat_file%????}.con
-    
+        fts_file=${mat_file%????}.fts
+        
         test_dir=${tbss_dir}/RESULTS/${test_name}/
     
         # Make logs dir in ouput dir
@@ -149,18 +150,24 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                 if [[ ! -f ${outfile}_alreadystarted ]]; then
                     echo "" > ${outfile}_alreadystarted
                     echo "Running Randomise for ${test_name} ${measure}"
-                    if [[ ${test_name:0:6} -ne 'DepCon' ]]; then
-                        demean='-D'
+                    #if [[ ${test_name:0:5} -ne 'Anova' ]]; then
+                    #    demean='-D'
+                    #else
+                    #    demean=' '
+                    #fi
+                    if [[ ${test_name:0:5} == 'Anova' ]]; then
+                        ftest=' -f ${fts_file} '
                     else
-                        demean=' '
+                        ftest=' '
                     fi
                     randomise -i ${infile} \
                             -o ${outfile} \
                             -m ${mask_file} \
                             -d ${mat_file} \
                             -t ${con_file} \
+                            ${ftest} \
                             -n ${n_perms} \
-                            --T2 -x -D >> ${test_dir}/LOGS/${measure}_${n_perms}.log
+                            --T2 -x ${demean} >> ${test_dir}/LOGS/${measure}_${n_perms}.log
                     rm ${outfile}_alreadystarted
                 else
 C                    echo "Randomise for ${test_name} ${measure} is already in progress"
