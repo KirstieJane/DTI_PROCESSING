@@ -143,7 +143,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
     
             # Name your ouput files
             outfile=${test_dir}/${measure}_${n_perms}
-                
+            
             ## Randomise command
             # Only run if it hasn't already been run!
             if [[ ! -f ${outfile}_tfce_corrp_tstat2.nii.gz ]]; then
@@ -167,7 +167,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                             -t ${con_file} \
                             ${ftest} \
                             -n ${n_perms} \
-                            --T2 -x ${demean} >> ${test_dir}/LOGS/${measure}_${n_perms}.log &
+                            --T2 -x ${demean} > ${test_dir}/LOGS/${measure}_${n_perms}.log &
                 else
                     echo "Randomise for ${test_name} ${measure} is already in progress"
                 fi
