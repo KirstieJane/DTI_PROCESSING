@@ -74,7 +74,10 @@ else
     tbss_dir=`pwd`/$1
 fi
 
-for group in `ls -d ${tbss_dir}/GLM/*`; do
+echo TBSS_DIR: ${tbss_dir}
+
+for group_path in `ls -d ${tbss_dir}/GLM/*`; do
+    group=`basename ${group_path}`
     echo ${group}
     subs_file=${group}/subs
     if [[ ! -f ${subs_file} ]]; then
@@ -84,8 +87,8 @@ for group in `ls -d ${tbss_dir}/GLM/*`; do
 
     n_perms=$2
     
-    skeleton_data_dir=$tbss_dir/SKELETON_DATA/
-    preproc_data_dir=$tbss_dir/PRE_PROCESSING/
+    skeleton_data_dir=${tbss_dir}/SKELETON_DATA/
+    preproc_data_dir=${tbss_dir}/PRE_PROCESSING/
     mask_file=${preproc_data_dir}/stats/mean_FA_skeleton_mask.nii.gz
 
     mkdir -p ${tbss_dir}/${group}
