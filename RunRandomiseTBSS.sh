@@ -178,7 +178,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
             # in order not to destroy the already flakey systems in Cambridge
             # we're now going to...
             wait
-            rm ${test_dir}/*_${n_perms}_alreadystarted
+            rm -f ${test_dir}/*_${n_perms}_alreadystarted
         done    # Close measure loop
         
     done # Close mat file loop
