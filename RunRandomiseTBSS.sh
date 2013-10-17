@@ -170,7 +170,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                             --T2 -x ${demean} & >> ${test_dir}/LOGS/${measure}_${n_perms}.log
                     rm ${outfile}_alreadystarted
                 else
-C                    echo "Randomise for ${test_name} ${measure} is already in progress"
+                    echo "Randomise for ${test_name} ${measure} is already in progress"
                 fi
             else
                 echo "Data already exists"
