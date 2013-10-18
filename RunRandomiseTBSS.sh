@@ -156,7 +156,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                         demean=' '
                     #fi
                     if [[ ${test_name:0:5} == 'Anova' ]]; then
-                        ftest=' -f ${fts_file} '
+                        ftest=" -f ${fts_file} "
                     else
                         ftest=' '
                     fi
