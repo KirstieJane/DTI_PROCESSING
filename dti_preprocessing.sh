@@ -151,6 +151,10 @@ logdir=${dir}/LOGS
 mkdir -p ${logdir}
 
 #------------------------------------------------------------------------------
+# Start by re-orientating the first volume to standard space
+fslreorient2std ${dir}/dti.nii.gz ${dir}/dti.nii.gz
+
+#------------------------------------------------------------------------------
 # Eddy correct to the first volume
 if [[ ! -f ${dir}/dti_ec.nii.gz ]]; then
     echo "    Starting eddy correction step"
