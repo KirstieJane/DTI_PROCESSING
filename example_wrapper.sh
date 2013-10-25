@@ -1,10 +1,31 @@
 #!/bin/bash
 
+#=============================================================================
+# This script is a little loop that downloads the code from GitHub
+# and runs the dti_processing and mprage and registrations scripts.
+# You should download this to your data directory, and then edit it 
+# as needed.
+#
+# There should be a file called sublist in your data directory (where you save
+# this wrapper script) that contains the subject IDs.
+#
+# In this example your data is in a folder called SUB_DATA (which is inside 
+# the data directory) and then inside folders named using the subject IDs
+# (as listed in the sublist file described above).
+#
+# Every subject has a directory called DTI, which contains the DTI data,
+# MPRAGE which contains the high resolution data, and REG, which will contain
+# the registrations from the various spaces to each other.
+#
+# If you have any questions please do email Kirstie at kw401@cam.ac.uk
+#
+# October 25th 2013
+#=============================================================================
+
 ####
 # Set up the test directory variables
 dir=`pwd`
 sublist=${dir}/sublist
-echo "1106t1" > ${sublist}
 
 ####
 # Create the SCRIPTS directory
