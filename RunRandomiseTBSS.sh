@@ -131,7 +131,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
         con_file=${mat_file%????}.con
         fts_file=${mat_file%????}.fts
         
-        test_dir=${tbss_dir}/RESULTS/${test_name}/
+        test_dir=${tbss_dir}/RESULTS/${group}/${test_name}/
     
         # Make logs dir in ouput dir
         mkdir -p ${test_dir}/LOGS
