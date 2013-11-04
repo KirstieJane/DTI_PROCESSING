@@ -168,13 +168,13 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                             ${ftest} \
                             -n ${n_perms} \
                             --T2 -x ${demean} > ${test_dir}/LOGS/${measure}_${n_perms}.log 
+                    rm -f ${outfile}_alreadystarted
                 else
                     echo "Randomise for ${test_name} ${measure} is already in progress"
                 fi
             else
                 echo "Data already exists"
             fi
-            rm -f ${outfile}_alreadystarted
         done    # Close measure loop
         
     done # Close mat file loop
