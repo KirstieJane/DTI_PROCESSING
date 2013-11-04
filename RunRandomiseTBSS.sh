@@ -98,7 +98,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
     # We'll do this for all the different measures
     for measure in FA L1 L23 MD MO; do
         echo ${measure}
-        infile=(${tbss_dir}/${group}/all_${measure}_skeletonised.nii.gz)
+        infile=(${tbss_dir}/INPUT_FILES/${group}/all_${measure}_skeletonised.nii.gz)
         if [[ ! -f ${infile} ]]; then
             rm -f $tbss_dir/temp_sublist
             for sub in `cat ${subs_file}`; do
@@ -139,7 +139,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
         # Loop through the different measures
         for measure in FA L1 L23 MD MO; do
             # Designate your input file
-            infile=(${tbss_dir}/${group}/all_${measure}_skeletonised.nii.gz)
+            infile=(${tbss_dir}/INPUT_FILES/${group}/all_${measure}_skeletonised.nii.gz)
     
             # Name your ouput files
             outfile=${test_dir}/${measure}_${n_perms}
