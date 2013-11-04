@@ -146,7 +146,11 @@ for sub in `cat $sublist`; do
         # but NAMED exactly the same as the FA file
         for measure in L1 L23 MD MO; do
             mkdir -p ${preproc_data_dir}/${measure}
-            ln ${sub_fdt_dir}/${sub}_${measure}.nii.gz \
+            cp ${sub_fdt_dir}/${sub}_${measure}.nii.gz \
+                    ${preproc_data_dir}/${measure}/${sub}_FA.nii.gz
+            # Rotate this file to standard orientation
+            # You aren't registering it, just making the brain face the right way
+            fslreorient2std ${preproc_data_dir}/${measure}/${sub}_FA.nii.gz \
                     ${preproc_data_dir}/${measure}/${sub}_FA.nii.gz
         done
     else

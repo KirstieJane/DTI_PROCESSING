@@ -150,9 +150,6 @@ echo "SUBID: ${sub}"
 logdir=${dir}/LOGS
 mkdir -p ${logdir}
 
-#------------------------------------------------------------------------------
-# Start by re-orientating the first volume to standard space
-fslreorient2std ${dir}/dti.nii.gz ${dir}/dti.nii.gz
 
 #------------------------------------------------------------------------------
 # Eddy correct to the first volume
@@ -253,6 +250,10 @@ elif [[ ! -f ${dir}/TBSS/FA/reverse_fnirt_warp.nii.gz ]]; then
         rm -rf ${dir}/TBSS
         mkdir -p ${dir}/TBSS
         cp ${dir}/FDT/*FA* ${dir}/TBSS/
+        # Re-orientate the FA map to standard space
+        # note that you aren't resampling, just spinning it around a bit.
+        fslreorient2std ${dir}/TBSS/${sub}_FA.nii.gz ${dir}/TBSS/${sub}_FA.nii.gz
+
         cd ${dir}/TBSS/
         tbss_1_preproc * > ${logdir}/tbss 2> ${logdir}/errors_tbss
         tbss_2_reg -T >> ${logdir}/tbss 2>> ${logdir}/errors_tbss
