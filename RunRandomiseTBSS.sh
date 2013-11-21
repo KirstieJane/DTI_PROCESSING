@@ -150,16 +150,16 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                 if [[ ! -f ${outfile}_alreadystarted ]]; then
                     echo "" > ${outfile}_alreadystarted
                     echo "Running Randomise for ${test_name} ${measure}"
-                    #if [[ ${test_name:0:5} -ne 'Anova' ]]; then
-                    #    demean='-D'
-                    #else
-                        demean=' '
-                    #fi
-                    if [[ ${test_name:0:5} == 'Anova' ]]; then
-                        ftest=" -f ${fts_file} "
+                    if [[ ${test_name:0:5} -ne 'TTest' ]]; then
+                        demean='-D'
                     else
-                        ftest=' '
+                        demean=' '
                     fi
+                    #if [[ ${test_name:0:5} == 'Anova' ]]; then
+                    #    ftest=" -f ${fts_file} "
+                    #else
+                    #    ftest=' '
+                    #fi
                     randomise -i ${infile} \
                             -o ${outfile} \
                             -m ${mask_file} \
