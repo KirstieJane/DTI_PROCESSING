@@ -155,7 +155,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                 if [[ ! -f ${outfile}_alreadystarted ]]; then
                     echo "" > ${outfile}_alreadystarted
                     echo "Running Randomise for ${test_name} ${measure}"
-                    if [[ ${test_name:0:5} -ne 'TTest' ]]; then
+                    if [[ ${test_name:0:5} != 'TTest' ]]; then
                         demean='-D'
                     else
                         demean=' '
