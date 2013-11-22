@@ -85,6 +85,11 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
         exit
     fi
 
+    ##### A STUPID HACK FOR MRIMPACT
+    if [[ ${tbss_dir} == *mrimpact* ]]; then
+        subs_file=${group_path}/subs_t1
+    fi
+    
     n_perms=$2
     
     skeleton_data_dir=${tbss_dir}/SKELETON_DATA/

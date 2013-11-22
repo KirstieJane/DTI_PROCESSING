@@ -571,7 +571,7 @@ subs_array = make_subs_array(data)
 # Mask the data so you only include people that you have mri data for
 mask_all = create_mask_all(data, usable_mri_subs)
 
-# Loop through all the differen permutations of these split criteria
+# Loop through all the different permutations of these split criteria
 '''
 NOTE on ITERTOOLS.PRODUCT
 We're using the product command from itertools to make all the possible
