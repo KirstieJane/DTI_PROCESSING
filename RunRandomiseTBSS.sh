@@ -96,7 +96,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
     preproc_data_dir=${tbss_dir}/PRE_PROCESSING/
     mask_file=${preproc_data_dir}/stats/mean_FA_skeleton_mask.nii.gz
 
-    mkdir -p ${tbss_dir}/${group}
+    mkdir -p ${tbss_dir}/INPUT_FILES/${group}
     
     # First, create the 4D data file by finding all the data for the subjects
     # listed in the subs file and merging it together
@@ -110,7 +110,6 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                 echo -n "${skeleton_data_dir}/${measure}/${sub}_${measure}_skeletonised.nii.gz " >> $tbss_dir/temp_sublist
             done
             echo "Merging subject data"
-            mkdir -p `dirname ${infile}`
             fslmerge -t ${infile} `cat $tbss_dir/temp_sublist`
             # Now, multiply all "timeseries" by 1000 if they're "too small"
             echo "Checking values - running fslstats"
