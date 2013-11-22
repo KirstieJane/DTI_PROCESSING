@@ -110,6 +110,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                 echo -n "${skeleton_data_dir}/${measure}/${sub}_${measure}_skeletonised.nii.gz " >> $tbss_dir/temp_sublist
             done
             echo "Merging subject data"
+            mkdir -p `dirname ${infile}`
             fslmerge -t ${infile} `cat $tbss_dir/temp_sublist`
             # Now, multiply all "timeseries" by 1000 if they're "too small"
             echo "Checking values - running fslstats"
