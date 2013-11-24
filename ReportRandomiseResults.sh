@@ -9,6 +9,10 @@
 # USAGE: ReportRandomiseResults.sh <tbss_dir>
 
 tbss_dir=$1
+if [[ ! -d ${tbss_dir} ]]; then
+    echo "TBSS dir doesn't exist"
+    exit
+fi
 
 #==============================================================================
 # Lets start by writing out that list of all the significant results

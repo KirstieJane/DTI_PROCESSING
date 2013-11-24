@@ -19,6 +19,7 @@ for input in $1 $2 $3 $4; do
     # Check to see if the file exists
     if [[ ! -f ${input} ]]; then
         echo ${input} is not a file
+        exit
     fi
     
 done
