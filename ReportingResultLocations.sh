@@ -24,8 +24,14 @@ for input in $1 $2 $3 $4; do
     
 done
 
-# Create the locations file and write the header
 result_locations="`basename ${result} .nii.gz`_`basename ${labels_file} .xml`.csv"
+# If the locations file already exists then don't run this script
+if [[ -f ${result_locations} ]]; then
+    echo "    Locations already reported"
+    exit
+fi
+
+# But if it doesn't then create it and write in the header
 echo "Atlas_label, N_voxels_result, N_voxels_skeleton" > ${result_locations}
 
 # Figure out the atlas name

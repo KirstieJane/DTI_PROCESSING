@@ -21,7 +21,7 @@ echo "Creating list of significant results"
 results_list=${tbss_dir}/RESULTS/significant_results_list.txt
 rm -f ${results_list}
 
-for result in `ls -d ${tbss_dir}/RESULTS/*/*/*tfce_corrp*`; do
+for result in `ls -d ${tbss_dir}/RESULTS/*/*/*tfce_corrp*tsat?.nii.gz`; do
     range=(`fslstats ${result} -R`)
     sig=(`echo "${range[1]} > 0.95" | bc -l`)
 
@@ -34,15 +34,20 @@ done
 # Fill all of the significant results files
 for sig_result in `cat ${results_list}`; do
     echo "Significant result: ${sig_result}"
-    echo "    Now running tbss_fill"
-    tbss_fill ${sig_result} \
+    if [[ ! -f ${sig_result%.nii.gz}_FILL.nii.gz ]]; then
+        echo "    Now running tbss_fill"
+        tbss_fill ${sig_result} \
                    0.95 \
                    ${tbss_dir}/PRE_PROCESSING/stats/mean_FA.nii.gz \
                    ${sig_result%.nii.gz}_FILL.nii.gz
 
+    else
+        echo "    Tbss_fill already complete"
+    fi
+    
     # Figure out the locations of all the significant results
     # First you need to find the right script
-    echo "    Reporting significant locations"
+
     report_locations_script=`dirname ${0}`/ReportingResultLocations.sh
 
     atlas_dir=${FSLDIR}/data/atlases/
