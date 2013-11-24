@@ -16,11 +16,15 @@ fi
 
 #==============================================================================
 # Lets start by writing out that list of all the significant results
+echo "Creating list of significant results"
+
 results_list=${tbss_dir}/RESULTS/significant_results_list.txt
+rm -f ${results_list}
 
 for result in `ls -d ${tbss_dir}/RESULTS/*/*/*tfce_corrp*`; do
     range=(`fslstats ${result} -R`)
-    sig=(`echo "${range[1]} > 0.95" | wc -l`)
+    sig=(`echo "${range[1]} > 0.95" | bc -l`)
+
     if [[ ${sig} == 1 ]]; then
         echo ${result} >> ${tbss_dir}/RESULTS/significant_results_list.txt
     fi
