@@ -36,6 +36,8 @@ if [[ -f ${result_locations} ]]; then
 fi
 
 # But if it doesn't then create it and write in the header
+echo "    ${atlas_name} reporting locations"
+
 echo "Atlas_label, N_voxels_result, N_voxels_skeleton, Percent_of_skel" > ${result_locations}
 
 #==============================================================================
