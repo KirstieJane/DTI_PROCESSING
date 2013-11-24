@@ -21,7 +21,7 @@ echo "Creating list of significant results"
 results_list=${tbss_dir}/RESULTS/significant_results_list.txt
 rm -f ${results_list}
 
-for result in `ls -d ${tbss_dir}/RESULTS/*/*/*tfce_corrp*tsat?.nii.gz`; do
+for result in `ls -d ${tbss_dir}/RESULTS/*/*/*tfce_corrp*tstat?.nii.gz`; do
     range=(`fslstats ${result} -R`)
     sig=(`echo "${range[1]} > 0.95" | bc -l`)
 
