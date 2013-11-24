@@ -33,6 +33,8 @@ done
 #==============================================================================
 # Fill all of the significant results files
 for sig_result in `cat ${results_list}`; do
+    echo "Significant result: ${sig_result}"
+    echo "    Now running tbss_fill"
     tbss_fill ${sig_result} \
                    0.95 \
                    ${tbss_dir}/PRE_PROCESSING/stats/mean_FA.nii.gz \
@@ -40,6 +42,7 @@ for sig_result in `cat ${results_list}`; do
 
     # Figure out the locations of all the significant results
     # First you need to find the right script
+    echo "    Reporting significant locations"
     report_locations_script=`dirname ${0}`/ReportingResultLocations.sh
 
     atlas_dir=${FSLDIR}/data/atlases/
