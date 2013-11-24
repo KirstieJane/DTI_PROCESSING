@@ -27,7 +27,8 @@ done
 # Figure out the atlas name
 atlas_name=`basename ${atlas} .nii.gz`
 
-result_locations="`basename ${result} .nii.gz`_`basename ${labels_file} .xml`.csv"
+result_locations="${result%.nii.gz}_`basename ${labels_file} .xml`.csv"
+
 # If the locations file already exists then don't run this script
 if [[ -f ${result_locations} ]]; then
     echo "    ${atlas_name} locations already reported"
