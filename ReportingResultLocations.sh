@@ -55,7 +55,7 @@ fslmaths ${result_thr_atlas} -bin -sub ${result_thr_bin} -mul -1 ${result_thr_at
 mean_skeleton_atlas=${mean_skeleton%.nii.gz}_${atlas_name}.nii.gz
 mean_skeleton_atlas_unclass=${mean_skeleton%.nii.gz}_${atlas_name}_unclassified.nii.gz
 
-fslmaths ${mean_skeleton} -mul ${atlas} ${mean_skeleton_atlas}
+fslmaths ${mean_skeleton} -bin -mul ${atlas} ${mean_skeleton_atlas}
 fslmaths ${mean_skeleton_atlas} -bin -sub ${mean_skeleton} -mul -1 ${mean_skeleton_atlas_unclass}
 
 #==============================================================================
@@ -67,7 +67,7 @@ atlas_max=${atlas_range[1]%.*}
 # Now start your loop of all the atlas regions
 
 i=1
-while [[ ${i} -lt ${atlas_max} ]]; do
+while [[ ${i} -le ${atlas_max} ]]; do
 
     l_thr=`echo ${i} - 1 | bc`
     u_thr=`echo ${i} + 1 | bc`
