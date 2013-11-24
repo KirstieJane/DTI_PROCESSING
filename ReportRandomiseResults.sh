@@ -6,13 +6,20 @@
 # also reports a list of significant results so that future commands
 # can focus only on those.
 
-# USAGE: ReportRandomiseResults.sh <tbss_dir>
+# USAGE: ReportRandomiseResults.sh <tbss_dir> <sublist>
 
 tbss_dir=$1
+sublist=$2
 if [[ ! -d ${tbss_dir} ]]; then
     echo "TBSS dir doesn't exist"
     exit
 fi
+
+if [[ ! -f ${sublist} ]]; then
+    echo "sublist doesn't exist"
+    exit
+fi
+
 
 #==============================================================================
 # Lets start by writing out that list of all the significant results
@@ -63,4 +70,8 @@ for sig_result in `cat ${results_list}`; do
                             ${atlas_dir}/JHU-tracts.xml
 
 done
+
+# Now extract the values to a list of significant results
+extract_values_script=`dirname ${0}`/Extract_values.sh ${tbss_dir}
+
 #==============================================================================
