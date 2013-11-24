@@ -36,7 +36,7 @@ if [[ -f ${result_locations} ]]; then
 fi
 
 # But if it doesn't then create it and write in the header
-echo "Atlas_label, N_voxels_result, N_voxels_skeleton" > ${result_locations}
+echo "Atlas_label, N_voxels_result, N_voxels_skeleton, Percent_of_skel" > ${result_locations}
 
 #==============================================================================
 # Lets start by thresholding the result for significant voxels only
@@ -87,7 +87,7 @@ while [[ ${i} -lt ${atlas_max} ]]; do
 done
 
 # Finally add in the unclassified answer
-vol=(`fslstats ${results_thr_atlas_unclass} -V`)
+vol=(`fslstats ${result_thr_atlas_unclass} -V`)
 vol_skel=(`fslstats ${mean_skeleton_atlas_unclass} -V`)
 percent=(`echo "${vol}/${vol_skel} * 100" | bc -l`)
 echo "Unclassified, ${vol}, ${vol_skel}, ${percent}" >> ${result_locations}
