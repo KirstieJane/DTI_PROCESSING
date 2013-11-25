@@ -3,6 +3,15 @@
 tbss_dir=$1
 sublist=$2
 
+if [[ ! -d ${tbss_dir} ]]; then
+    echo "TBSS directory doesn't exist"
+    exit
+fi
+
+if [[ -f ${sublist} ]]; then
+    echo "sublist doesn't exist"
+fi
+
 # Define some variables
 results_dir=${tbss_dir}/RESULTS/
 pre_proc_dir=${tbss_dir}/PRE_PROCESSING/stats
@@ -26,7 +35,6 @@ else
     for sub in ${subs[@]}; do
         echo -n "${sub} " >> ${output_file}
     done
-
 fi
 
 # Now loop through all the significant results
