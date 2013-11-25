@@ -31,7 +31,7 @@ fi
 
 # Now loop through all the significant results
 # and write them to the output file
-for group_dir in `ls -d ${results_dir}/GLM/*`; do
+for group_dir in `ls -d ${tbss_dir}/GLM/*`; do
     group_name=`basename ${group_dir}`
     
     for test_dir in `ls -d ${group_dir}/*`; do
