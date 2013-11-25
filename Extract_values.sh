@@ -68,9 +68,8 @@ for group_dir in `ls -d ${tbss_dir}/GLM/*`; do
 done
     
 # Finally, transpose the output file
+temp_dir=`dirname ${output_file}`/temp
 rm -fr ${temp_dir}
-
-temp_dir=`dirname ${output_file}`
 
 n_cols=`head ${output_file} -n 1 | wc -w`
 for i in $(seq ${n_cols}); do
@@ -80,4 +79,3 @@ done
 temp_files=(`ls -d ${temp_dir}/temp*`)
 cat ${temp_files[@]} > ${output_file}
 rm -fr ${temp_dir}
-
