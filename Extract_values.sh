@@ -10,7 +10,6 @@ pre_proc_dir=${tbss_dir}/PRE_PROCESSING/stats
 subs=(`cat ${sublist}`)
 output_file=${results_dir}/roi_values.txt
 
-
 # Write the sub numbers on the first line
 echo -e "SubNumber " > ${output_file}
 
@@ -32,18 +31,18 @@ fi
 
 # Now loop through all the significant results
 # and write them to the output file
-for group_dir in `ls -d ${results_dir}/*`; do
+for group_dir in `ls -d ${results_dir}/GLM/*`; do
     group_name=`basename ${group_dir}`
     
     for test_dir in `ls -d ${group_dir}/*`; do
         test_name=`basename ${test_dir}`
         
-        if [[ `ls -d ${test_dir}/*FILL* 2>/dev/null | wc -l` -gt 0 ]]; then
+        if [[ `ls -d ${results_dir}/${group_name}/${test_name}/*FILL* 2>/dev/null | wc -l` -gt 0 ]]; then
             echo ${group_name}
             echo ${test_name}
             
             for fill_file in `ls -d ${test_dir}/*FILL_bin.nii.gz`; do
-                fill_file_name=`basename ${fill_file}`
+                fill_file_name=`basename ${fill_file} .nii.gz`
                 not_fill_file=${fill_file%_FILL_bin.nii.gz}.nii.gz
                 
                 for measure in FA MD L1 L23 MO; do
