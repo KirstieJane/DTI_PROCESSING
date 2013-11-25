@@ -3,15 +3,6 @@
 tbss_dir=$1
 sublist=$2
 
-if [[ ! -d ${tbss_dir} ]]; then
-    echo "TBSS directory doesn't exist"
-    exit
-fi
-
-if [[ -f ${sublist} ]]; then
-    echo "sublist doesn't exist"
-fi
-
 # Define some variables
 results_dir=${tbss_dir}/RESULTS/
 pre_proc_dir=${tbss_dir}/PRE_PROCESSING/stats
@@ -20,7 +11,7 @@ subs=(`cat ${sublist}`)
 output_file=${results_dir}/roi_values.txt
 
 # Write the sub numbers on the first line
-echo -e "SubNumber " > ${output_file}
+echo -n "SubNumber " > ${output_file}
 
 # Now write all the subids into a line
 # There's this stupid hack for mrimpact data because the
@@ -28,28 +19,31 @@ echo -e "SubNumber " > ${output_file}
 if [[ ${results_dir} == *mrimpact* ]]; then
 
     for sub in ${subs[@]}; do
+        echo ${sub}
         echo -n "${sub:0:4} " >> ${output_file}
     done
 
 else
     for sub in ${subs[@]}; do
         echo -n "${sub} " >> ${output_file}
+
     done
+
 fi
 
 # Now loop through all the significant results
 # and write them to the output file
 for group_dir in `ls -d ${tbss_dir}/GLM/*`; do
     group_name=`basename ${group_dir}`
-    
-    for test_dir in `ls -d ${group_dir}/*`; do
-        test_name=`basename ${test_dir}`
-        
+
+    for test_dir in `ls -d ${group_dir}/*mat`; do
+        test_name=`basename ${test_dir} .mat`
+
         if [[ `ls -d ${results_dir}/${group_name}/${test_name}/*FILL* 2>/dev/null | wc -l` -gt 0 ]]; then
             echo ${group_name}
             echo ${test_name}
             
-            for fill_file in `ls -d ${test_dir}/*FILL_bin.nii.gz`; do
+            for fill_file in `ls -d ${results_dir}/${group_name}/${test_name}/*FILL_bin.nii.gz`; do
                 fill_file_name=`basename ${fill_file} .nii.gz`
                 not_fill_file=${fill_file%_FILL_bin.nii.gz}.nii.gz
                 
@@ -74,6 +68,8 @@ for group_dir in `ls -d ${tbss_dir}/GLM/*`; do
 done
     
 # Finally, transpose the output file
+rm -fr ${temp_dir}
+
 temp_dir=`dirname ${output_file}`
 
 n_cols=`head ${output_file} -n 1 | wc -w`
@@ -83,3 +79,5 @@ for i in $(seq ${n_cols}); do
 done
 temp_files=(`ls -d ${temp_dir}/temp*`)
 cat ${temp_files[@]} > ${output_file}
+rm -fr ${temp_dir}
+
