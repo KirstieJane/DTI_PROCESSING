@@ -47,9 +47,17 @@ for sig_result in `cat ${results_list}`; do
                    0.95 \
                    ${tbss_dir}/PRE_PROCESSING/stats/mean_FA.nii.gz \
                    ${sig_result%.nii.gz}_FILL.nii.gz
-
+    
     else
         echo "    Tbss_fill already complete"
+    fi
+
+    if [[ ! -f ${sig_result%.nii.gz}_FILL_bin.nii.gz ]]; then
+        echo "    Binarizing tbss_fill result"
+        # Binarize the result incase you need to overlay it
+        fslmaths ${sig_result%.nii.gz}_FILL.nii.gz -bin ${sig_result%.nii.gz}_FILL_bin.nii.gz 
+    else
+        echo "    Tbss_fill binarized"
     fi
     
     # Figure out the locations of all the significant results
