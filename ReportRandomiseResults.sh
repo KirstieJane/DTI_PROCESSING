@@ -80,9 +80,6 @@ for sig_result in `cat ${results_list}`; do
 done
 
 # Now extract the values to a list of significant results
-echo "Now extracting values"
 extract_values_script=`dirname ${0}`/Extract_values.sh
-echo "Let's go"
-${extract_values_script} ${tbss_dir} ${sublist}
-echo "wooo"
+echo "${extract_values_script} ${tbss_dir} ${sublist}"
 #==============================================================================
