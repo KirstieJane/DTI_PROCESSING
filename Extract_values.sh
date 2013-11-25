@@ -42,9 +42,9 @@ for group_dir in `ls -d ${results_dir}/*`; do
             echo ${group_name}
             echo ${test_name}
             
-            for fill_file in `ls -d ${test_dir}/*FILL*`; do
+            for fill_file in `ls -d ${test_dir}/*FILL_bin.nii.gz`; do
                 fill_file_name=`basename ${fill_file}`
-                not_fill_file=${fill_file%_FILL.nii.gz}.nii.gz
+                not_fill_file=${fill_file%_FILL_bin.nii.gz}.nii.gz
                 
                 for measure in FA MD L1 L23 MO; do
                     direction=${not_fill_file:(-8):1}
