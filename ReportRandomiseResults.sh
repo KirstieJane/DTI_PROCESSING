@@ -80,7 +80,7 @@ for sig_result in `cat ${results_list}`; do
 done
 
 # Now extract the values to a list of significant results
-extract_values_script=`dirname ${0}`/Extract_values.sh ${tbss_dir}
+extract_values_script=`dirname ${0}`/Extract_values.sh
 
 ${extract_values_script} ${tbss_dir} ${sublist}
 #==============================================================================
