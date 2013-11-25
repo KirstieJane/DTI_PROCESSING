@@ -76,13 +76,21 @@ while [[ ${i} -le ${atlas_max} ]]; do
     vol=(`fslstats ${result_thr_atlas} -l ${l_thr} -u ${u_thr} -V`)
     
     if [[ ${vol} -ne 0 ]]; then
-        label=`grep "label index=\"${i}\"" ${labels_file}`
-        label=${label#*>}
-        label=${label%<*}
-    
         vol_skel=(`fslstats ${mean_skeleton_atlas} -l ${l_thr} -u ${u_thr} -V`)
         
         percent=(`echo "${vol}/${vol_skel} * 100" | bc -l`)
+
+        # The tract list is screwed up so you have to subtract one
+        # to line up the names
+        if [[ ${atlas_name} == *tracts* ]]; then
+            j=`echo ${i} - 1 | bc`
+        else
+            j=${i}
+        fi
+        label=`grep "label index=\"${j}\"" ${labels_file}`
+        label=${label#*>}
+        label=${label%<*}
+
         echo "${label}, ${vol}, ${vol_skel}, ${percent}" >> ${result_locations}
     fi
     let i=${i}+1
