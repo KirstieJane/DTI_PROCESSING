@@ -57,7 +57,7 @@
 # Being a Nice Person - checking the inputs are all correct before starting
 #------------------------------------------------------------------------------
 # If no arguments are given then echo the usage and exit
-if [[ $# -ne 3 && $# -ne 4 ]]; then
+if [[ $# -ne 4 ]]; then
     echo "Not enough options given"
     echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
     exit

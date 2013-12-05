@@ -38,7 +38,7 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "dti_preprocessing.sh <dti_data_folder> <sub_id> <bedpost_option"
+    echo "dti_preprocessing.sh <dti_data_folder> <sub_id> <bedpost_option>"
     echo "    eg: dti_preprocessing.sh \${dti_dir} \${sub_id} \${bedpost_option}"
     echo "    eg: dti_preprocessing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 1106t1 no"
     exit
@@ -88,7 +88,7 @@ fi
 
 ### Step 2: Check data
 # Make sure dti.nii.gz, bvals and bvecs_orig files exist
-if [[ ! -f ${dir}/dti.nii.gz ]]; then
+if [[ ! -f ${dir}/dti*.nii.gz ]]; then
     if [[ -f ${dir}/dti.nii ]]; then
         gzip ${dir}/dti.nii
     else
@@ -208,9 +208,13 @@ elif [[ ! -f ${dir}/FDT/${sub}_MO.nii.gz ]]; then
         -m ${dir}/dti_ec_brain_mask.nii.gz \
         -r ${dir}/bvecs \
         -b ${dir}/bvals \
+        --sse \
+        --save_tensor \
         -o ${dir}/FDT/${sub} \
         > ${logdir}/dtifit 2> ${logdir}/errors_dtifit
     
+    # Add L2 and L3 together and divide by two to create a measure of
+    # radial (perpendicular) diffusivity
     fslmaths ${dir}/FDT/${sub}_L2.nii.gz -add ${dir}/FDT/${sub}_L3.nii.gz -div 2 \
         ${dir}/FDT/${sub}_L23.nii.gz
 
