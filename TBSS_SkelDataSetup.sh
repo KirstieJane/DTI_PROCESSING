@@ -142,7 +142,7 @@ for sub in `cat $sublist`; do
             ln ${file} ${preproc_data_dir}/FA/${filename} 2>/dev/null
         done
             
-        # Link the other measures to the pre proc dir in their own folders
+        # Copy the other measures to the pre proc dir in their own folders
         # but NAMED exactly the same as the FA file
         for measure in L1 L23 MD MO; do
             mkdir -p ${preproc_data_dir}/${measure}
