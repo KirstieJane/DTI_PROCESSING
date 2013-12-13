@@ -31,6 +31,10 @@ else
 
 fi
 
+# End that line
+echo "" >> ${output_file}
+
+
 # Now loop through all the significant results
 # and write them to the output file
 for group_dir in `ls -d ${tbss_dir}/GLM/*`; do
