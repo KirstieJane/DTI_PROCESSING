@@ -70,6 +70,7 @@ done
 # Finally, transpose the output file
 temp_dir=`dirname ${output_file}`/temp
 rm -fr ${temp_dir}
+mkdir ${temp_dir}
 
 n_cols=`head ${output_file} -n 1 | wc -w`
 for i in $(seq ${n_cols}); do
