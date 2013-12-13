@@ -144,6 +144,9 @@ for sub in `cat $sublist`; do
             
         # Copy the other measures to the pre proc dir in their own folders
         # but NAMED exactly the same as the FA file
+        # Note that these files are not linked because they may need to be
+        # reoriented to standard space (as the FA files were rotated in the
+        # subject's personal TBSS directories)
         for measure in L1 L23 MD MO; do
             mkdir -p ${preproc_data_dir}/${measure}
             cp ${sub_fdt_dir}/${sub}_${measure}.nii.gz \
