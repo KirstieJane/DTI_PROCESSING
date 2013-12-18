@@ -88,7 +88,7 @@ fi
 
 ### Step 2: Check data
 # Make sure dti.nii.gz, bvals and bvecs_orig files exist
-if [[ ! -f ${dir}/dti*.nii.gz ]]; then
+if [[ ! -f ${dir}/dti.nii.gz ]]; then
     if [[ -f ${dir}/dti.nii ]]; then
         gzip ${dir}/dti.nii
     else
