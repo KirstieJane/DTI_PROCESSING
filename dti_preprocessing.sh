@@ -201,7 +201,7 @@ elif [[ ! -f ${dir}/bvecs ]]; then
     echo "    EXITING"
     exit
 
-elif [[ ! -f ${dir}/FDT/${sub}_MO.nii.gz ]]; then
+elif [[ ! -f ${dir}/FDT/${sub}_sse.nii.gz ]]; then
     echo "    Fitting tensor"
     mkdir -p ${dir}/FDT
     dtifit -k ${dir}/dti_ec.nii.gz \
