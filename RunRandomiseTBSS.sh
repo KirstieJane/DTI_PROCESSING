@@ -138,7 +138,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
         
         test_dir=${tbss_dir}/RESULTS/${group}/${test_name}/
     
-        # Make logs dir in ouput dir
+        # Make logs dir in output dir
         mkdir -p ${test_dir}/LOGS
     
         # Loop through the different measures
@@ -146,7 +146,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
             # Designate your input file
             infile=(${tbss_dir}/INPUT_FILES/${group}/all_${measure}_skeletonised.nii.gz)
     
-            # Name your ouput files
+            # Name your output files
             outfile=${test_dir}/${measure}_${n_perms}
             
             ## Randomise command
