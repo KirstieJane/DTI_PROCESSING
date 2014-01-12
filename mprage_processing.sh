@@ -33,9 +33,9 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "mprage_processing.sh <mprage_dir> <sub_id>"
-    echo "    eg: mprage_processing.sh \${mprage_dir} \${sub_id}"
-    echo "    eg: mprage_processing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE 1106t1"
+    echo "mprage_processing.sh <mprage_dir> <sub_id> <freesurfer_option>"
+    echo "    eg: mprage_processing.sh \${mprage_dir} \${sub_id} \${freesurfer_option}"
+    echo "    eg: mprage_processing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE 1106t1 yes"
     exit
 }
 #------------------------------------------------------------------------------
@@ -47,6 +47,13 @@ if [[ ! -d /${dir} ]]; then
     dir=`pwd`/${dir}
 fi
 sub=$2
+
+if [[ ! -z ${freesurfer_option} ]]; then
+    freesurfer_option=$3
+else
+    freesurfer_option=yes
+fi
+
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -168,23 +175,25 @@ fi
 
 #------------------------------------------------------------------------------
 # Run recon-all
-### Put in a little if loop here in case it has already been run??
-### But freesurfer might just take care of this??
-echo "    Running freesurfer's recon-all"
-# If it's a brand new start:
-if [[ ! -f ${dir}/SURF/mri/orig/001.mgz ]]; then
-    echo "============ START FROM THE BEGINNING ============="
-    rm -rf ${dir}/SURF
-    recon-all -all -i ${dir}/highres.nii.gz \
-                -s SURF \
-                -sd ${dir} >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
+if [[ ${run_freesurfer} == 'yes' ]]; then
+    ### Put in a little if loop here in case it has already been run??
+    ### But freesurfer might just take care of this??
+    echo "    Running freesurfer's recon-all"
+    # If it's a brand new start:
+    if [[ ! -f ${dir}/SURF/mri/orig/001.mgz ]]; then
+        echo "============ START FROM THE BEGINNING ============="
+        rm -rf ${dir}/SURF
+        recon-all -all -i ${dir}/highres.nii.gz \
+                    -s SURF \
+                    -sd ${dir} >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
 
-else
-    echo '=============== MAKE ALL =============='
-    recon-all -all -s SURF \
-                -sd ${dir} \
-                -make all >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
-fi   
+    else
+        echo '=============== MAKE ALL =============='
+        recon-all -all -s SURF \
+                    -sd ${dir} \
+                    -make all >> ${logdir}/reconall 2>> ${logdir}/errors_reconall
+    fi   
+fi
                 
 #------------------------------------------------------------------------------
 # And you're done!
