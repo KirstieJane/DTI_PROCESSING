@@ -16,12 +16,19 @@ from mpl_toolkits.mplot3d import Axes3D
 # Define the data_directory
 # (this could be passed as an argument when you generalize the code)
 data_dir = os.path.join('/work', 'imagingG', 'NSPN', 'workspaces', 'kw401', 'UCHANGE', 'INTERIM_ANALYSIS')
+
 # Define the sublist (again, this could be an argument)
 sublist = np.loadtxt(os.path.join(data_dir, 'sublist'), dtype='string')
+
 # Define the dti identifier. This is the additional path that exists inside the data directory
 # and each individual subject's data folder that holds the dti.nii.gz files.
 # It's passed as an argument to the dti_processing.sh file
 dti_identifier = os.path.join('DTI', 'MRI0')
+
+# Define the output directory and make it if it doesn't yet exist
+qa_dir = os.path.join(data_dir, 'QA_OUTPUT')
+if not os.path.isdir(qa_dir):
+    os.makedirs(qa_dir)
 
 ### SET UP A DATA FRAME ###
 
@@ -87,48 +94,67 @@ cols = [ name for name in subs_df.columns if 'mean_rms' in name ]
 ### MAKE THE FIGURE ###
 # Now we're going to make the figure
 
+# Define the colorbar that you want to use
+n = subs_df.subid.count()
+cmap = mpl.cm.gist_ncar
+norm = mpl.colors.Normalize(vmin=0, vmax=1)
+map = mpl.cm.ScalarMappable( norm, cmap)
+color_counter = 1.0
+subs_df['color'] = 0.0
+
 # Create a figure
 fig, ax = plt.subplots()
-# Make a box plot of all the 
-box = plt.boxplot(subs_df[subs_df[cols[0]]<2.5][cols].values)
+# Make a box plot of the six different measures of movement
+box = plt.boxplot(subs_df[cols].values)
+
+# One of the pieces of information contained in the box variable
+# are the locations of the fliers (the outliers)
 for f in box['fliers']:
-    i, fliers = f.get_data()
-    for c, (x, y) in enumerate(zip(i, fliers)):
-        id = subs_df.subid[subs_df[cols[np.int(x-1)]]==y].values
-        offset = -40 * np.float(c%2) + 20
-        ax.annotate(id[0], xy=(x, y), xytext=(offset,offset),
-            textcoords='offset points', ha='center', va='center',
-            bbox=dict(boxstyle='round,pad=0.2', fc='green', alpha=0.3),
-            arrowprops=dict(arrowstyle='->', #connectionstyle='arc3,rad=0.5', 
-                            color='green'))
+    # Get the information from each of the 12 positions that fliers
+    # could be found in.
+    # x_list: list of x positions, fliers_list: list of y positions
+    x_list, fliers_list = f.get_data()
+    # Sort the fliers_list so that they're in order smallest to largest
+    # Note that you don't have to sort the x list because they're all the
+    # same value :)
+    fliers_list.sort()
+    # Now loop through all the x, y pairs in the x_list and
+    # fliers_list and define a counter (c)
+    for c, (x, y) in enumerate(zip(x_list, fliers_list)):
+        # You can find the subID for each of the outliers
+        # by looking up the y value in the appropriate column
+        #(indexed as x-1 because the plot doesn't start counting at 0)
+        id = subs_df.subid[subs_df[cols[np.int(x-1)]]==y].values[0]
+
+        # We're also going to set the color of each box so that it's the
+        # same for each individual across plots. Note that you don't have to
+        # do this step if the person already has a color.
+        if subs_df.color[subs_df.subid==id] == 0:
+            subs_df.color[subs_df.subid==id] = color_counter
+            color_counter+=1
+            
+        sub_color_id = subs_df.color[subs_df.subid==id]
+        print 10.0*sub_color_id.values[0]/n
+        color = map.to_rgba(10.0*sub_color_id.values[0]/n)
+                    
+        # In order to make the label flip sides left and right as
+        # we go through each person we're going do something creative
+        # with modulo division
+        offset_x = -0.5 * np.float(c%2) + 0.25 + x
+        offset_y = 0.25 + y
+        
+        # We're going to annotate all the outliers
+        # with a little green box that contains their subid
+        ax.annotate(id, xy=(x, y), xytext=(offset_x, offset_y),
+            textcoords='data', ha='center', va='center',
+            bbox=dict(boxstyle='round,pad=0.2', fc=color, alpha=0.5),
+            arrowprops=dict(arrowstyle='->', 
+                            color='black'))
 plt.xticks(range(1,len(cols)+1), cols, rotation=45)
 ylims = ax.get_ylim()
 ax.set_ylim(ylims[0], ylims[1]+0.5)
 plt.tight_layout()
-
-figure_name = os.path.join(data_dir, 'movement_boxplot_lt25.png')
-fig.savefig(figure_name, bbox_inches=0, dpi=100)
-
-# Create a figure
-fig, ax = plt.subplots()
-# Make a box plot of all the 
-box = plt.boxplot(subs_df[subs_df[cols]].values)
-for f in box['fliers']:
-    i, fliers = f.get_data()
-    for c, (x, y) in enumerate(zip(i, fliers)):
-        id = subs_df.subid[subs_df[cols[np.int(x-1)]]==y].values
-        offset = -40 * np.float(c%2) + 20
-        ax.annotate(id[0], xy=(x, y), xytext=(offset,offset),
-            textcoords='offset points', ha='center', va='center',
-            bbox=dict(boxstyle='round,pad=0.2', fc='green', alpha=0.3),
-            arrowprops=dict(arrowstyle='->', #connectionstyle='arc3,rad=0.5', 
-                            color='green'))
-plt.xticks(range(1,len(cols)+1), cols, rotation=45)
-ylims = ax.get_ylim()
-ax.set_ylim(ylims[0], ylims[1]+0.5)
-plt.tight_layout()
-
-figure_name = os.path.join(data_dir, 'movement_boxplot_all.png')
+figure_name = os.path.join(qa_dir, 'movement_boxplot_all.png')
 fig.savefig(figure_name, bbox_inches=0, dpi=100)
 
 
