@@ -11,6 +11,14 @@ import matplotlib as mpl
 import itertools as it
 from mpl_toolkits.mplot3d import Axes3D
 
+
+#dropbox_dir = glob(os.path.join('C:/','Users', '*', 'Dropbox'))
+#external_scripts_dir = os.path.join(dropbox_dir[0], 'GitHub', 'DESCRIBING_DATA')
+
+#sys.path.append(os.path.join(external_scripts_dir, 'PLOTTING_SCRIPTS'))
+
+from boxplot_dti_movement import boxplot_dti_movement
+
 ### DEFINE SOME VARIABLES ###
 
 # Define the data_directory
@@ -83,7 +91,12 @@ for i, (sub, dti_dir) in enumerate(zip(sublist, dti_dir_list)):
             subs_df.ix[i, 'std_rms_'+measure+suffix] = disp[measure+suffix].std()
             subs_df.ix[i, 'max_rms_'+measure+suffix] = disp[measure+suffix].max()
 
-# Sort the subs dataframe according to the mean rms relative displacement
+### Make the figure from ALL of the subjects
+#figure_name = os.path.join(qa_dir, 'movement_boxplot_all.png')
+boxplot_dti_movement(subs_df, figure_name)
+
+            
+            # Sort the subs dataframe according to the mean rms relative displacement
 # for the diffusion-weighted volumes
 subs_df.sort(columns='mean_rms_rel_notb0', inplace=True)
 
@@ -134,7 +147,6 @@ for f in box['fliers']:
             color_counter+=1
             
         sub_color_id = subs_df.color[subs_df.subid==id]
-        print 10.0*sub_color_id.values[0]/n
         color = map.to_rgba(10.0*sub_color_id.values[0]/n)
                     
         # In order to make the label flip sides left and right as
@@ -150,10 +162,16 @@ for f in box['fliers']:
             bbox=dict(boxstyle='round,pad=0.2', fc=color, alpha=0.5),
             arrowprops=dict(arrowstyle='->', 
                             color='black'))
+# Lets make sure the labels all fit onto the x axis
 plt.xticks(range(1,len(cols)+1), cols, rotation=45)
+# And label the yaxis
+ax.set_ylabel('Displacement (mm)')
+# And set the y axis to being a little higher than the max so the labels fit!
 ylims = ax.get_ylim()
 ax.set_ylim(ylims[0], ylims[1]+0.5)
+# Don't know if this makes a difference, but hey, here's a try
 plt.tight_layout()
+# Name the figure and save it
 figure_name = os.path.join(qa_dir, 'movement_boxplot_all.png')
 fig.savefig(figure_name, bbox_inches=0, dpi=100)
 
