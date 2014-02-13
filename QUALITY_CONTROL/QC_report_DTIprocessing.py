@@ -103,7 +103,7 @@ while subs_df[subs_df.color>0].count==0:
     subs_df = subs_df[subs_df.color<1]
     iter+=1
 
-
+print subs_df.describe()
 '''
 # Now, we need to ignore the values that compare to a bval of 0
 bvals_file=os.path.join(os.path.dirname(file), 'bvals')
