@@ -101,11 +101,12 @@ while iter<5:
     print iter
     figure_name = os.path.join(qa_dir, 'movement_boxplot_iter{}.png'.format(iter))
     subs_df = boxplot_dti_movement(subs_df, figure_name)
-    subs_df = subs_df[subs_df.color<1]
-    iter+=1
 
     if subs_df.subid[subs_df.color>0].count() == 0:
         break
+        
+    subs_df = subs_df[subs_df.color<1]
+    iter+=1
         
 print subs_df.describe()
 '''
