@@ -92,7 +92,7 @@ for i, (sub, dti_dir) in enumerate(zip(sublist, dti_dir_list)):
             subs_df.ix[i, 'max_rms_'+measure+suffix] = disp[measure+suffix].max()
 
 ### Make the figure from ALL of the subjects
-#figure_name = os.path.join(qa_dir, 'movement_boxplot_all.png')
+figure_name = os.path.join(qa_dir, 'movement_boxplot_all.png')
 boxplot_dti_movement(subs_df, figure_name)
 
             
