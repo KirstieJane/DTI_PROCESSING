@@ -95,10 +95,13 @@ for i, (sub, dti_dir) in enumerate(zip(sublist, dti_dir_list)):
 figure_name = os.path.join(qa_dir, 'movement_boxplot_all.png')
 boxplot_dti_movement(subs_df, figure_name)
 
-### Now drop all those outliers
-subs_df = subs_df[subs_df.color<1]
-figure_name = os.path.join(qa_dir, 'movement_boxplot_iter1.png')
-boxplot_dti_movement(subs_df, figure_name)
+### Now drop all those outliers:
+iter=1
+while subs_df[subs_df.color>0].count==0:
+    figure_name = os.path.join(qa_dir, 'movement_boxplot_iter{}.png'.format(iter))
+    boxplot_dti_movement(subs_df, figure_name)
+    subs_df = subs_df[subs_df.color<1]
+    iter+=1
 
 
 '''
