@@ -112,7 +112,7 @@ fig.savefig(figure_name, bbox_inches=0, dpi=100)
 # Create a figure
 fig, ax = plt.subplots()
 # Make a box plot of all the 
-box = plt.boxplot(subs_df[subs_df[cols].values)
+box = plt.boxplot(subs_df[subs_df[cols]].values)
 for f in box['fliers']:
     i, fliers = f.get_data()
     for c, (x, y) in enumerate(zip(i, fliers)):
