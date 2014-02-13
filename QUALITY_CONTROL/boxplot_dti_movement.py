@@ -11,6 +11,7 @@ def boxplot_dti_movement(subs_df, figure_name):
     import numpy as np
     import matplotlib.pylab as plt
     import pandas as pd
+    import matplotlib as mpl
     
     #===============================================================
         
@@ -25,9 +26,9 @@ def boxplot_dti_movement(subs_df, figure_name):
     n = subs_df.subid.count()
     
     # Define the colorbar that you want to use
-    cmap = plt.cm.gist_ncar
-    norm = plt.colors.Normalize(vmin=0, vmax=1)
-    map = plt.cm.ScalarMappable( norm, cmap)
+    cmap = mpl.cm.gist_ncar
+    norm = mpl.colors.Normalize(vmin=0, vmax=1)
+    map = mpl.cm.ScalarMappable( norm, cmap)
     
     # Start the color counter
     color_counter = 1.0
