@@ -11,16 +11,22 @@ import matplotlib as mpl
 import itertools as it
 from mpl_toolkits.mplot3d import Axes3D
 
-
 # Define the data_directory
 # (this could be passed as an argument when you generalize the code)
 data_dir = os.path.join('/work', 'imagingG', 'NSPN', 'workspaces', 'kw401', 'UCHANGE', 'INTERIM_ANALYSIS')
+# Define the sublist (again, this could be an argument)
 sublist = np.loadtxt(os.path.join(data_dir, 'sublist'), dtype='string')
+# Define the dti identifier. This is the additional path that exists inside the data directory
+# and each individual subject's data folder that holds the dti.nii.gz files.
+# It's passed as an argument to the dti_processing.sh file
 dti_identifier = os.path.join('DTI', 'MRI0')
 
+# Create an empty dti_dir_list. This wil make it easier for you to loop through all the
+# subjects - you'll loop through this list instead of the subjects and have to add the dti identifier
+# in each time
 dti_dir_list = []
 
-# Find the disp files
+# Fill up the dti_dir_list with all the subjects' DTI dirs
 for sub in sublist:
     dti_dir_list.append(glob(os.path.join(data_dir, 'SUB_DATA', sub, 'DTI', 'MRI0'))[0])
     
@@ -40,6 +46,7 @@ subs_df = pd.DataFrame(index=range(len(dti_dir_list)),
 
 # Loop through the subjects
 for i, (sub, dti_dir) in enumerate(zip(sublist, dti_dir_list)):
+    # Write the subject id and the dirname into the first two columns of the subs_df
     subs_df.ix[i, 'dirname'] = dti_dir
     subs_df.ix[i, 'subid'] = sub
     
@@ -52,11 +59,11 @@ for i, (sub, dti_dir) in enumerate(zip(sublist, dti_dir_list)):
                             delimiter=' ', header=None,
                             names=['abs'+suffix, 'rel'+suffix], na_values='.')
         
-        # Loop through th
+        # Loop through the three different values that you want to know
         for measure in measures:
-            subs_df.ix[i, 'mean_rms_'+measure+suffix] = disp['abs'+suffix].mean()
-            subs_df.ix[i, 'std_rms_'+measure+suffix] = disp['abs'+suffix].std()
-            subs_df.ix[i, 'max_rms_'+measure+suffix] = disp['abs'+suffix].max()
+            subs_df.ix[i, 'mean_rms_'+measure+suffix] = disp[measure+suffix].mean()
+            subs_df.ix[i, 'std_rms_'+measure+suffix] = disp[measure+suffix].std()
+            subs_df.ix[i, 'max_rms_'+measure+suffix] = disp[measure+suffix].max()
 
 # Sort the subs dataframe according to the mean rms relative displacement
 # for the diffusion-weighted volumes
