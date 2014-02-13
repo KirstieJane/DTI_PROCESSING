@@ -9,6 +9,8 @@ import os
 import pandas as pd
 import matplotlib as mpl
 import itertools as it
+from mpl_toolkits.mplot3d import Axes3D
+
 
 # Define the data_directory
 # (this could be passed as an argument when you generalize the code)
@@ -75,8 +77,12 @@ for f in box['fliers']:
             arrowprops=dict(arrowstyle='->', #connectionstyle='arc3,rad=0.5', 
                             color='green'))
 plt.xticks(range(1,len(cols)+1), cols, rotation=45)
+ylims = ax.get_ylim()
+ax.set_ylim(ylims[0], ylims[1]+0.5)
 plt.tight_layout()
-plt.show()
+
+figure_name = os.path.join(data_dir, 'movement_boxplot.png')
+fig.savefig(figure_name, bbox_inches=0, dpi=100)
 
 '''
 # Now, we need to ignore the values that compare to a bval of 0
@@ -121,13 +127,14 @@ for i, dti_dir in enumerate(subs_df['dirname']):
     exclude_locs = [ b + 1 for b in bval_locs] + bval_locs
     mask = ~disp.index.isin(exclude_locs)
     colors = map.to_rgba(i)
-    xs = range(disp['rel'][mask].count())
+    xs = range(disp['rel'+suffix][mask].count())
     ys = np.ones_like(xs)*i
-    zs = disp['rel'][mask].values
+    zs = disp['rel'+suffix][mask].values
     ax.plot(xs, ys, zs, c=colors)
     
 ax.set_xlabel('Volume')
 ax.set_ylabel('Participant')
 ax.set_zlabel('Translation (mm)')
 
-plt.show()
+figure_name = os.path.join(data_dir, 'movement_beaches.png')
+fig.savefig(figure_name, bbox_inches=0, dpi=100)
