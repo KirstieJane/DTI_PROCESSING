@@ -106,3 +106,5 @@ def boxplot_dti_movement(subs_df, figure_name):
     plt.tight_layout()
     # Name the figure and save it
     fig.savefig(figure_name, bbox_inches=0, dpi=100)
+    
+    return subs_df
