@@ -93,11 +93,11 @@ for i, (sub, dti_dir) in enumerate(zip(sublist, dti_dir_list)):
 
 ### Make the figure from ALL of the subjects
 figure_name = os.path.join(qa_dir, 'movement_boxplot_all.png')
-boxplot_dti_movement(subs_df, figure_name)
+subs_df = boxplot_dti_movement(subs_df, figure_name)
 
 ### Now drop all those outliers:
 iter=1
-while iter<5:
+while iter<10:
     print iter
     figure_name = os.path.join(qa_dir, 'movement_boxplot_iter{}.png'.format(iter))
     subs_df = boxplot_dti_movement(subs_df, figure_name)
@@ -107,8 +107,10 @@ while iter<5:
         
     subs_df = subs_df[subs_df.color<1]
     iter+=1
-        
-print subs_df.describe()
+
+### NEXT THING TO DO IS AUTOMATICALLY FIND THE TRACE FOR THESE BAD GUYS
+
+    
 '''
 # Now, we need to ignore the values that compare to a bval of 0
 bvals_file=os.path.join(os.path.dirname(file), 'bvals')
