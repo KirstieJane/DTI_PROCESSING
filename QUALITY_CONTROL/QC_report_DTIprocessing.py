@@ -83,6 +83,9 @@ for i, (sub, dti_dir) in enumerate(zip(sublist, dti_dir_list)):
         disp = pd.read_csv(os.path.join(dti_dir, 'ec_disp{}.txt'.format(suffix)),
                             delimiter=' ', header=None,
                             names=['abs'+suffix, 'rel'+suffix], na_values='.')
+
+        figure_name = os.path.join(dti_dir, 'QC_ec_disp{}.png'.format(suffix))
+        fig, ax = plt.subplots()
         
         # Loop through the three different values that you want to know
         # for the two different measures (abs and rel)
@@ -91,6 +94,27 @@ for i, (sub, dti_dir) in enumerate(zip(sublist, dti_dir_list)):
             subs_df.ix[i, 'std_rms_'+measure+suffix] = disp[measure+suffix].std()
             subs_df.ix[i, 'max_rms_'+measure+suffix] = disp[measure+suffix].max()
 
+            ax.plot(disp[measure+suffix][disp[measure+suffix].notnull()], label=measure)
+            
+        # Label the x axis according to which plot this is:
+        if suffix == '':
+            ax.set_xlabel('Volume Number')
+        elif suffix == '_b0':
+            ax.set_xlabel('B0 Volume Number')
+        else:
+            ax.set_xlabel('Diff weighted Volume Number')
+            
+        # And label the yaxis
+        ax.set_ylabel('Displacement (mm)')
+        # And set the y axis to always between 0 and 3
+        ax.set_ylim(0,3)
+        # Add a legend
+        plt.legend(loc=2)
+        # Don't know if this makes a difference, but hey, here's a try
+        plt.tight_layout()
+        fig.savefig(figure_name, bbox_inches=0, dpi=100)
+        plt.close()
+        
 ### Make the figure from ALL of the subjects
 figure_name = os.path.join(qa_dir, 'movement_boxplot_all.png')
 subs_df = boxplot_dti_movement(subs_df, figure_name)
