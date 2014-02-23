@@ -55,7 +55,9 @@ fi
 # But if it doesn't then create it and write in the header
 echo "    ${atlas_name} reporting locations"
 
-echo "Atlas_label, N_voxels_result, N_voxels_skeleton, Percent_of_skel" > ${result_locations}            #### NEED TO UPDATE!
+echo -n "Atlas_label, N_voxels_result, N_voxels_skeleton, Percent_of_skel, " > ${result_locations}
+echo -n "ClusterIndex, N_voxels_check, peak_t, peak_x_mm, peak_y_mm, peak_z_mm, " >> ${result_locations}
+echo "peak_x_mm, peak_y_mm, peak_z_mm, cog_x_mm, cog_y_mm, cog_z_mm" >> ${result_locations}
 
 #==============================================================================
 # Lets start by thresholding the result for significant voxels only
@@ -130,8 +132,28 @@ while [[ ${i} -le ${atlas_max} ]]; do
         label=${label#*>}
         label=${label%<*}
 
+        # Create a temporary file that is the tstat masked with the result_thr_atlas
+        # file for this region. That is, you're creating a file that only shows values
+        # that are both inside this atlas region, and significant in the result file
+        # (at p < 0.05), and these values are the t-statistics not the p values
+        fslmaths ${result_thr_atlas} \
+                    -thr ${l_thr} \
+                    -uthr ${u_thr} \
+                    -bin \
+                    -mul ${tstat} \
+                    ${tstat%.nii.gz}_temp.nii.gz
+                    
+        # Run the cluster command on this file 
+        output=`cluster --in=${tstat%.nii.gz}_temp.nii.gz --thresh=0.001 --mm`
+        
+        # Exclude the header (you've already written it to the file) and replace
+        # white spaces with ", " and strip the first ", "
+        csv_output="$( printf ", " "${output[@]:22:1000}" )"
+        csv_output="${csv_output#", "}" # remove leading separator
+
         # Now write out the label, volumes and the percentage into the result locations file
-        echo "${label}, ${vol}, ${vol_skel}, ${percent}" >> ${result_locations}
+        echo "${label}, ${vol}, ${vol_skel}, ${percent}, ${csv_output}" >> ${result_locations}
+        
     fi
     # Keep your loop through the atlas regions going
     let i=${i}+1
