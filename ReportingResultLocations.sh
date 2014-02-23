@@ -150,7 +150,7 @@ while [[ ${i} -le ${atlas_max} ]]; do
         # white spaces with ", " and strip the first ", "
         csv_output="$( printf ", " "${output[@]:22:1000}" )"
         csv_output="${csv_output#", "}" # remove leading separator
-
+        
         # Now write out the label, volumes and the percentage into the result locations file
         echo "${label}, ${vol}, ${vol_skel}, ${percent}, ${csv_output}" >> ${result_locations}
         
@@ -163,7 +163,19 @@ done
 vol=(`fslstats ${result_thr_atlas_unclass} -V`)
 vol_skel=(`fslstats ${mean_skeleton_atlas_unclass} -V`)
 percent=(`echo "${vol}/${vol_skel} * 100" | bc -l`)
-echo "Unclassified, ${vol}, ${vol_skel}, ${percent}" >> ${result_locations}
+# Tstat values:
+fslmaths ${result_thr_atlas_unclass} \
+            -bin \
+            -mul ${tstat} \
+            ${tstat%.nii.gz}_temp.nii.gz
+            
+output=`cluster --in=${tstat%.nii.gz}_temp.nii.gz --thresh=0.001 --mm`
+csv_output="$( printf ", " "${output[@]:22:1000}" )"
+csv_output="${csv_output#", "}" # remove leading separator
+
+echo "Unclassified, ${vol}, ${vol_skel}, ${percent}, ${csv_output}" >> ${result_locations}
+
+rm ${tstat%.nii.gz}_temp.nii.gz
 
 #==============================================================================
 # All done, well done ;)
