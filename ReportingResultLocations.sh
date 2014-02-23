@@ -144,7 +144,7 @@ while [[ ${i} -le ${atlas_max} ]]; do
                     ${tstat%.nii.gz}_temp.nii.gz
                     
         # Run the cluster command on this file 
-        output=`cluster --in=${tstat%.nii.gz}_temp.nii.gz --thresh=0.001 --mm`
+        output=(`cluster --in=${tstat%.nii.gz}_temp.nii.gz --thresh=0.001 --mm`)
         
         # Exclude the header (you've already written it to the file) and replace
         # white spaces with ", " and strip the first ", "
