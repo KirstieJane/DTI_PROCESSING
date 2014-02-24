@@ -19,6 +19,11 @@ mean_skeleton=$2
 atlas=$3
 labels_file=$4
 
+if [[ $# -ne 4 ]]; then
+    echo "Need 4 arguments"
+    exit
+fi
+
 # Check these files all exist
 for input in $1 $2 $3 $4; do
     
@@ -137,8 +142,8 @@ while [[ ${i} -le ${atlas_max} ]]; do
         # that are both inside this atlas region, and significant in the result file
         # (at p < 0.05), and these values are the t-statistics not the p values
         fslmaths ${result_thr_atlas} \
-                    -thr ${l_thr} \
-                    -uthr ${u_thr} \
+                    -thr ${i} \
+                    -uthr ${i} \
                     -bin \
                     -mul ${tstat} \
                     ${tstat%.nii.gz}_temp.nii.gz
@@ -148,11 +153,14 @@ while [[ ${i} -le ${atlas_max} ]]; do
         
         # Exclude the header (you've already written it to the file) and replace
         # white spaces with ", " and strip the first ", "
-        csv_output="$( printf ", " "${output[@]:22:1000}" )"
-        csv_output="${csv_output#", "}" # remove leading separator
-        
+        separator=', '
+        csv_output="$( printf "${separator}%s" "${output[@]:22:1000}" )"
+        csv_output="${csv_output#', '}" # remove leading separator
+
         # Now write out the label, volumes and the percentage into the result locations file
-        echo "${label}, ${vol}, ${vol_skel}, ${percent}, ${csv_output}" >> ${result_locations}
+        echo "${label}, ${vol}, ${vol_skel}, ${percent}, ${csv_output[@]}" >> ${result_locations}
+        
+        rm ${tstat%.nii.gz}_temp.nii.gz
         
     fi
     # Keep your loop through the atlas regions going
