@@ -152,33 +152,61 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
             ## Randomise command
             # Only run if it hasn't already been run!
             if [[ ! -f ${outfile}_tfce_corrp_tstat2.nii.gz ]]; then
-                if [[ ! -f ${outfile}_alreadystarted ]]; then
-                    echo "" > ${outfile}_alreadystarted
+            
+                # Or if the randomise command has already been submitted or started somewhere else
+                if [[ ! -f ${outfile}_alreadystarted.sh ]]; then
+                    echo "" > ${outfile}_alreadystarted.sh
                     echo "Running Randomise for ${test_name} ${measure}"
+
+                    # If you're on the CBU you can submit this to a queue, so instead of 
+                    # just running it in the terminal so we're going to write the command
+                    # to a script text file ready to be submitted or run wherever.
+                    echo '#!/bin/bash' > ${outfile}_randomisecommand.sh
+                    echo "#PBS -e ${test_dir}/LOGS/${measure}_${n_perms}_PBSoutput.log" >> ${outfile}_randomisecommand.sh
+                    echo "#PBS -o ${test_dir}/LOGS/${measure}_${n_perms}_PBSerrors.log" >> ${outfile}_randomisecommand.sh
+
+                    # If you're running a TTest then you shouldn't demean your columns
                     if [[ ${test_name:0:5} != 'TTest' ]]; then
                         demean='-D'
                     else
                         demean=' '
                     fi
+                    
+                    # I'm not quite sure what I'm doing here - have a think about running
+                    # anovas in the future...
                     #if [[ ${test_name:0:5} == 'Anova' ]]; then
                     #    ftest=" -f ${fts_file} "
                     #else
                     #    ftest=' '
                     #fi
-                    randomise -i ${infile} \
+                    
+                    # Write the command to the randomisecommand file
+                    echo "randomise -i ${infile} \
                             -o ${outfile} \
                             -m ${mask_file} \
                             -d ${mat_file} \
                             -t ${con_file} \
                             ${ftest} \
                             -n ${n_perms} \
-                            --T2 -x ${demean} > ${test_dir}/LOGS/${measure}_${n_perms}.log 
-                    rm -f ${outfile}_alreadystarted
+                            --T2 -x ${demean} " >> ${outfile}_randomisecommand.sh
+                            
+                    # If you're kirstie and on the CBU server then we're going to use
+                    # qsub and send this script to the cluster
+                    if [[ ${outfile} == *kw02* ]]; then
+                        qsub ${outfile}_randomisecommand.sh
+                    
+                    # Otherwise, just run the script in the shell as usual
+                    else
+                        ${outfile}_randomisecommand.sh
+                    fi
                 else
                     echo "Randomise for ${test_name} ${measure} is already in progress"
                 fi
             else
+                # The results are already here, so just print that to the screen
+                # and then remove any marker files that might be there
                 echo "Data already exists"
+                rm -f ${outfile}_randomisecommand.sh
             fi
         done    # Close measure loop
         
