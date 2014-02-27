@@ -21,7 +21,26 @@ def create_mat_files(root_name, EVs):
         for a in zip(*EVs):
             f.write(' '.join(str(s) for s in a) + '\n')
 
-
+def create_fts_files(root_name, fts):
+    '''
+    create_fts_files takes a filename root and a list of ftest
+    contrasts and creates a .fts file ready for randomise analyses
+    '''
+    
+    # Make the output directory if it doesn't yet exist
+    if not os.path.isdir(os.path.dirname(root_name)):
+        os.makedirs(os.path.dirname(root_name))
+    
+    fts_file = root_name + '.fts'    
+    with open(fts_file, 'w') as f:
+        f.write('/NumWaves {}\n'.format(len(fts[0])))
+        f.write('/NumContrasts {}\n'.format(len(fts)))
+        f.write('\n')
+        f.write('/Matrix \n')
+        for a in fts:
+            f.write(' '.join(str(s) for s in a) + '\n')
+    
+    
 
 def create_con_files(root_name, cons):
     '''
@@ -43,7 +62,7 @@ def create_con_files(root_name, cons):
             f.write(' '.join(str(s) for s in a) + '\n')
     
     
-def create_with_covars(EVs_list, EVs_name, covars_list, covars_name_list, cons):
+def create_with_covars(EVs_list, EVs_name, covars_list, covars_name_list, cons, fts=False):
     """
     This handy dandy little functions takes a list of EVs that you do care
     about, and the name that you'll save the file to, and a list of covariates
@@ -54,6 +73,7 @@ def create_with_covars(EVs_list, EVs_name, covars_list, covars_name_list, cons):
     """
     # IMPORTS
     import itertools as it
+    import numpy as np
     
     # Calculate the number of covariates you have in the list
     n_covars = len(covars_name_list)
@@ -68,6 +88,14 @@ def create_with_covars(EVs_list, EVs_name, covars_list, covars_name_list, cons):
             
             # C is the list of covariates
             C = [covars_list[i] for i in list(covar)]
+            
+            # Check that there are no empty columns
+            # ie: if the covariate is constant then we don't want
+            # to include it in the model - it's a waste of time!
+            for col in C:
+                if np.std(col) == 0.0:
+                    print "=======WAAAAAAAAAIT A MINUTE!!!"
+
             # C_name is the name of the covariates in combos
             C_name = [covars_name_list[i] for i in list(covar)]
             C_name = '_'.join(C_name)
@@ -99,3 +127,5 @@ def create_with_covars(EVs_list, EVs_name, covars_list, covars_name_list, cons):
             print name
             create_mat_files(name, EVs_list_with_covars)
             create_con_files(name, new_cons)
+            if fts:
+                create_fts_files(name, fts)
