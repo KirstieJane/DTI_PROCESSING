@@ -125,6 +125,7 @@ fi
 # Here is the beginnings of the subject FOR loop:
 #------------------------------------------------------------------------------
 
+echo "Running TBSS_SkelDataSetup"
 for sub in `cat $sublist`; do
 
     # Print sub to screen so you can follow along as the script runs
