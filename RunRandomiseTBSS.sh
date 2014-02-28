@@ -177,6 +177,7 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                     # I'm not quite sure what I'm doing here - have a think about running
                     # anovas in the future...
                     if [[ ${test_name:0:5} == 'Anova' ]]; then
+                        demean=' '
                         ftest=" -f ${fts_file} "
                     else
                         ftest=' '
