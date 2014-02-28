@@ -10,28 +10,56 @@ import pandas as pd
 import matplotlib as mpl
 import itertools as it
 from mpl_toolkits.mplot3d import Axes3D
-
-
-#dropbox_dir = glob(os.path.join('C:/','Users', '*', 'Dropbox'))
-#external_scripts_dir = os.path.join(dropbox_dir[0], 'GitHub', 'DESCRIBING_DATA')
-
-#sys.path.append(os.path.join(external_scripts_dir, 'PLOTTING_SCRIPTS'))
-
+import argparse
 from boxplot_dti_movement import boxplot_dti_movement
 
+#==============================================================================
+def setup_argparser():
+    '''
+    # CODE TO READ ARGUMENTS FROM THE COMMAND LINE AND SET OPTIONS
+    # ALSO INCLUDES SOME HELP TEXT
+    '''
+    
+    # Build a basic parser.
+    help_text = ('Create a quality control report for a bunch of DTI directories')
+    
+    sign_off = 'Author: Kirstie Whitaker <kw401@cam.ac.uk>'
+    
+    parser = argparse.ArgumentParser(description=help_text, epilog=sign_off)
+    
+    # Now add the arguments
+    # Required argument: data_dir
+    parser.add_argument(dest='data_dir', 
+                            type=str,
+                            metavar='data_dir',
+                            help='Data directory')
+    
+    # Required argument: sublist_file
+    parser.add_argument(dest='sublist_file', 
+                            type=str,
+                            metavar='sublist_file',
+                            help='File containing a list of subject IDs')
+
+    # Required argument: DTI identifier
+    parser.add_argument(dest='dti_id', 
+                            type=str,
+                            metavar='dti_id',
+                            help='String containing path that defines the DTI directory in subject dir')
+    
+    arguments = parser.parse_args()
+    
+    return arguments, parser
+
+
 ### DEFINE SOME VARIABLES ###
+# Read in the arguments from argparse
+arguments, parser = setup_argparser()
 
-# Define the data_directory
-# (this could be passed as an argument when you generalize the code)
-data_dir = os.path.join('/work', 'imagingG', 'NSPN', 'workspaces', 'kw401', 'UCHANGE', 'INTERIM_ANALYSIS')
+data_dir = arguments.data_dir
+dti_id = arguments.dti_id
 
-# Define the sublist (again, this could be an argument)
-sublist = np.loadtxt(os.path.join(data_dir, 'sublist'), dtype='string')
-
-# Define the dti identifier. This is the additional path that exists inside the data directory
-# and each individual subject's data folder that holds the dti.nii.gz files.
-# It's passed as an argument to the dti_processing.sh file
-dti_identifier = os.path.join('DTI', 'MRI0')
+# Read in the subjects into a sublist (list) 
+sublist = np.loadtxt(arguments.sublist_file, dtype='string')
 
 # Define the output directory and make it if it doesn't yet exist
 qa_dir = os.path.join(data_dir, 'QA_OUTPUT')
@@ -40,14 +68,14 @@ if not os.path.isdir(qa_dir):
 
 ### SET UP A DATA FRAME ###
 
-# Create an empty dti_dir_list. This wil make it easier for you to loop through all the
+# Create an empty dti_dir_list. This will make it easier for you to loop through all the
 # subjects - you'll loop through this list instead of the subjects and have to add the dti identifier
 # in each time
 dti_dir_list = []
 
 # Fill up the dti_dir_list with all the subjects' DTI dirs
 for sub in sublist:
-    dti_dir_list.append(glob(os.path.join(data_dir, 'SUB_DATA', sub, 'DTI', 'MRI0'))[0])
+    dti_dir_list.append(glob(os.path.join(data_dir, 'SUB_DATA', sub, dti_id))[0])
     
 # Generate an empty data frame for the subject data
 # Define the columns
