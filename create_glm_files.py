@@ -86,15 +86,18 @@ def create_with_covars(EVs_list, EVs_name, covars_list, covars_name_list, cons, 
         # For each of these combinations make .mat and .con files
         for covar in combos:
             
+            # Assume that we're going to create each one
+            no_create=False
+            
             # C is the list of covariates
             C = [covars_list[i] for i in list(covar)]
             
             # Check that there are no empty columns
             # ie: if the covariate is constant then we don't want
             # to include it in the model - it's a waste of time!
-            for col in C:
+            for col in C:                
                 if np.std(col) == 0.0:
-                    print "=======WAAAAAAAAAIT A MINUTE!!!"
+                    no_create=True
 
             # C_name is the name of the covariates in combos
             C_name = [covars_name_list[i] for i in list(covar)]
@@ -124,8 +127,10 @@ def create_with_covars(EVs_list, EVs_name, covars_list, covars_name_list, cons, 
                 EVs_list_with_covars = EVs_list
                 
             # Now create the mat and con files
-            print name
-            create_mat_files(name, EVs_list_with_covars)
-            create_con_files(name, new_cons)
-            if fts:
-                create_fts_files(name, fts)
+            # But only if there are no empty covar columns:
+            if not no_create:
+                print name
+                create_mat_files(name, EVs_list_with_covars)
+                create_con_files(name, new_cons)
+                if fts:
+                    create_fts_files(name, fts)
