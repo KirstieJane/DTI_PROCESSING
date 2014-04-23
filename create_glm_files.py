@@ -96,7 +96,7 @@ def create_with_covars(EVs_list, EVs_name, covars_list, covars_name_list, cons, 
             # ie: if the covariate is constant then we don't want
             # to include it in the model - it's a waste of time!
             for col in C:                
-                if np.std(col) == 0.0:
+                if np.std(col) < 0.00000001:
                     no_create=True
 
             # C_name is the name of the covariates in combos
