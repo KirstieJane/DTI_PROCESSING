@@ -7,11 +7,12 @@
 #                      highres.nii.gz and a text file containing the center
 #                      of mass of this image (called center_of_mass, note the 
 #                      American spelling!) and runs FSL's BET and FAST 
-#                      commands as well as Freesurfer's recon-all.
+#                      commands as well as Freesurfer's recon-all (unless the
+#                      freesurfer_option is set to something other than "yes").
 #
-#              USAGE:  mprage_processing.sh <mprage_dir> <sub_id>
-#                           eg: mprage_processing.sh ${mprage_dir} ${sub_id}
-#                           eg: mprage_processing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE 1106t1
+#              USAGE:  mprage_processing.sh <mprage_dir> <sub_id> <freesurfer_option>
+#                           eg: mprage_processing.sh ${mprage_dir} ${sub_id} ${freesurfer_option}
+#                           eg: mprage_processing.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE 1106t1 no
 #
 #        PARAMETER 1:  mprage_dir (full path)
 #                           If you're using this script as part of another
@@ -22,6 +23,12 @@
 #        PARAMETER 2:  sub_id
 #                           eg: ${subid}
 #                           eg: 1106t1
+#
+#        PARAMETER 3:  freesurfer_option
+#                           Default this is set to yes, if you type anything
+#                           other than yes then recon-all will be skipped
+#                               eg: ${freesurfer_option}
+#                               eg: no 
 #
 #             AUTHOR:  Kirstie Whitaker
 #                          kw401@cam.ac.uk
