@@ -51,9 +51,9 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "registrations.sh <dti_data_folder> <mprage_data_folder> <dti_scan> <eddy_b0_vol>"
-    echo "    eg: registrations.sh \${dti_dir} \${mprage_dir} \${scan} \${b0}"
-    echo "    eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE DTI_2A 14"
+    echo "registrations.sh <dti_data_folder> <mprage_data_folder> <surf_data_folder> <dti_scan> <eddy_b0_vol>"
+    echo "    eg: registrations.sh \${dti_dir} \${mprage_dir} \${surf_dir} \${scan} \${b0}"
+    echo "    eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE /home/kw401/MRIMPACT/ANALYSES/1106/t1/SURFER DTI_2A 14"
     exit
 }
 #------------------------------------------------------------------------------
@@ -70,11 +70,14 @@ if [[ ! -d /${mprage_dir} ]]; then
     dir=`pwd`/${mprage_dir}
 fi
 
-surf_dir=${mprage_dir}/SURF/
+surf_dir=$3
+if [[ ! -d /${surf_dir} ]]; then
+    dir=`pwd`/${surf_dir}
+fi
 
-scan=$3
+scan=$4
 
-eddy_b0_vol=$4
+eddy_b0_vol=$5
 
 # This is a stupid edit for if I'm running the code at the CBU
 if [[ $0 == tcsh ]]; then
