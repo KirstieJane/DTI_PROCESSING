@@ -3,11 +3,12 @@
 #==============================================================================
 #               NAME:  registrations.sh
 #
-#        DESCRIPTION:  This script takes, as an input directory, the
+#        DESCRIPTION:  This script takes, as input directories, the
 #                      individual participant's DTI directory that was passed
-#                      to dti_preprocessing.sh and the MPRAGE directory that
-#                      was passed to mprage_processing.sh. It then creates a 
-#                      REG directory at the same level as the MPRAGE directory
+#                      to dti_preprocessing.sh, the MPRAGE directory that
+#                      was passed to mprage_processing.sh and the SURFER directory
+#                      if freesurfer has been run. It also requires a location
+#                      at which to save the output REG directory.
 #                      
 #                      If an eddy_b0 number is passed as an argument then
 #                      the dti registrations will be in their own directories
@@ -17,9 +18,9 @@
 #                      transformations to get between the following spaces:
 #                      DTI, FSL_highres, Freesurfer, MNI152.
 #
-#              USAGE:  registrations.sh <dti_data_folder> <mprage_data_folder> <dti_run> <eddy_b0_vol>
-#                           eg: registrations.sh ${dti_dir} ${mprage_dir} ${scan} ${b0}
-#                           eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE DTI_2A 14
+#              USAGE:  registrations.sh <dti_data_folder> <mprage_data_folder> <surfer_data_folder> <reg_folder> <dti_run> <eddy_b0_vol>
+#                           eg: registrations.sh ${dti_dir} ${mprage_dir} ${surfer_dir} ${reg_dir} ${scan} ${b0}
+#                           eg: registrations.sh 1106/t1/DTI 1106/t1/MPRAGE 1106/t1/MPRAGE/SURF 1106/t1/REG DTI_2A 14
 #
 #        PARAMETER 1:  DTI data folder (full path)
 #                           If you're using this script as part of another
@@ -33,11 +34,23 @@
 #                           If you're using this script alone
 #                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE
 #
-#        PARAMETER 3:  DTI run
+#        PARAMETER 3:  SURF data folder (full path)
+#                           If you're using this script as part of another
+#                               eg: ${surf_dir}
+#                           If you're using this script alone
+#                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE/SURF
+#
+#        PARAMETER 4:  REG folder (full path)
+#                           If you're using this script as part of another
+#                               eg: ${reg_dir}
+#                           If you're using this script alone
+#                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/REG
+#
+#        PARAMETER 5:  DTI run
 #                           eg: ${scan}
 #                           eg: DTI_2A
 #
-#        PARAMETER 4:  Eddy correct target volume
+#        PARAMETER 6:  Eddy correct target volume
 #                           eg: ${b0}
 #                           eg: 14
 #
@@ -51,9 +64,9 @@
 # Define usage function
 function usage {
     echo "USAGE:"
-    echo "registrations.sh <dti_data_folder> <mprage_data_folder> <surf_data_folder> <dti_scan> <eddy_b0_vol>"
-    echo "    eg: registrations.sh \${dti_dir} \${mprage_dir} \${surf_dir} \${scan} \${b0}"
-    echo "    eg: registrations.sh /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE /home/kw401/MRIMPACT/ANALYSES/1106/t1/SURFER DTI_2A 14"
+    echo "registrations.sh <dti_data_folder> <mprage_data_folder> <surf_data_folder> <reg_folder> <dti_scan> <eddy_b0_vol>"
+    echo "    eg: registrations.sh \${dti_dir} \${mprage_dir} \${surf_dir} \${reg_dir} \${scan} \${b0}"
+    echo "    eg: registrations.sh 1106/t1/DTI 1106/t1/MPRAGE 1106/t1/SURFER 1106/t1/REG DTI_2A 14"
     exit
 }
 #------------------------------------------------------------------------------
@@ -75,9 +88,11 @@ if [[ ! -d /${surf_dir} ]]; then
     dir=`pwd`/${surf_dir}
 fi
 
-scan=$4
+reg_dir=$4
 
-eddy_b0_vol=$5
+scan=$5
+
+eddy_b0_vol=$6
 
 # This is a stupid edit for if I'm running the code at the CBU
 if [[ $0 == tcsh ]]; then
@@ -150,9 +165,7 @@ fi
 echo "DTI_DIR: ${dti_dir}"
 echo "MPRAGE_DIR: ${mprage_dir}"
 echo "SURF_DIR: ${surf_dir}"
-
-# Define the registration directory
-reg_dir=(`dirname ${mprage_dir}`/REG)
+echo "REG_DIR: ${reg_dir}"
 
 # Make the LOGS dir
 logdir=${reg_dir}/LOGS
