@@ -101,6 +101,12 @@ if [[ ! -d ${mprage_dir} ]]; then
     print_usage=1
 fi
 
+# Exit if freesurfer directory doesn't exist
+if [[ ! -d ${surf_dir} ]]; then
+    echo "    No SURF directory"
+    print_usage=1
+fi
+
 # Print the usage if necessary
 if [[ ${print_usage} == 1 ]]; then
     usage
