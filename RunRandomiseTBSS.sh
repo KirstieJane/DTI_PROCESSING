@@ -191,7 +191,8 @@ for group_path in `ls -d ${tbss_dir}/GLM/*`; do
                             -t ${con_file} \
                             ${ftest} \
                             -n ${n_perms} \
-                            --T2 -x ${demean} " >> ${outfile}_randomisecommand.sh
+                            --T2 -x ${demean} \
+                            --glm_output " >> ${outfile}_randomisecommand.sh
                             
                     # If you're Kirstie and on the CBU server then we're going to use
                     # qsub and send this script to the cluster
