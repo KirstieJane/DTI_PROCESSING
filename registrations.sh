@@ -341,13 +341,13 @@ fi
 if [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
     echo "    Registering highres to freesurfer space"
 
-    tkregister2 --mov ${surf_dir}/mri/orig.mgz \
-                --targ ${surf_dir}/mri/rawavg.mgz \
-                --regheader \
-                --reg junk \
-                --fslregout ${reg_dir}/highres_TO_freesurfer.mat \
-                --noedit 
-                
+        tkregister2 --mov ${surf_dir}/mri/orig.mgz \
+                    --targ ${surf_dir}/mri/rawavg.mgz \
+                    --regheader \
+                    --reg junk \
+                    --fslregout ${reg_dir}/freesurfer_TO_highres.mat \
+                    --noedit 
+
 else
     echo "    Highres already registered to freesurfer space"
 
