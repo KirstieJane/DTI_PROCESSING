@@ -419,7 +419,7 @@ fi
 
 #------------------------------------------------------------------------------
 # Concatenate the linear diffusion and highres registrations
-if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat || ! -f ${dti_reg_dir}/MNI152_TO_diffB0.mat ]]; then
+if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat || ! -f ${dti_reg_dir}/freesurfer_TO_diffB0.mat ]]; then
     echo "    Concatenating and inverting remaining transforms"
 
     # diffB0 to freesurfer
