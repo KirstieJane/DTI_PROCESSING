@@ -86,7 +86,7 @@ def setup_argparser():
                             metavar='parcellation_file',
                             help='Parcellation filename')
     
-    # Required argument: parcellation_file
+    # Required argument: white_matter_file
     parser.add_argument(dest='white_matter_file', 
                             type=str,
                             metavar='white_matter_file',
@@ -118,7 +118,7 @@ if not os.path.exists(parcellation_file):
     print "Parcellation file doesn't exist"
     sys.exit()
  
-if not os.path.exists(white_matter_file):
+if not os.path.exists(wm_file):
     print "White matter file doesn't exist"
     sys.exit()
 
