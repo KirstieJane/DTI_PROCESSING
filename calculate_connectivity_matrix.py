@@ -226,7 +226,7 @@ Mdiff[Mdiff<0] = 0
 #=============================================================================
 # Save the connectivity matrices as text files, and as figures
 #=============================================================================
-
+print '\tMaking Pictures'
 for M, name in zip([Msym, Mdir, Mdiff], ['Msym', 'Mdir', 'Mdiff']):
     
     M_text_name = os.path.join(connectivity_dir, '{}.txt'.format(name))
