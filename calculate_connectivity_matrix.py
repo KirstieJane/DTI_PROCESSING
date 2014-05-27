@@ -138,7 +138,8 @@ Mdir_file = os.path.join(connectivity_dir, 'Mdir.txt')
 #=============================================================================
 # Load in the data
 #=============================================================================
-    
+print 'PARCELLATION FILE: {}'.format(parcellation_file)
+
 dwi_img = nib.load(dwi_file)
 dwi_data = dwi_img.get_data()
 
@@ -176,7 +177,7 @@ parcellation_wm_data = parcellation_wm_data.astype(np.int)
 
 if not os.path.exists(Msym_file) and not os.path.exists(Mdir_file):
 
-    print 'calculating peaks'
+    print '\tCalculating peaks'
     csamodel = shm.CsaOdfModel(gtab, 6)
     csapeaks = peaks.peaks_from_model(model=csamodel,
                                       data=dwi_data,
@@ -185,19 +186,22 @@ if not os.path.exists(Msym_file) and not os.path.exists(Mdir_file):
                                       min_separation_angle=45,
                                       mask=wm_data_bin)
                                       
-    print 'tracking'
+    print '\tTracking'
     seeds = utils.seeds_from_mask(parcellation_wm_data, density=2)
     streamline_generator = EuDX(csapeaks.peak_values, csapeaks.peak_indices,
                                 odf_vertices=peaks.default_sphere.vertices,
                                 a_low=.05, step_sz=.5, seeds=seeds)
     affine = streamline_generator.affine
     streamlines = list(streamline_generator)
+else:
+    print '\tTracking already complete'
 
 #=============================================================================
 # Create two connectivity matrices - symmetric and directional
 #=============================================================================
 if not os.path.exists(Msym_file) and not os.path.exists(Mdir_file):
  
+    print '\tCreatingConnectivityMatrix'
     Msym, grouping = utils.connectivity_matrix(streamlines, parcellation_wm_data,
                                                     affine=affine,
                                                     return_mapping=True,
