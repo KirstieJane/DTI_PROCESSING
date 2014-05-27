@@ -80,7 +80,18 @@ def setup_argparser():
                             metavar='dti_dir',
                             help='DTI directory')
     
+    # Required argument: parcellation_file
+    parser.add_argument(dest='parcellation_file', 
+                            type=str,
+                            metavar='parcellation_file',
+                            help='Parcellation filename')
     
+    # Required argument: parcellation_file
+    parser.add_argument(dest='white_matter_file', 
+                            type=str,
+                            metavar='white_matter_file',
+                            help='White matter filename')
+                            
     arguments = parser.parse_args()
     
     return arguments, parser
@@ -92,8 +103,25 @@ def setup_argparser():
 arguments, parser = setup_argparser()
 
 dti_dir = arguments.dti_dir
+parcellation_file = arguments.parcellation_file
+wm_file = arguments.white_matter_file
 
-print dti_dir
+if not os.path.exists(parcellation_file):
+    parcellation_file = os.path.join(dti_dir, parcellation_file)
+
+# Check that the inputs exist:
+if not os.path.isdir(dti_dir):
+    print "DTI directory doesn't exist"
+    sys.exit()
+
+if not os.path.exists(parcellation_file):
+    print "Parcellation file doesn't exist"
+    sys.exit()
+ 
+if not os.path.exists(white_matter_file):
+    print "White matter file doesn't exist"
+    sys.exit()
+
 # Define the output directory and make it if it doesn't yet exist
 connectivity_dir = os.path.join(dti_dir, 'CONNECTIVITY')
 if not os.path.isdir(connectivity_dir):
@@ -102,8 +130,6 @@ if not os.path.isdir(connectivity_dir):
 # Now define a couple of variables
 dwi_file = os.path.join(dti_dir, 'dti_ec.nii.gz')
 mask_file = os.path.join(dti_dir, 'dti_ec_brain.nii.gz')
-wm_file = os.path.join(dti_dir, 'surf_wm_bin.nii.gz')
-parcellation_file = os.path.join(dti_dir, '500.new.aparc_expanded_DTIspace_cortexonly_renumbered.nii.gz')
 bvals_file = os.path.join(dti_dir, 'bvals')
 bvecs_file = os.path.join(dti_dir, 'bvecs') 
 Msym_file = os.path.join(connectivity_dir, 'Msym.txt')
