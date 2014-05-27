@@ -341,12 +341,9 @@ fi
 if [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
     echo "    Registering highres to freesurfer space"
 
-    tkregister2 --mov ${surf_dir}/mri/orig.mgz \
-                --targ ${surf_dir}/mri/rawavg.mgz \
-                --regheader \
-                --reg junk \
-                --fslregout ${reg_dir}/highres_TO_freesurfer.mat \
-                --noedit 
+    flirt -ref ${surf_dir}/mri/T1.nii \
+          -in ${mprage_dir}/highres_brain.nii.gz \
+          -omat ${reg_dir}/highres_TO_freesurfer.mat
                 
 else
     echo "    Highres already registered to freesurfer space"
@@ -358,7 +355,7 @@ if  [[ ! -f ${reg_dir}/highres_TO_freesurfer.mat ]]; then
     echo "    EXITING"
     exit
 
-elif [[ ! -f ${reg_dir}/highres_TO_freesurfer.mat ]]; then
+elif [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
     echo "    Inverting highres to freesurfer transform"
     
     convert_xfm -omat ${reg_dir}/freesurfer_TO_highres.mat \
