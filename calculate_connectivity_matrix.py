@@ -6,21 +6,6 @@ Name: calculate_connectivity_matrix.py
 Created by: Kirstie Whitaker
             kw401@cam.ac.uk
 
-EDIT THIS!
-*This script takes a behavioral data file for MRIMPACT data
-*and a list of mri subjects who have usable data and then
-*creates a plethora of possible design files for randomise
-*analyes in FSL.
-*
-*You could also use these files for feat analyses by copying 
-*the numbers into the "paste" window in the Feat GUI.
-
-*Version 0.1: 3rd April 2013
-*    Currently this script works but it needs to be
-*    tested rigorously. Also it currently uses random data
-*    for cortisol measurements.
-    
-*    TO DO: Include grand mean measurement for Feat analyses
 
 """
 
@@ -193,6 +178,7 @@ if not os.path.exists(Msym_file) and not os.path.exists(Mdir_file):
                                 a_low=.05, step_sz=.5, seeds=seeds)
     affine = streamline_generator.affine
     streamlines = list(streamline_generator)
+    
 else:
     print '\tTracking already complete'
 
