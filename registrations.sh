@@ -341,25 +341,28 @@ fi
 if [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
     echo "    Registering highres to freesurfer space"
 
-    flirt -ref ${surf_dir}/mri/T1.nii \
-          -in ${mprage_dir}/highres_brain.nii.gz \
-          -omat ${reg_dir}/highres_TO_freesurfer.mat
+    tkregister2 --mov ${surf_dir}/mri/orig.mgz \
+                --targ ${surf_dir}/mri/rawavg.mgz \
+                --regheader \
+                --reg junk \
+                --fslregout ${reg_dir}/freesurfer_TO_highres.mat \
+                --noedit 
                 
 else
     echo "    Highres already registered to freesurfer space"
 
 fi
 
-if  [[ ! -f ${reg_dir}/highres_TO_freesurfer.mat ]]; then
+if  [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
     echo "    ERROR: Can't run registration because tkregister2 hasn't been completed"
     echo "    EXITING"
     exit
 
-elif [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
-    echo "    Inverting highres to freesurfer transform"
+elif [[ ! -f ${reg_dir}/highres_TO_freesurfer.mat ]]; then
+    echo "    Inverting freesurfer to highres transform"
     
-    convert_xfm -omat ${reg_dir}/freesurfer_TO_highres.mat \
-                -inverse ${reg_dir}/highres_TO_freesurfer.mat 
+    convert_xfm -omat ${reg_dir}/highres_TO_freesurfer.mat \
+                -inverse ${reg_dir}/freesurfer_TO_highres.mat 
 
 else
     echo "    Inverse freesurfer to highres transform already calculated"
