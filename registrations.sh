@@ -424,8 +424,8 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat || ! -f ${dti_reg_dir}/freesu
 
     # diffB0 to freesurfer
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_freesurfer.mat \
-                -concat ${dti_reg_dir}/diffB0_TO_highres.mat \
-                        ${reg_dir}/highres_TO_freesurfer.mat 
+                -concat ${reg_dir}/highres_TO_freesurfer.mat \
+                        ${dti_reg_dir}/diffB0_TO_highres.mat 
 
     # freesurfer to diffB0
     convert_xfm -omat ${dti_reg_dir}/freesurfer_TO_diffB0.mat \
@@ -433,8 +433,8 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat || ! -f ${dti_reg_dir}/freesu
 
     # diffB0 BBR to freesurfer
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_freesurfer_BBR.mat \
-                -concat ${dti_reg_dir}/diffB0_TO_highres_BBR.mat \
-                        ${reg_dir}/highres_TO_freesurfer.mat 
+                -concat ${reg_dir}/highres_TO_freesurfer.mat \
+                        ${dti_reg_dir}/diffB0_TO_highres_BBR.mat  
 
     # freesurfer to diffB0 BBR
     convert_xfm -omat ${dti_reg_dir}/freesurfer_TO_diffB0_BBR.mat \
@@ -442,12 +442,12 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat || ! -f ${dti_reg_dir}/freesu
 
     # diffB0 to MNI152
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152_1mm.mat \
-                -concat ${dti_reg_dir}/diffB0_TO_highres.mat \
-                        ${reg_dir}/highres_TO_MNI152_1mm.mat 
+                -concat ${reg_dir}/highres_TO_MNI152_1mm.mat \
+                        ${dti_reg_dir}/diffB0_TO_highres.mat 
 
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152_2mm.mat \
-                -concat ${dti_reg_dir}/diffB0_TO_highres.mat \
-                        ${reg_dir}/highres_TO_MNI152_2mm.mat 
+                -concat ${reg_dir}/highres_TO_MNI152_2mm.mat \
+                        ${dti_reg_dir}/diffB0_TO_highres.mat
 
     # MNI152 to diffB0
     convert_xfm -omat ${dti_reg_dir}/MNI152_1mm_TO_diffB0.mat \
@@ -459,12 +459,12 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat || ! -f ${dti_reg_dir}/freesu
 
     # diffB0 to MNI152 BBR
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152_1mm_BBR.mat \
-                -concat ${dti_reg_dir}/diffB0_TO_highres_BBR.mat \
-                        ${reg_dir}/highres_TO_MNI152_1mm.mat 
+                -concat ${reg_dir}/highres_TO_MNI152_1mm.mat \
+                        ${dti_reg_dir}/diffB0_TO_highres_BBR.mat
                         
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152_2mm_BBR.mat \
-                -concat ${dti_reg_dir}/diffB0_TO_highres_BBR.mat \
-                        ${reg_dir}/highres_TO_MNI152_2mm.mat 
+                -concat ${reg_dir}/highres_TO_MNI152_2mm.mat \
+                        ${dti_reg_dir}/diffB0_TO_highres_BBR.mat
 
     # MNI152 to diffB0 BBR
     convert_xfm -omat ${dti_reg_dir}/MNI152_1mm_TO_diffB0_BBR.mat \
