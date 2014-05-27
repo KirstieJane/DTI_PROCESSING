@@ -346,7 +346,7 @@ if [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
                 --regheader \
                 --reg junk \
                 --fslregout ${reg_dir}/freesurfer_TO_highres.mat \
-                --noedit 
+                --noedit > ${reg_dir}/LOGS/tkregister_log
                 
 else
     echo "    Highres already registered to freesurfer space"
