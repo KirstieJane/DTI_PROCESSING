@@ -345,7 +345,7 @@ if [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
                 --targ ${surf_dir}/mri/rawavg.mgz \
                 --regheader \
                 --reg junk \
-                --fslregout ${reg_dir}/freesurfer_TO_highres.mat \
+                --fslregout ${reg_dir}/highres_TO_freesurfer.mat \
                 --noedit 
                 
 else
@@ -353,16 +353,16 @@ else
 
 fi
 
-if  [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
+if  [[ ! -f ${reg_dir}/highres_TO_freesurfer.mat ]]; then
     echo "    ERROR: Can't run registration because tkregister2 hasn't been completed"
     echo "    EXITING"
     exit
 
 elif [[ ! -f ${reg_dir}/highres_TO_freesurfer.mat ]]; then
-    echo "    Inverting freesurfer to highres transform"
+    echo "    Inverting highres to freesurfer transform"
     
-    convert_xfm -omat ${reg_dir}/highres_TO_freesurfer.mat \
-                -inverse ${reg_dir}/freesurfer_TO_highres.mat 
+    convert_xfm -omat ${reg_dir}/freesurfer_TO_highres.mat \
+                -inverse ${reg_dir}/highres_TO_freesurfer.mat 
 
 else
     echo "    Inverse freesurfer to highres transform already calculated"
