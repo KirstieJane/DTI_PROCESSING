@@ -29,16 +29,17 @@ s.Diam=[]; s.Diamrand=[]; s.Bass=[]; s.Bassrand=[];
 s.nspn_id=[];
 A=[]; R=[];
 
-
+% Create a counter that will increase as you fill your structure (s)
+x=1
 
 % Loop through subjects
-for x = 3:length(subs)
+for i = 3:length(subs)
     
-    dirname = fullfile(subs(x).name, 'DTI/MRI0/CONNECTIVITY')
+    dirname = fullfile(subs(i).name, 'DTI/MRI0/CONNECTIVITY')
     
     if exist(fullfile(dirname,'Msym.txt'), 'file') == 2
         cd (dirname)
-        s.nspn_id=str2num(subs(x).name);
+        s.nspn_id(x,1)=str2num(subs(i).name);
         Co = load('Msym.txt');
 
         %Take absolute value of Correlations and set diagonal to ones:
@@ -64,10 +65,12 @@ for x = 3:length(subs)
 
         g=1;%we're doing it at a single cost (given by DTI)
         R = randmio_und_connected(A, 5); %make randomized version of the net
-        s.cost(g)=enum/(n*(n-1));
+        s.cost(x, g)=enum/(n*(n-1));
 
         gmeasure; %%THIS FUNCTION CALCULATES THE MEASURES WE WANT
 
+        % Increase your counter and move on to the next subject
+        x = x + 1
         cd ../../../..
     end
 end
