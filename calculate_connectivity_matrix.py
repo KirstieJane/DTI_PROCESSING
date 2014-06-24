@@ -40,6 +40,8 @@ import networkx as nx
 
 import matplotlib.colors as colors
 
+from condition_seeds import condition_seeds
+
 #=============================================================================
 # FUNCTIONS
 #=============================================================================
@@ -133,10 +135,15 @@ mask_data = mask_img.get_data().astype(np.int)
 mask_data_bin = np.copy(mask_data)
 mask_data_bin[mask_data_bin > 0] = 1
 
+wm_img = nib.load(wm_file)
+wm_data = wm_img.get_data()
+wm_data_bin = np.copy(wm_data)
+wm_data_bin[wm_data_bin > 0] = 1
+
 # Mask the dwi_data so that you're only investigating voxels inside the brain!
-dwi_data = dwi_data * mask_data_bin.reshape([mask_data_bin.shape[0], 
-                                             mask_data_bin.shape[1], 
-                                             mask_data_bin.shape[2],
+dwi_data = dwi_data * wm_data_bin.reshape([wm_data_bin.shape[0], 
+                                             wm_data_bin.shape[1], 
+                                             wm_data_bin.shape[2],
                                              1])
 
 parcellation_img = nib.load(parcellation_file)
@@ -173,9 +180,10 @@ if not os.path.exists(Msym_file) and not os.path.exists(Mdir_file):
                                       
     print '\tTracking'
     seeds = utils.seeds_from_mask(parcellation_wm_data, density=2)
+    condition_seeds = condition_seeds(seeds, np.eye(4), csapeaks.peak_values.shape[:3])
     streamline_generator = EuDX(csapeaks.peak_values, csapeaks.peak_indices,
                                 odf_vertices=peaks.default_sphere.vertices,
-                                a_low=.05, step_sz=.5, seeds=seeds)
+                                a_low=.05, step_sz=.5, seeds=condition_seeds)
     affine = streamline_generator.affine
     streamlines = list(streamline_generator)
     
