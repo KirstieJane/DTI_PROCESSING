@@ -221,49 +221,55 @@ Mdiff[Mdiff<0] = 0
 # Save the connectivity matrices as text files, and as figures
 #=============================================================================
 print '\tMaking Pictures'
+
 for M, name in zip([Msym, Mdir, Mdiff], ['Msym', 'Mdir', 'Mdiff']):
     
+    # Save the matrix as a text file
     M_text_name = os.path.join(connectivity_dir, '{}.txt'.format(name))
+    if not os.path.exists(M_text_name):
     
-    np.savetxt(M_text_name,
-                   M[1:,1:],
-                   fmt='%.5f',
-                   delimiter='\t',
-                   newline='\n')
+        np.savetxt(M_text_name,
+                       M[1:,1:],
+                       fmt='%.5f',
+                       delimiter='\t',
+                       newline='\n')
 
+    # Make a png image of the matrix
     M_fig_name = os.path.join(connectivity_dir, '{}.png'.format(name))
+    if not os.path.exists(M_fig_name):
 
-    fig, ax = plt.subplots(figsize=(4,4))    
-    
-    # Plot the matrix on a log scale
-    axM = ax.imshow(np.log1p(M[1:,1:]), 
-                    interpolation='nearest',
-                    cmap='jet')
-    
-    # Add a colorbar
-    cbar = fig.colorbar(axM)
+        fig, ax = plt.subplots(figsize=(4,4))    
+        
+        # Plot the matrix on a log scale
+        axM = ax.imshow(np.log1p(M[1:,1:]), 
+                        interpolation='nearest',
+                        cmap='jet')
+        
+        # Add a colorbar
+        cbar = fig.colorbar(axM)
 
-    fig.savefig(M_fig_name, bbox_inches=0, dpi=600)
-    
+        fig.savefig(M_fig_name, bbox_inches=0, dpi=600)
 
-fig, ax = plt.subplots(1,3, figsize=(12, 4))
-
-M0 = ax[0].imshow(np.log1p(Msym[1:,1:]), interpolation='nearest', cmap='jet', 
-                vmin=0, vmax=np.log1p(1000))
-M1 = ax[1].imshow(np.log1p(Mdir[1:,1:]), interpolation='nearest', cmap='jet',
-                vmin=0, vmax=np.log1p(1000))
-M2 = ax[2].imshow(np.log1p(Mdiff[1:,1:]), interpolation='nearest', cmap='jet',
-                vmin=0, vmax=np.log1p(1000))
-
-ax[0].set_title('Symmetric')
-ax[1].set_title('Directed')
-ax[2].set_title('Difference\nA --> B and B --> A')
-
-plt.tight_layout()
-
+# Save an image of all three matrices        
 fig_name = os.path.join(connectivity_dir, 'AllMatrices.png')
+if not os.path.exists(fig_name):
+    # Now make the plot of all three figures
+    fig, ax = plt.subplots(1,3, figsize=(12, 4))
 
-fig.savefig(fig_name, bbox_inches=0, dpi=600)
+    M0 = ax[0].imshow(np.log1p(Msym[1:,1:]), interpolation='nearest', cmap='jet', 
+                    vmin=0, vmax=np.log1p(1000))
+    M1 = ax[1].imshow(np.log1p(Mdir[1:,1:]), interpolation='nearest', cmap='jet',
+                    vmin=0, vmax=np.log1p(1000))
+    M2 = ax[2].imshow(np.log1p(Mdiff[1:,1:]), interpolation='nearest', cmap='jet',
+                    vmin=0, vmax=np.log1p(1000))
+
+    ax[0].set_title('Symmetric')
+    ax[1].set_title('Directed')
+    ax[2].set_title('Difference\nA --> B and B --> A')
+
+    plt.tight_layout()
+
+    fig.savefig(fig_name, bbox_inches=0, dpi=600)
 
 #------------------------------------------------
 ### THE END ###
