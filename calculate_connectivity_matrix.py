@@ -195,7 +195,11 @@ else:
 #=============================================================================
 if not os.path.exists(Msym_file) and not os.path.exists(Mdir_file):
  
+<<<<<<< HEAD
     print '\tCreating Connectivity Matrix'
+=======
+    print '\tCreatingConnectivityMatrix'
+>>>>>>> c8759e622742fb8bef2b3061dfa46d51702d20e4
     Msym, grouping = utils.connectivity_matrix(streamlines, parcellation_wm_data,
                                                     affine=affine,
                                                     return_mapping=True,
