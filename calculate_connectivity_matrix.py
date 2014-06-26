@@ -196,7 +196,11 @@ else:
 if not os.path.exists(Msym_file) and not os.path.exists(Mdir_file):
  
 <<<<<<< HEAD
+<<<<<<< HEAD
     print '\tCreating Connectivity Matrix'
+=======
+    print '\tCreatingConnectivityMatrix'
+>>>>>>> c8759e622742fb8bef2b3061dfa46d51702d20e4
 =======
     print '\tCreatingConnectivityMatrix'
 >>>>>>> c8759e622742fb8bef2b3061dfa46d51702d20e4
