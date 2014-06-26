@@ -154,6 +154,7 @@ wm_data = wm_img.get_data()
 
 bvals, bvecs = read_bvals_bvecs(bvals_file, bvecs_file)
 gtab = gradient_table(bvals, bvecs)
+
 mask_data_bin[mask_data_bin > 0] = 1
 wm_data_bin = np.copy(wm_data)
 wm_data_bin[wm_data_bin > 0] = 1
