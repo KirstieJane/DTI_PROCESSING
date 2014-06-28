@@ -65,8 +65,8 @@ def setup_argparser():
     parser.add_argument('--no_cost_box', 
                             dest='no_cost_box',
                             help='do not show cost in text box',
-                            action='store_false',
-                            default=True)
+                            action='store_true',
+                            default=False)
                             
     arguments = parser.parse_args()
     
@@ -102,9 +102,19 @@ n, bins, patches = ax.hist(M_triu[M_triu>0],
                             range=(hist_min,hist_max), 
                             color=hist_color)
 
+ax.set_xlim([hist_min, hist_max])
+ax.set_xlabel('Connection weight')
+ax.set_ylabel('Frequency (log scale)')
+
+# Add in the cost in the top right corner                   
 if not arguments.no_cost_box:
-    ax.text(0.95, 0.95, 'cost = {:.2f}%'.format(cost*100), transform=ax.transAxes, fontsize=14,
-        verticalalignment='top', bbox=props)
+    ax.text(0.95, 0.95, 
+            'cost = {:.2f}%'.format(cost*100), 
+            transform=ax.transAxes,
+            horizontalalignment='right',
+            verticalalignment='top')
         
+plt.tight_layout()
+
 fig.savefig(M_fig_name, bbox_inches=0, dpi=600)
 
