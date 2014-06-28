@@ -42,7 +42,7 @@ for i = 3:length(subs)
         s.nspn_id(x,1)=str2num(subs(i).name);
         Co = load('Msym.txt');
 
-        %Take absolute value of Correlations and set diagonal to ones:
+        %Take absolute value of Correlations and set diagonal to zeros:
         n=size(Co,1);
         Co=abs(Co);      %%%%%%%%%%%%%%%%%%%%%%%%% TAKING ABS VALUE 
         Co(1:n+1:n*n)=0; %%%%%%%%%%%%%%%%%%%%%%%%% ZEROS ON DIAGONAL 
