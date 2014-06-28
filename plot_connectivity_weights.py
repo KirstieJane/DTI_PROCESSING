@@ -31,7 +31,7 @@ def setup_argparser():
     parser = argparse.ArgumentParser(description=help_text, epilog=sign_off)
     
     # Now add the arguments
-    # Required argument: dti_dir
+    # Required argument: M_file
     parser.add_argument('M_file',
                             type=str,
                             metavar='M_file',
@@ -92,7 +92,6 @@ M_triu = np.triu(M, 1)
 # Calculate the density (cost)
 n = M.shape[0]
 cost = np.count_nonzero(M) / np.float(n * (n-1))
-print np.count_nonzero(M)
 
 # Create a histogram of all (non-zero) connections
 M_fig_name = M_file.replace('.txt', '_weights.png')
