@@ -92,7 +92,6 @@ M_triu = np.triu(M, 1)
 # Calculate the density (cost)
 n = M.shape[0]
 cost = (np.count_nonzero(M_triu) * 2) / np.float(n * (n-1))
-print cost
 
 # Create a histogram of all (non-zero) connections
 M_fig_name = M_file.replace('.txt', '_weights.png')
