@@ -51,12 +51,19 @@ def setup_argparser():
                             help='histogram maximum value',
                             default=300)
                             
-    # Optional argument: maximum
+    # Optional argument: color
     parser.add_argument(dest='hist_color', 
                             type=str,
                             metavar='histogram color',
                             help='histogram color',
                             default='SteelBlue')
+
+    # Optional argument: no_cost_box
+    parser.add_argument(dest='no_cost_box', 
+                            type=str,
+                            metavar='cost box',
+                            help='do not show cost in text box',
+                            action='store_false')
                             
     arguments = parser.parse_args()
     
@@ -91,7 +98,9 @@ n, bins, patches = ax.hist(M_triu[M_triu>0],
                             log=True, 
                             range=(0,300), 
                             color=hist_color)
-ax.text(0.95, 0.95, 'cost = {:.2f}%'.format(cost*100), transform=ax.transAxes, fontsize=14,
+
+if not arguments.no_cost_box:
+    ax.text(0.95, 0.95, 'cost = {:.2f}%'.format(cost*100), transform=ax.transAxes, fontsize=14,
         verticalalignment='top', bbox=props)
         
 fig.savefig(M_fig_name, bbox_inches=0, dpi=600)
