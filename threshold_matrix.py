@@ -89,9 +89,11 @@ def threshold_Mtriu(M_triu, n_keep):
 
 def save_mat(M, M_text_name):
     # Save the matrix as a text file
+    # NOTE THAT THIS IS NOT THE SAME
+    # COMMAND AS IN calculate_connectivity_matrix.py
     if not os.path.exists(M_text_name):
         np.savetxt(M_text_name,
-                       M[1:,1:],
+                       M[:,:],
                        fmt='%.5f',
                        delimiter='\t',
                        newline='\n')
@@ -100,11 +102,13 @@ def save_mat(M, M_text_name):
 
 def save_png(M, M_fig_name):
     # Make a png image of the matrix
+    # NOTE THAT THIS IS NOT THE SAME
+    # COMMAND AS IN calculate_connectivity_matrix.py
     if not os.path.exists(M_fig_name):
 
         fig, ax = plt.subplots(figsize=(4,4))    
         # Plot the matrix on a log scale
-        axM = ax.imshow(np.log1p(M[1:,1:]), 
+        axM = ax.imshow(np.log1p(M[:,:]), 
                         interpolation='nearest',
                         cmap='jet')
         
@@ -141,5 +145,8 @@ thr_M[di] = M[di]
 name = '_thrNkeep{:05d}.txt'.format(n_keep)
 M_text_name = M_file.replace('.txt', name)
 save_mat(M, M_text_name)
+M_png_name = M_text_name.replace('.txt', '.png')
+save_png(M, M_png_name)
+
 
 
