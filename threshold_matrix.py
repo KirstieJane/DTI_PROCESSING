@@ -131,7 +131,7 @@ M_triu = np.triu(M, 1)
 thr_M_triu = threshold_Mtriu(M_triu, n_keep)
 
 # Save the matrix as a text file
-name = '_thrCost{:04.0f}.txt'.format(cost*1000)
+name = '_thrNkeep{:05d}.txt'.format(n_keep)
 M_text_name = M_file.replace('.txt', name)
 save_mat(M, M_text_name)
 
