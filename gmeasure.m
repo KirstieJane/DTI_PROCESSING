@@ -3,15 +3,16 @@
         %%%%%%%%%%% Degrees
         deg=degrees_und(A);
         degr=degrees_und(R);
-        s.k(x,g)=mean(deg);
+        s.kmean(x,g)=mean(deg);
+        s.k(x,g)=deg;
         
         %%%%%%%%%%%% Assortativity
         s.a(x,g)=assortativity_bin(A,0); %weights are discarded even if they exist
         s.arand(x,g)=assortativity_bin(R,0);
         
         %%%%%%%%%%%% Modularity
-        [Com s.M(x,g)]=modularity_und(A);
-        [Comr s.Mrand(x,g)]=modularity_und(R);
+        [Com s.M(x,g)]=modularity_louvain_und(A);
+        [Comr s.Mrand(x,g)]=modularity_louvain_und(R);
         
         
         %%%%%%%%%%%% Clustering
