@@ -45,7 +45,7 @@ for i = 3:length(subs)
         %Take absolute value of Correlations and set diagonal to ones:
         n=size(Co,1);
         Co=abs(Co);      %%%%%%%%%%%%%%%%%%%%%%%%% TAKING ABS VALUE 
-        Co(1:n+1:n*n)=1; %%%%%%%%%%%%%%%%%%%%%%%%% ONES ON DIAGONAL 
+        Co(1:n+1:n*n)=0; %%%%%%%%%%%%%%%%%%%%%%%%% ZEROS ON DIAGONAL 
 
         enum=length(find(Co));
 
