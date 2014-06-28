@@ -4,7 +4,7 @@
         deg=degrees_und(A);
         degr=degrees_und(R);
         s.kmean(x,g)=mean(deg);
-        s.k(x,g)=deg;
+        s.k(x,g,1:size(A))=(deg);
         
         %%%%%%%%%%%% Assortativity
         s.a(x,g)=assortativity_bin(A,0); %weights are discarded even if they exist
