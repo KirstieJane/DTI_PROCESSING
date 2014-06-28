@@ -83,6 +83,35 @@ def setup_argparser():
     
     return arguments, parser
 
+    
+#-----------------------------------------------------------------------------
+
+def save_mat(M, M_text_name):
+    # Save the matrix as a text file
+    if not os.path.exists(M_text_name):
+        np.savetxt(M_text_name,
+                       M[1:,1:],
+                       fmt='%.5f',
+                       delimiter='\t',
+                       newline='\n')
+
+#-----------------------------------------------------------------------------
+
+def save_png(M, M_fig_name):
+    # Make a png image of the matrix
+    if not os.path.exists(M_fig_name):
+
+        fig, ax = plt.subplots(figsize=(4,4))    
+        # Plot the matrix on a log scale
+        axM = ax.imshow(np.log1p(M[1:,1:]), 
+                        interpolation='nearest',
+                        cmap='jet')
+        
+        # Add a colorbar
+        cbar = fig.colorbar(axM)
+
+        fig.savefig(M_fig_name, bbox_inches=0, dpi=600)
+
 #=============================================================================
 # Define some variables
 #=============================================================================
@@ -226,29 +255,11 @@ for M, name in zip([Msym, Mdir, Mdiff], ['Msym', 'Mdir', 'Mdiff']):
     
     # Save the matrix as a text file
     M_text_name = os.path.join(connectivity_dir, '{}.txt'.format(name))
-    if not os.path.exists(M_text_name):
-    
-        np.savetxt(M_text_name,
-                       M[1:,1:],
-                       fmt='%.5f',
-                       delimiter='\t',
-                       newline='\n')
+    save_mat(M, M_text_name)
 
     # Make a png image of the matrix
     M_fig_name = os.path.join(connectivity_dir, '{}.png'.format(name))
-    if not os.path.exists(M_fig_name):
-
-        fig, ax = plt.subplots(figsize=(4,4))    
-        
-        # Plot the matrix on a log scale
-        axM = ax.imshow(np.log1p(M[1:,1:]), 
-                        interpolation='nearest',
-                        cmap='jet')
-        
-        # Add a colorbar
-        cbar = fig.colorbar(axM)
-
-        fig.savefig(M_fig_name, bbox_inches=0, dpi=600)
+    save_png(M, M_fig_name)
 
 # Save an image of all three matrices        
 fig_name = os.path.join(connectivity_dir, 'AllMatrices.png')

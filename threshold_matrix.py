@@ -4,6 +4,9 @@
 
 '''
 Threshold matrices by a certain cost
+It's important to give it an integer number of
+elements to keep though as the rounding causes
+difficulty calculating the correct value
 '''
 
 #=============================================================================
@@ -47,6 +50,8 @@ def setup_argparser():
     
     return arguments, parser
 
+#-----------------------------------------------------------------------------
+    
 def threshold_Mtriu(M_triu, n_keep):
 
     print 'n_keep {}'.format(n_keep)
@@ -78,6 +83,34 @@ def threshold_Mtriu(M_triu, n_keep):
     thresh_M_triu = M_triu_unzip.reshape(M_triu.shape)
 
     return thresh_M_triu
+
+#-----------------------------------------------------------------------------
+
+def save_mat(M, M_text_name):
+    # Save the matrix as a text file
+    if not os.path.exists(M_text_name):
+        np.savetxt(M_text_name,
+                       M[1:,1:],
+                       fmt='%.5f',
+                       delimiter='\t',
+                       newline='\n')
+
+#-----------------------------------------------------------------------------
+
+def save_png(M, M_fig_name):
+    # Make a png image of the matrix
+    if not os.path.exists(M_fig_name):
+
+        fig, ax = plt.subplots(figsize=(4,4))    
+        # Plot the matrix on a log scale
+        axM = ax.imshow(np.log1p(M[1:,1:]), 
+                        interpolation='nearest',
+                        cmap='jet')
+        
+        # Add a colorbar
+        cbar = fig.colorbar(axM)
+
+        fig.savefig(M_fig_name, bbox_inches=0, dpi=600)
     
 #=============================================================================
 # Define some variables
@@ -95,6 +128,11 @@ M = np.loadtxt(M_file)
 M_triu = np.triu(M, 1)
 
 # Threshold M_triu
-thresh_M_triu = threshold_Mtriu(M_triu, n_keep)
+thr_M_triu = threshold_Mtriu(M_triu, n_keep)
+
+# Save the matrix as a text file
+name = '_thrCost{:04.0f}.txt'.format(cost*1000)
+M_text_name = os.path.join(connectivity_dir, M_file.replace('.txt', name)
+save_mat(M, M_text_name)
 
 
