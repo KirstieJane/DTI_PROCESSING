@@ -99,7 +99,7 @@ M_fig_name = M_file.replace('.txt', '_weights.png')
 fig, ax = plt.subplots(figsize=(4,4))    
 n, bins, patches = ax.hist(M_triu[M_triu>0], 
                             log=True, 
-                            range=(0,300), 
+                            range=(hist_min,hist_max), 
                             color=hist_color)
 
 if not arguments.no_cost_box:
