@@ -132,7 +132,7 @@ thr_M_triu = threshold_Mtriu(M_triu, n_keep)
 
 # Save the matrix as a text file
 name = '_thrCost{:04.0f}.txt'.format(cost*1000)
-M_text_name = os.path.join(connectivity_dir, M_file.replace('.txt', name)
+M_text_name = M_file.replace('.txt', name)
 save_mat(M, M_text_name)
 
 
