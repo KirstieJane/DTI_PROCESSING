@@ -15,6 +15,7 @@ difficulty calculating the correct value
 import numpy as np
 import matplotlib.pylab as plt
 import argparse
+import os
 
 #=============================================================================
 # FUNCTIONS
