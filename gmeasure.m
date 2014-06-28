@@ -12,7 +12,7 @@
         
         %%%%%%%%%%%% Modularity
         [Com s.M(x,g)]=modularity_louvain_und(A);
-        [Comr s.Mrand(x,g)]=modularity_louvain_und(R);
+        %[Comr s.Mrand(x,g)]=modularity_louvain_und(R);
         
         
         %%%%%%%%%%%% Clustering
