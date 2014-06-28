@@ -38,10 +38,10 @@ def setup_argparser():
                             metavar='M_file',
                             help='Matrix (text file)')
         
-    # Required argument: n_keep
-    parser.add_argument('n_keep',
-                            type=int,
-                            help='number of highest weights to keep **IN THE TOP TRIANGLE**')
+    # Required argument: cost
+    parser.add_argument('cost',
+                            type=float,
+                            help='target cost')
                             
     arguments = parser.parse_args()
     
@@ -86,13 +86,17 @@ def threshold_Mtriu(M_triu, n_keep):
 arguments, parser = setup_argparser()
 
 M_file = arguments.M_file
-n_keep = arguments.n_keep
+cost = arguments.cost
 
 # Load in the matrix
 M = np.loadtxt(M_file)
 
 # Zero out the lower triangle and the diagonal
 M_triu = np.triu(M, 1)
+
+# Calculate the number of elements to keep
+n = M.shape[0]
+n_keep = cost * (n * (n-1)) * 0.5
 
 # Threshold M_triu
 thresh_M_triu = threshold_Mtriu(M_triu, n_keep)
