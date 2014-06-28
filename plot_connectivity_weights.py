@@ -35,19 +35,22 @@ def setup_argparser():
     parser.add_argument(dest='M_file', 
                             type=str,
                             metavar='M_file',
+                            required=True,
                             help='Matrix (text file)')
         
     # Optional argument: minimum
     parser.add_argument(dest='hist_min', 
                             type=float,
-                            metavar='hist min value',
+                            metavar='hist_min',
+                            required=False,
                             help='histogram minimum value',
                             default=0.0)
 
     # Optional argument: maximum
     parser.add_argument(dest='hist_max', 
                             type=float,
-                            metavar='hist max value',
+                            metavar='hist_max',
+                            required=False,
                             help='histogram maximum value',
                             default=300)
                             
@@ -55,12 +58,14 @@ def setup_argparser():
     parser.add_argument(dest='hist_color', 
                             type=str,
                             metavar='histogram color',
+                            required=False,
                             help='histogram color',
                             default='SteelBlue')
 
     # Optional argument: no_cost_box
-    parser.add_argument(dest='no_cost_box', 
+    parser.add_argument(dest='--no_cost_box', 
                             help='do not show cost in text box',
+                            required=False,
                             action='store_false')
                             
     arguments = parser.parse_args()
