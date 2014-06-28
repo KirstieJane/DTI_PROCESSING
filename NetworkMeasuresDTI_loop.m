@@ -22,15 +22,15 @@ addpath(genpath('/work/imagingG/NSPN/workspaces/kw401/UCHANGE/INTERIM_ANALYSIS/S
 addpath(genpath('/home/kw401/MATLAB_TOOLBOXES/'))
 
 %Declare the variables to store all measures that will be used
-s.cost=[]; s.k=[]; s.a=[]; s.arand=[]; s.M=[]; s.Mrand=[];
+s.cost=[]; s.k=[]; s.kmean=[]; s.a=[]; s.arand=[]; s.M=[]; s.Mrand=[];
 s.C=[]; s.Crand=[]; s.L=[]; s.Lrand=[]; s.Sigma=[]; 
 s.E=[]; s.Erand=[]; s.CE=[]; s.CErand=[];
 s.Diam=[]; s.Diamrand=[]; s.Bass=[]; s.Bassrand=[];
-s.nspn_id=[];
+s.nspn_id=[]; 
 A=[]; R=[];
 
 % Create a counter that will increase as you fill your structure (s)
-x=1
+x=1;
 
 % Loop through subjects
 for i = 3:length(subs)
@@ -70,7 +70,7 @@ for i = 3:length(subs)
         gmeasure; %%THIS FUNCTION CALCULATES THE MEASURES WE WANT
 
         % Increase your counter and move on to the next subject
-        x = x + 1
+        x = x + 1;
         cd ../../../..
     end
 end
