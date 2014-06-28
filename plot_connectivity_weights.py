@@ -10,7 +10,7 @@ Connectivity plots for a matrix
 #=============================================================================
 import numpy as np
 import matplotlib.pylab as plt
-
+import argparse
 
 #=============================================================================
 # FUNCTIONS
