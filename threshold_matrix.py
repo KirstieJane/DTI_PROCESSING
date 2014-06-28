@@ -144,9 +144,9 @@ thr_M[di] = M[di]
 # Save the matrix as a text file
 name = '_thrNkeep{:05d}.txt'.format(n_keep)
 M_text_name = M_file.replace('.txt', name)
-save_mat(M, M_text_name)
+save_mat(thr_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
-save_png(M, M_png_name)
+save_png(thr_M, M_png_name)
 
 
 
