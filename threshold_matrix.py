@@ -136,8 +136,9 @@ M_triu = np.triu(M, 1)
 thr_M_triu = threshold_Mtriu(M_triu, n_keep)
 
 # Now reflect that matrix into the lower triangle
-thr_M = thr_M_triu * thr_M_triu.T
-# and add back in the diagonal
+# and add them together
+thr_M = thr_M_triu + thr_M_triu.T
+# Make sure that the diagonal is the original
 di = np.diag_indices(M.shape[0])
 thr_M[di] = M[di]
 
