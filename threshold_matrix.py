@@ -131,6 +131,10 @@ M_triu = np.triu(M, 1)
 # Threshold M_triu
 thr_M_triu = threshold_Mtriu(M_triu, n_keep)
 
+# Now reflect that matrix into the lower triangle
+# and add back in the diagonal
+M = thr_M_triu *
+
 # Save the matrix as a text file
 name = '_thrNkeep{:05d}.txt'.format(n_keep)
 M_text_name = M_file.replace('.txt', name)
