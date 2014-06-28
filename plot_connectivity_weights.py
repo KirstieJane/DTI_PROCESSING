@@ -103,7 +103,7 @@ n, bins, patches = ax.hist(M_triu[M_triu>0],
                             color=hist_color)
 
 ax.set_xlim([hist_min, hist_max])
-ax.set_ylim([0, 10000])
+ax.set_ylim([1, 10000])
 ax.set_xlabel('Connection weight')
 ax.set_ylabel('Frequency (log scale)')
 
