@@ -35,7 +35,6 @@ def setup_argparser():
     parser.add_argument(dest='M_file', 
                             type=str,
                             metavar='M_file',
-                            required=True,
                             help='Matrix (text file)')
         
     # Optional argument: minimum
