@@ -132,8 +132,10 @@ M_triu = np.triu(M, 1)
 thr_M_triu = threshold_Mtriu(M_triu, n_keep)
 
 # Now reflect that matrix into the lower triangle
+thr_M = thr_M_triu * thr_M_triu.T
 # and add back in the diagonal
-M = thr_M_triu *
+di = np.diag_indices(M.shape[0])
+thr_M[di] = M[di]
 
 # Save the matrix as a text file
 name = '_thrNkeep{:05d}.txt'.format(n_keep)
