@@ -60,7 +60,6 @@ def setup_argparser():
 
     # Optional argument: no_cost_box
     parser.add_argument(dest='no_cost_box', 
-                            type=str,
                             metavar='cost box',
                             help='do not show cost in text box',
                             action='store_false')
