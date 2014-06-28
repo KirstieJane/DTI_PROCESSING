@@ -16,6 +16,61 @@ import argparse
 # FUNCTIONS
 #=============================================================================
 
+# Set up the argparser so you can read arguments from the command line
+def setup_argparser():
+    '''
+    # Code to read in arguments from the command line
+    # Also allows you to change some settings
+    '''
+    
+    # Build a basic parser.
+    help_text = ('Create a histogram of weights from a connectivity matrix')
+    
+    sign_off = 'Author: Kirstie Whitaker <kw401@cam.ac.uk>'
+    
+    parser = argparse.ArgumentParser(description=help_text, epilog=sign_off)
+    
+    # Now add the arguments
+    # Required argument: dti_dir
+    parser.add_argument('M_file',
+                            type=str,
+                            metavar='M_file',
+                            help='Matrix (text file)')
+        
+    # Optional argument: minimum
+    parser.add_argument('--hist_min',
+                            dest='hist_min', 
+                            type=float,
+                            help='histogram minimum value',
+                            default=0.0,
+                            action='store')
+
+    # Optional argument: maximum
+    parser.add_argument('--hist_max',
+                            dest='hist_max', 
+                            type=float,
+                            help='histogram maximum value',
+                            default=300,
+                            action='store')
+                            
+    # Optional argument: color
+    parser.add_argument('--hist_color',
+                            dest='hist_color',
+                            type=str,
+                            help='histogram color',
+                            default='SteelBlue',
+                            action='store')
+
+    # Optional argument: no_cost_box
+    parser.add_argument('--no_cost_box', 
+                            dest='no_cost_box',
+                            help='do not show cost in text box',
+                            action='store_false',
+                            default=True)
+                            
+    arguments = parser.parse_args()
+    
+    return arguments, parser
 
 #=============================================================================
 # Define some variables
