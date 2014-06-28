@@ -38,7 +38,7 @@ def setup_argparser():
                             help='Matrix (text file)')
         
     # Optional argument: minimum
-    parser.add_argument(dest='hist_min', 
+    parser.add_argument(dest='--hist_min', 
                             type=float,
                             metavar='hist_min',
                             required=False,
@@ -46,7 +46,7 @@ def setup_argparser():
                             default=0.0)
 
     # Optional argument: maximum
-    parser.add_argument(dest='hist_max', 
+    parser.add_argument(dest='--hist_max', 
                             type=float,
                             metavar='hist_max',
                             required=False,
@@ -54,7 +54,7 @@ def setup_argparser():
                             default=300)
                             
     # Optional argument: color
-    parser.add_argument(dest='hist_color', 
+    parser.add_argument(dest='--hist_color', 
                             type=str,
                             metavar='histogram color',
                             required=False,
