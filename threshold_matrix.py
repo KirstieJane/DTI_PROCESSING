@@ -80,7 +80,12 @@ def threshold_Mtriu(M_triu, n_keep):
     
     # Now set all but the first n_thresh_keep of these to zero
     M_triu_unzip[idx[n_thresh_keep:]] = 0
+
+    # And set all the values that are less than the threshold
+    # value to zero too
+    M_triu_unzip[M_triu_unzip<thresh] = 0
     
+    # Finally, re-shape the matrix to it's original size
     thresh_M_triu = M_triu_unzip.reshape(M_triu.shape)
 
     return thresh_M_triu
