@@ -52,28 +52,61 @@ M_file_list_file = arguments.M_file_list
 
 M_file_list = [ M.strip() for M in open(M_file_list_file) ]
 
-# Load in the matrix
-M = np.loadtxt(M_file)
+#=============================================================================
+# Create the three different average matrices
+#=============================================================================
 
-# Zero out the lower triangle and the diagonal
-M_triu = np.triu(M, 1)
+# Create empty matrices first
+#----- AVERAGE -------------------
+av_M = np.loadtxt(M_file_list[0]) * 0
+#----- NORMALISE & AVERAGE -------
+av_norm_M = np.loadtxt(M_file_list[0]) * 0
+#----- BINARIZE & AVERAGE -------
+av_bin_M = np.loadtxt(M_file_list[0]) * 0
 
-# Threshold M_triu
-thr_M_triu = threshold_Mtriu(M_triu, n_keep)
+# Loop through all the matrix files
+for M_file in M_file_list:
+    # Load in the matrix
+    M = np.loadtxt(M_file)
+    
+    #----- AVERAGE -------------------
+    # This one is easy: just add the 
+    # matrix to the average
+    av_M += M
 
-# Now reflect that matrix into the lower triangle
-# and add them together
-thr_M = thr_M_triu + thr_M_triu.T
-# Make sure that the diagonal is the original
-di = np.diag_indices(M.shape[0])
-thr_M[di] = M[di]
+    #----- NORMALISE & AVERAGE -------
+    # Normalize M and add that to the
+    # av_norm_M matrix
+    M_norm = M / (np.percentile(M[M>0], 50)
+    av_norm_M += M_norm
+    
+    #----- BINARIZE & AVERAGE -------
+    # Finally binarize the matrix and
+    # add that to the av_bin_M matrix
+    M_bin = np.copy(M)
+    M_bin[M_bin>0] = 1
+    av_bin_M += M_bin
+    
+# Divide the average matrices by the number of files in the list
+n = np.float(len(M_file_list))
+av_M = av_M / n
+av_norm_M = av_norm_M / n
+av_bin_M = av_bin_M / n
 
-# Save the matrix as a text file
-name = '_thrNkeep{:05d}.txt'.format(n_keep)
-M_text_name = M_file.replace('.txt', name)
-save_mat(thr_M, M_text_name)
+# Save the matrices as text files
+#----- AVERAGE -------------------
+M_text_name = M_file_list_file.replace('.txt', 'avMat.txt')
+save_mat(av_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
-save_png(thr_M, M_png_name)
-
-
+save_png(av_M, M_png_name)
+#----- NORMALISE & AVERAGE -------
+M_text_name = M_file_list_file.replace('.txt', 'avNormMat.txt')
+save_mat(av_norm_M, M_text_name)
+M_png_name = M_text_name.replace('.txt', '.png')
+save_png(av_norm_M, M_png_name)
+#----- BINARIZE & AVERAGE -------
+M_text_name = M_file_list_file.replace('.txt', 'avBinMat.txt')
+save_mat(av_bin_M, M_text_name)
+M_png_name = M_text_name.replace('.txt', '.png')
+save_png(av_bin_M, M_png_name)
 
