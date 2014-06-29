@@ -34,7 +34,7 @@ def setup_argparser():
     
     # Now add the arguments
     # Required argument: M_file
-    parser.add_argument('M_file_list',
+    parser.add_argument(dest = 'M_file_list',
                             type=str,
                             metavar='M_file_list',
                             help='Text file containing full paths of all matrices to be averaged)')
@@ -77,7 +77,7 @@ for M_file in M_file_list:
     #----- NORMALISE & AVERAGE -------
     # Normalize M and add that to the
     # av_norm_M matrix
-    M_norm = M / (np.percentile(M[M>0], 50)
+    M_norm = M / (np.percentile(M[M>0], 50))
     av_norm_M += M_norm
     
     #----- BINARIZE & AVERAGE -------
