@@ -43,6 +43,39 @@ def setup_argparser():
     
     return arguments, parser
 
+#-----------------------------------------------------------------------------
+
+def save_mat(M, M_text_name):
+    # Save the matrix as a text file
+    # NOTE THAT THIS IS NOT THE SAME
+    # COMMAND AS IN calculate_connectivity_matrix.py
+    if not os.path.exists(M_text_name):
+        np.savetxt(M_text_name,
+                       M[:,:],
+                       fmt='%.5f',
+                       delimiter='\t',
+                       newline='\n')
+
+#-----------------------------------------------------------------------------
+
+def save_png(M, M_fig_name):
+    # Make a png image of the matrix
+    # NOTE THAT THIS IS NOT THE SAME
+    # COMMAND AS IN calculate_connectivity_matrix.py
+    if not os.path.exists(M_fig_name):
+
+        fig, ax = plt.subplots(figsize=(4,4))    
+        # Plot the matrix on a log scale
+        axM = ax.imshow(np.log1p(M[:,:]), 
+                        interpolation='nearest',
+                        cmap='jet')
+        
+        # Add a colorbar
+        cbar = fig.colorbar(axM)
+
+        fig.savefig(M_fig_name, bbox_inches=0, dpi=600)
+    
+    
 #=============================================================================
 # Define some variables
 #=============================================================================
@@ -95,17 +128,17 @@ av_bin_M = av_bin_M / n
 
 # Save the matrices as text files
 #----- AVERAGE -------------------
-M_text_name = M_file_list_file.replace('.txt', 'avMat.txt')
+M_text_name = M_file_list_file.replace('.txt', '_avMat.txt')
 save_mat(av_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
 save_png(av_M, M_png_name)
 #----- NORMALISE & AVERAGE -------
-M_text_name = M_file_list_file.replace('.txt', 'avNormMat.txt')
+M_text_name = M_file_list_file.replace('.txt', '_avNormMat.txt')
 save_mat(av_norm_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
 save_png(av_norm_M, M_png_name)
 #----- BINARIZE & AVERAGE -------
-M_text_name = M_file_list_file.replace('.txt', 'avBinMat.txt')
+M_text_name = M_file_list_file.replace('.txt', '_avBinMat.txt')
 save_mat(av_bin_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
 save_png(av_bin_M, M_png_name)

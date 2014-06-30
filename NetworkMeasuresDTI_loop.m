@@ -26,7 +26,7 @@ s.cost=[]; s.k=[]; s.kmean=[]; s.a=[]; s.arand=[]; s.M=[]; s.Mrand=[];
 s.C=[]; s.Crand=[]; s.L=[]; s.Lrand=[]; s.Sigma=[]; 
 s.E=[]; s.Erand=[]; s.CE=[]; s.CErand=[];
 s.Diam=[]; s.Diamrand=[]; s.Bass=[]; s.Bassrand=[];
-s.nspn_id=[]; 
+s.nspn_id={}; 
 A=[]; R=[];
 
 % Create a counter that will increase as you fill your structure (s)
@@ -37,10 +37,10 @@ for i = 3:length(subs)
     
     dirname = fullfile(subs(i).name, 'DTI/MRI0/CONNECTIVITY')
     
-    if exist(fullfile(dirname,'Msym.txt'), 'file') == 2
+    if exist(fullfile(dirname,strcat(ext, '.txt')), 'file') == 2
         cd (dirname)
-        s.nspn_id(x,1)=str2num(subs(i).name);
-        Co = load('Msym.txt');
+        s.nspn_id(x,1)={subs(i).name};
+        Co = load(strcat(ext, '.txt'));
 
         %Take absolute value of Correlations and set diagonal to zeros:
         n=size(Co,1);
