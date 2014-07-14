@@ -50,6 +50,8 @@ def plot_dti_slices(background_file, overlay_file, fig, grid, ax_name_list, cmap
     # LOAD THE DATA
     bg_img = nib.load(background_file)
     bg = bg_img.get_data()
+    if len(bg.shape) == 4:
+        bg = bg[:,:,:,0]
     
     overlay_img = nib.load(overlay_file)
     overlay = overlay_img.get_data()
@@ -187,6 +189,7 @@ def tensor_histogram(fa_file, mo_file, sse_file, wm_mask_file, fig, grid):
     
     wm_mask_img = nib.load(wm_mask_file)
     wm_mask = wm_mask_img.get_data()
+    wm_mask[wm_mask>0] = 1
     
     # Mask the fa data with the white matter mask
     # so we're only looking inside the mask
@@ -306,15 +309,19 @@ qa_dir = os.path.join(data_dir, 'QA_OUTPUT')
 if not os.path.isdir(qa_dir):
     os.makedirs(qa_dir)
 
+# These files should have been created by dti_preprocessing.sh
 dti_file = os.path.join(data_dir, 'dti_ec.nii.gz')
 bvals_file = os.path.join(data_dir, 'bvals')
 bvecs_file = os.path.join(data_dir, 'bvecs')
-dti_vol0_file = os.path.join(data_dir, 'dti_ec_00.nii.gz')
 mask_file = os.path.join(data_dir, 'dti_ec_brain_mask.nii.gz')
-wm_mask_file = os.path.join(data_dir, 'whitematter_mask.nii.gz')
-fa_file = glob(os.path.join(data_dir, '*_FA.nii.gz'))[0]
-mo_file = glob(os.path.join(data_dir, '*_MO.nii.gz'))[0]
-sse_file = glob(os.path.join(data_dir, '*_sse.nii.gz'))[0]
+fa_file = glob(os.path.join(data_dir, 'FDT', '*_FA.nii.gz'))[0]
+mo_file = glob(os.path.join(data_dir, 'FDT', '*_MO.nii.gz'))[0]
+sse_file = glob(os.path.join(data_dir, 'FDT', '*_sse.nii.gz'))[0]
+
+# These files may not yet exist! They probably should!
+dti_vol0_file = os.path.join(data_dir, 'dti_ec_brain.nii.gz')
+wm_mask_file = os.path.join(data_dir, 'wm_DTIspace_mask.nii.gz')
+
 
 #### Now actually run the code
 
