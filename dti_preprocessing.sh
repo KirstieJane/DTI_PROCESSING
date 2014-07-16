@@ -224,20 +224,23 @@ fi
 
 #------------------------------------------------------------------------------
 # BedpostX
-# Only run this step if the bedpost_option is "yes"
-if [[ ${bedpost_option} == "yes"  ]]; then
-    if [[ ! -f ${dir}/BEDPOSTX.bedpostX/dyads2.nii.gz ]]; then
-        echo "    Now starting bedpostX"
-        mkdir -p ${dir}/BEDPOSTX
-        cp ${dir}/bvals ${dir}/BEDPOSTX/
-        cp ${dir}/bvecs ${dir}/BEDPOSTX/
-        cp ${dir}/dti_ec_brain_mask.nii.gz \
-        ${dir}/BEDPOSTX/nodif_brain_mask.nii.gz
-        cp ${dir}/dti_ec.nii.gz ${dir}/BEDPOSTX/data.nii.gz
+if [[ ! -f ${dir}/BEDPOSTX.bedpostX/dyads2.nii.gz ]]; then
+    echo "    Setting up bedpostX directory"
+    mkdir -p ${dir}/BEDPOSTX
+    cp ${dir}/bvals ${dir}/BEDPOSTX/
+    cp ${dir}/bvecs ${dir}/BEDPOSTX/
+    cp ${dir}/dti_ec_brain_mask.nii.gz \
+    ${dir}/BEDPOSTX/nodif_brain_mask.nii.gz
+    cp ${dir}/dti_ec.nii.gz ${dir}/BEDPOSTX/data.nii.gz
+    
+    # Only actually *run* bedpostx if the bedpost_option is "yes"
+    if [[ ${bedpost_option} == "yes"  ]]; then
+        echo "    Running bedpostX"
         bedpostx ${dir}/BEDPOSTX/ > ${logdir}/bedpostx 2> ${logdir}/errors_bedpostx
-    else
-        echo "    bedpostX already complete"
     fi
+    
+else
+    echo "    bedpostX already complete"
 fi
 
 #------------------------------------------------------------------------------
