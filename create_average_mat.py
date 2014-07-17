@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pylab as plt
 import argparse
 import os
+import sys
 
 
 #=============================================================================
@@ -83,6 +84,10 @@ def save_png(M, M_fig_name):
 arguments, parser = setup_argparser()
 M_file_list_file = arguments.M_file_list
 
+if not M_file_list_file.endswith('list'):
+    print "M file list file needs to end with the word list"
+    sys.exit
+
 M_file_list = [ M.strip() for M in open(M_file_list_file) ]
 
 #=============================================================================
@@ -128,17 +133,17 @@ av_bin_M = av_bin_M / n
 
 # Save the matrices as text files
 #----- AVERAGE -------------------
-M_text_name = M_file_list_file.replace('.txt', '_avMat.txt')
+M_text_name = M_file_list_file.replace('list', '_avMat.txt')
 save_mat(av_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
 save_png(av_M, M_png_name)
 #----- NORMALISE & AVERAGE -------
-M_text_name = M_file_list_file.replace('.txt', '_avNormMat.txt')
+M_text_name = M_file_list_file.replace('list', '_avNormMat.txt')
 save_mat(av_norm_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
 save_png(av_norm_M, M_png_name)
 #----- BINARIZE & AVERAGE -------
-M_text_name = M_file_list_file.replace('.txt', '_avBinMat.txt')
+M_text_name = M_file_list_file.replace('list', '_avBinMat.txt')
 save_mat(av_bin_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
 save_png(av_bin_M, M_png_name)
