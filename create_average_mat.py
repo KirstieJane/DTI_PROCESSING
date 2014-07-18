@@ -132,7 +132,8 @@ av_bin_M = av_bin_M / n
 
 # Threshold the average matrix so that you're only showing
 # edges that are present in at least 5% of participants
-av_common_M = av_M[av_bin_M>=0.05]
+av_common_M = np.copy(av_M)
+av_common_M[av_bin_M<0.05] = 0
 
 # Save the matrices as text files
 #----- AVERAGE -------------------
