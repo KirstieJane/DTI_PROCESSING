@@ -98,7 +98,7 @@ M_file_list = [ M.strip() for M in open(M_file_list_file) ]
 av_M = np.loadtxt(M_file_list[0]) * 0
 #----- NORMALISE & AVERAGE -------
 av_norm_M = np.loadtxt(M_file_list[0]) * 0
-#----- BINARIZE & AVERAGE -------
+#----- BINARIZE & AVERAGE --------
 av_bin_M = np.loadtxt(M_file_list[0]) * 0
 
 # Loop through all the matrix files
@@ -130,6 +130,10 @@ av_M = av_M / n
 av_norm_M = av_norm_M / n
 av_bin_M = av_bin_M / n
 
+# Threshold the average matrix so that you're only showing
+# edges that are present in at least 5% of participants
+av_common_M = av_M[av_bin_M>=0.05]
+
 # Save the matrices as text files
 #----- AVERAGE -------------------
 M_text_name = M_file_list_file.replace('_list', '_avMat.txt')
@@ -146,4 +150,9 @@ M_text_name = M_file_list_file.replace('_list', '_avBinMat.txt')
 save_mat(av_bin_M, M_text_name)
 M_png_name = M_text_name.replace('.txt', '.png')
 save_png(av_bin_M, M_png_name)
+#----- COMMON AVERAGE ONLY -----
+M_text_name = M_file_list_file.replace('_list', '_avMat_gt05.txt')
+save_mat(av_common_M, M_text_name)
+M_png_name = M_text_name.replace('.txt', '.png')
+save_png(av_common_M, M_png_name)
 
