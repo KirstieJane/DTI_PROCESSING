@@ -22,35 +22,37 @@
 #                           eg: registrations.sh ${dti_dir} ${mprage_dir} ${surfer_dir} ${reg_dir} ${scan} ${b0}
 #                           eg: registrations.sh 1106/t1/DTI 1106/t1/MPRAGE 1106/t1/MPRAGE/SURF 1106/t1/REG DTI_2A 14
 #
-#        PARAMETER 1:  DTI data folder (full path)
+#        PARAMETER 1:  DTI data folder (full path) [REQUIRED]
 #                           If you're using this script as part of another
 #                               eg: ${dti_dir}
 #                           If you're using this script alone
 #                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/DTI 
 #
-#        PARAMETER 2:  MPRAGE data folder (full path)
+#        PARAMETER 2:  MPRAGE data folder (full path) [REQUIRED]
 #                           If you're using this script as part of another
 #                               eg: ${mprage_dir}
 #                           If you're using this script alone
 #                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE
 #
-#        PARAMETER 3:  SURF data folder (full path)
+#        PARAMETER 3:  SURF data folder (full path or NO) [REQUIRED]
 #                           If you're using this script as part of another
 #                               eg: ${surf_dir}
 #                           If you're using this script alone
 #                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/MPRAGE/SURF
+#                           Alternatively, if you don't want to run the freesurfer
+#                           registrations then just enter NO here.
 #
-#        PARAMETER 4:  REG folder (full path)
+#        PARAMETER 4:  REG folder (full path) [REQUIRED]
 #                           If you're using this script as part of another
 #                               eg: ${reg_dir}
 #                           If you're using this script alone
 #                               eg: /home/kw401/MRIMPACT/ANALYSES/1106/t1/REG
 #
-#        PARAMETER 5:  DTI run
+#        PARAMETER 5:  DTI run [OPTIONAL - leave blank if not necessary]
 #                           eg: ${scan}
 #                           eg: DTI_2A
 #
-#        PARAMETER 6:  Eddy correct target volume
+#        PARAMETER 6:  Eddy correct target volume [OPTIONAL - leave blank if defaulting to 0]
 #                           eg: ${b0}
 #                           eg: 14
 #
@@ -67,6 +69,7 @@ function usage {
     echo "registrations.sh <dti_data_folder> <mprage_data_folder> <surf_data_folder> <reg_folder> <dti_scan> <eddy_b0_vol>"
     echo "    eg: registrations.sh \${dti_dir} \${mprage_dir} \${surf_dir} \${reg_dir} \${scan} \${b0}"
     echo "    eg: registrations.sh 1106/t1/DTI 1106/t1/MPRAGE 1106/t1/SURFER 1106/t1/REG DTI_2A 14"
+    echo "    eg: registrations.sh \${dti_dir} \${mprage_dir} NO \${reg_dir}"
     exit
 }
 #------------------------------------------------------------------------------
@@ -75,17 +78,19 @@ function usage {
 # Assign arguments
 dti_dir=$1
 if [[ ! -d /${dti_dir} ]]; then
-    dir=`pwd`/${dti_dir}
+    dti_dir=`pwd`/${dti_dir}
 fi
 
 mprage_dir=$2
 if [[ ! -d /${mprage_dir} ]]; then
-    dir=`pwd`/${mprage_dir}
+    mprage_dir=`pwd`/${mprage_dir}
 fi
 
 surf_dir=$3
-if [[ ! -d /${surf_dir} ]]; then
-    dir=`pwd`/${surf_dir}
+if [[ ${surf_dir} == 'NO' ]]; then
+    surf_dir=no
+elif [[ ! -d /${surf_dir} ]]; then
+    surf_dir=`pwd`/${surf_dir}
 fi
 
 reg_dir=$4
@@ -94,7 +99,7 @@ scan=$5
 
 eddy_b0_vol=$6
 
-# This is a stupid edit for if I'm running the code at the CBU
+# This is a stupid edit for if I'm (KW) running the code at the CBU
 if [[ $0 == tcsh ]]; then
     setenv FSLOUTPUTTYPE NIFTI_GZ
 fi
@@ -116,8 +121,9 @@ if [[ ! -d ${mprage_dir} ]]; then
     print_usage=1
 fi
 
-# Exit if freesurfer directory doesn't exist
-if [[ ! -d ${surf_dir} ]]; then
+# Exit if freesurfer directory doesn't exist unless
+# you've said "no"
+if [[ ! -d ${surf_dir} && ${surf_dir} != 'no' ]]; then
     echo "    No SURF directory"
     print_usage=1
 fi
@@ -146,13 +152,15 @@ for highres_file in ${mprage_dir}/highres.nii.gz ${mprage_dir}/highres_brain.nii
     fi
 done
 
-for surf_file in ${surf_dir}/mri/rawavg.mgz ${surf_dir}/mri/orig.mgz ; do
-    if [[ ! -f ${surf_file} ]]; then
-        echo "    No `basename ${surf_file}` file"
-        echo "    Check that mprage_processing.sh has finished"
-        print_usage=1
-    fi
-done
+if [[ ${surf_dir} != 'no' ]]; then
+    for surf_file in ${surf_dir}/mri/rawavg.mgz ${surf_dir}/mri/orig.mgz ; do
+        if [[ ! -f ${surf_file} ]]; then
+            echo "    No `basename ${surf_file}` file"
+            echo "    Check that mprage_processing.sh has finished"
+            print_usage=1
+        fi
+    done
+fi
 
 # Print the usage if necessary
 if [[ ${print_usage} == 1 ]]; then
@@ -337,36 +345,37 @@ fi
 
 #------------------------------------------------------------------------------
 # Register highres to freesurfer space
+if [[ ${surf_dir} != 'no' ]]; then
+    if [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
+        echo "    Registering highres to freesurfer space"
 
-if [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
-    echo "    Registering highres to freesurfer space"
+        tkregister2 --mov ${surf_dir}/mri/orig.mgz \
+                    --targ ${surf_dir}/mri/rawavg.mgz \
+                    --regheader \
+                    --reg junk \
+                    --fslregout ${reg_dir}/freesurfer_TO_highres.mat \
+                    --noedit > ${reg_dir}/LOGS/tkregister_log
+                    
+    else
+        echo "    Highres already registered to freesurfer space"
 
-    tkregister2 --mov ${surf_dir}/mri/orig.mgz \
-                --targ ${surf_dir}/mri/rawavg.mgz \
-                --regheader \
-                --reg junk \
-                --fslregout ${reg_dir}/freesurfer_TO_highres.mat \
-                --noedit > ${reg_dir}/LOGS/tkregister_log
-                
-else
-    echo "    Highres already registered to freesurfer space"
+    fi
 
-fi
+    if  [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
+        echo "    ERROR: Can't run registration because tkregister2 hasn't been completed"
+        echo "    EXITING"
+        exit
 
-if  [[ ! -f ${reg_dir}/freesurfer_TO_highres.mat ]]; then
-    echo "    ERROR: Can't run registration because tkregister2 hasn't been completed"
-    echo "    EXITING"
-    exit
+    elif [[ ! -f ${reg_dir}/highres_TO_freesurfer.mat ]]; then
+        echo "    Inverting freesurfer to highres transform"
+        
+        convert_xfm -omat ${reg_dir}/highres_TO_freesurfer.mat \
+                    -inverse ${reg_dir}/freesurfer_TO_highres.mat 
 
-elif [[ ! -f ${reg_dir}/highres_TO_freesurfer.mat ]]; then
-    echo "    Inverting freesurfer to highres transform"
-    
-    convert_xfm -omat ${reg_dir}/highres_TO_freesurfer.mat \
-                -inverse ${reg_dir}/freesurfer_TO_highres.mat 
+    else
+        echo "    Inverse freesurfer to highres transform already calculated"
 
-else
-    echo "    Inverse freesurfer to highres transform already calculated"
-
+    fi
 fi
 
 #------------------------------------------------------------------------------
@@ -422,6 +431,8 @@ fi
 if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat || ! -f ${dti_reg_dir}/freesurfer_TO_diffB0.mat ]]; then
     echo "    Concatenating and inverting remaining transforms"
 
+if [[ ${surf_dir} != "no" && ! -f ${dti_reg_dir}/freesurfer_TO_diffB0.mat ]]; then
+    echo "    Concatenating and inverting remaining freesurfer transforms"
     # diffB0 to freesurfer
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_freesurfer.mat \
                 -concat ${reg_dir}/highres_TO_freesurfer.mat \
@@ -439,6 +450,11 @@ if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat || ! -f ${dti_reg_dir}/freesu
     # freesurfer to diffB0 BBR
     convert_xfm -omat ${dti_reg_dir}/freesurfer_TO_diffB0_BBR.mat \
                 -inverse ${dti_reg_dir}/diffB0_TO_freesurfer_BBR.mat
+
+fi
+
+if [[ ! -f ${dti_reg_dir}/MNI152_TO_diffB0_BBR.mat ]]; then
+    echo "    Concatenating and inverting remaining transforms"
 
     # diffB0 to MNI152
     convert_xfm -omat ${dti_reg_dir}/diffB0_TO_MNI152_1mm.mat \
