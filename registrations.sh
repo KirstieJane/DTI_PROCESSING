@@ -87,7 +87,7 @@ if [[ ! -d /${mprage_dir} ]]; then
 fi
 
 surf_dir=$3
-if [[ ${surf_dir} == 'NO' ]]; then
+if [[ ${surf_dir} == 'NO' || ${surf_dir} == 'No' ]]; then
     surf_dir=no
 elif [[ ! -d /${surf_dir} ]]; then
     surf_dir=`pwd`/${surf_dir}
