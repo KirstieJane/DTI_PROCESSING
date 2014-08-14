@@ -63,6 +63,14 @@ for sub in `cat ${sublist}`; do
     echo ${sub}
     ${dir}/SCRIPTS/DTI_PROCESSING-master/dti_preprocessing.sh ${dir}/SUB_DATA/${sub}/DTI/ ${sub} ${bedpostx_option}
     ${dir}/SCRIPTS/DTI_PROCESSING-master/mprage_processing.sh ${dir}/SUB_DATA/${sub}/MPRAGE/ ${sub} ${freesurfer_option}
-    ${dir}/SCRIPTS/DTI_PROCESSING-master/registrations.sh ${dir}/SUB_DATA/${sub}/DTI/ ${dir}/SUB_DATA/${sub}/MPRAGE/ ${sub}
-
+    if [[ ${freesurfer_option} == 'yes' ]]; then
+        ${dir}/SCRIPTS/DTI_PROCESSING-master/registrations.sh ${dir}/SUB_DATA/${sub}/DTI/ \
+                                                                ${dir}/SUB_DATA/${sub}/MPRAGE/ \
+                                                                ${dir}/SUB_DATA/${sub}/SURFER/ \
+                                                                ${dir}/SUB_DATA/${sub}/REG/ 
+    else
+        ${dir}/SCRIPTS/DTI_PROCESSING-master/registrations.sh ${dir}/SUB_DATA/${sub}/DTI/ \
+                                                                ${dir}/SUB_DATA/${sub}/MPRAGE/ \
+                                                                NO \
+                                                                ${dir}/SUB_DATA/${sub}/REG/ 
 done
