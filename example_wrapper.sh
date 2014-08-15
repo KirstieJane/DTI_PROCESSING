@@ -73,4 +73,5 @@ for sub in `cat ${sublist}`; do
                                                                 ${dir}/SUB_DATA/${sub}/MPRAGE/ \
                                                                 NO \
                                                                 ${dir}/SUB_DATA/${sub}/REG/ 
+    fi
 done
