@@ -182,7 +182,7 @@ fi
 
 #------------------------------------------------------------------------------
 # Run recon-all
-if [[ ${run_freesurfer} == 'yes' ]]; then
+if [[ ${freesurfer_option} == 'yes' ]]; then
     ### Put in a little if loop here in case it has already been run??
     ### But freesurfer might just take care of this??
     echo "    Running freesurfer's recon-all"
