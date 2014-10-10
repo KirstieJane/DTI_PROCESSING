@@ -55,7 +55,7 @@ if [[ ! -d /${dir} ]]; then
 fi
 sub=$2
 
-if [[ ! -z ${freesurfer_option} ]]; then
+if [[ ! -z $3 ]]; then
     freesurfer_option=$3
 else
     freesurfer_option=yes
