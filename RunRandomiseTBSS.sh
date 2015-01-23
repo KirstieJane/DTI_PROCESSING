@@ -4,33 +4,33 @@
 #
 #               FILE:  RunRandomiseTBSS.sh
 #
-#              USAGE:  RunRandomiseTBSS.sh <TBSS_DIR> <subs_file> <n_perms>
+#              USAGE:  RunRandomiseTBSS.sh <TBSS_DIR> <n_perms>
 #
-#        DESCRIPTION:  This should just run randomise on the associated 
-#			.mat, .con and .grp files for the subs listed in <subs_file>
+#        DESCRIPTION:  This will look in the TBSS_DIR and find the GLM directory.
+#                      It will then look for each group in the GLM directory and
+#                      *then* will run all of the pairs of .mat & .con files
+#                      that it finds in that group directory. It will run tests
+#                      for all five DTI measures (FA, MD, L1, L23 and MO).
+#                      The output will be saved in <TBSS_DIR>/RESULTS/<group_name>/<test_name>/
+#                      Each group directory must be set up with one subs file.
+#                      If you are missing data from any of the measures you'll
+#                      have to set up a new group file!
 #
-#       REQUIREMENTS:  Subs_file and .mat and .con files in the same folder
-#                      and named with the same root
-#                           eg: TestName_subs, TestName.mat TestName.con
+#       REQUIREMENTS:  GLM directory inside TBSS_DIR at the same level as 
+#                      INPUT_FILES, containing any number of <GROUP> dirs.
+#                      Each <GROUP> dir should contain a single subs file
+#                      (called subs) and any number of pairs of .mat and 
+#                      .con files called eg: TestName.mat TestName.con
 #
 #               BUGS:
 #
-#              NOTES:  Data is NOT demeaned, make sure your models have a column
-#                      of 1s
-#                      
-#                      The subject id structure is specific to the study, so
-#                      here each <subid> is a 4 digit number followed by t and
-#                      then another number that represents their
-#                      session number (eg: 1234t1). <subroot> is the part
-#                      before the "t" (eg: 1234) and <occ> is the session
-#                      number (eg: 1). If you are not working on MRIMPACT DTI
-#                      data then you'll need to edit this script for *your*
-#                      subid naming structure.
+#              NOTES:  
 #
 #             AUTHOR:  Kirstie Whitaker, kirstie.whitaker@berkeley.edu
 #                      or kw401@cam.ac.uk
 #
-#            VERSION:  3 - MRIMPACT v3
+#            VERSION:  4 - Generalised! 
+#                      3 - MRIMPACT v3
 #                        22nd March 2013: Updated again to deal with 
 #                            correlations within All, Dep and Con groups
 #                        21st March 2013: Updated version to go with the new
@@ -52,17 +52,19 @@
 #
 #   CREATION STARTED:  22nd April 2012
 # CREATION COMPLETED:  22nd April 2012
+#            UPDATED:  17th December 2014
 #
 #==============================================================================
 
 ### USAGE
 if [ $# -ne 2 ]; then
 	echo "Usage: RandomiseAnalyses.sh <TBSS_dir> <n_perms>"
-	echo "Note that there must be a folder called GLM in which the .mat and .con files reside"
-        echo "This subs file is literally called subs_file and will be the same for EVERY model in the GLM folder" 
+	echo "Note that there must be a folder called GLM that contains any" 
+    echo "number of <GROUP> directories which in turn contain one subs file"
+    echo "and any number of pairs of .mat and .con files"
 	echo "There should also be a SKELETON_DATA folder within the TBSS_dir"
 	echo "The results will go into a RESULTS folder within the TBSS_dir"
-	echo -e "\teg: ./RandomiseAnalyses.sh /home/kw401/MRIMPACT/ANALYSES/TBSS_120214 GLM/TtestDepCon_subs 500"
+	echo -e "\teg: ./RunRandomise.sh /home/kw401/MRIMPACT/ANALYSES/TBSS_120214 500"
 	exit
 fi
 ###

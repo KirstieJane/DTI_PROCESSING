@@ -3,7 +3,7 @@
 #
 #               FILE:  TBSS_SkelDataSetup.sh
 #
-#              USAGE:  TBSS_SkelDataSetup.sh <data_dir> <TBSS_dir> <sublist>
+#              USAGE:  TBSS_SkelDataSetup.sh <data_dir> <TBSS_dir> <sublist> <dti_identifier>
 #
 #        DESCRIPTION:  This looks for every subject in sublist to see if TBSS
 #                      is completed and creates individualized skeletonised
@@ -11,32 +11,33 @@
 #
 #          PARAMETERS:  <data_dir> is the full path to the directory that
 #                              contains the output from Filesetup.sh
-#                        <TBSS_dir> is the name of the TBSS dir that will
+#                       <TBSS_dir> is the name of the TBSS dir that will
 #                                be created in the data_dir
 #                       <sublist> is a text file that contains the subids
 #                              of each participant
+#                       <dti_identifier> is the folder within SUB_DATA/<subid>/
+#                              that contains the output from dti_preprocessing.sh
+#                              eg: t1/DTI_AP or DTI/MRI0 etc
 #
 #      EXAMPLE USAGE:  SCRIPTS/TBSS_SkelDataSetup.sh `pwd` TBSS_121210
-#                                                            sublist_Mrimpact
-# 
+#                                                  sublist_Mrimpact DTI/t1 
 #
-#       REQUIREMENTS:  DTI_Preprocessing must have been run.
+#       REQUIREMENTS:  dti_preprocessing.sh must have been run.
 #
 #               BUGS:
-#
-#              NOTES:  The subject id structure is specific to the study, so
-#                       here each <subid> is a 4 digit number followed by t and
-#                       then another number that represents their
-#                       session number (eg: 1234t1). <subroot> is the part
-#                       before the "t" (eg: 1234) and <occ> is the session
-#                       number (eg: 1). If you are not working on MRIMPACT DTI
-#                       data then you'll need to edit this script for *your*
-#                       subid naming structure.
 #
 #             AUTHOR:  Kirstie Whitaker, kirstie.whitaker@berkeley.edu
 #                      or kw401@cam.ac.uk
 #
-#            VERSION:  2.2 - MRIMPACT v1
+#            VERSION:  3.0 - Becoming more comprehensive
+#                        17th December 2014: Updated to be a little more
+#                            flexible wrt the directory structure it looks for.
+#                            Specifically you can now pass a <dti_identifier>
+#                            so that, for example, you can have the dti data  
+#                            saved in <data_dir>/SUB_DATA/<sub>/DTI/MRI0/
+#                            and this script will set up the TBSS files in a
+#                            folder called <TBSS_dir>/DTI/MRI0/
+#                      2.2 - MRIMPACT v1
 #                        18th December 2012: Updated for MRIMPACT data
 #                        10th December 2012: New version of TBSS_SkelDataSetup.sh 
 #                            for Cambridge data. Major change is that SEVEN_B0
@@ -50,41 +51,58 @@
 #                        
 #   CREATION STARTED:  22nd April 2012
 # CREATION COMPLETED:  22nd April 2012
+#         UPDATED ON:  17th December 2014
 #
 #==============================================================================
+
+#------------------------------------------------------------------------------
+# Define the USAGE
+#------------------------------------------------------------------------------
+usage {
+    echo "Not enough options given"
+    echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
+    echo "        <data_dir> is the full path to the directory that"
+    echo "                contains the output from Filesetup.sh"
+    echo "        <TBSS_dir> is the name of the TBSS dir that will"
+    echo "                be created in the data_dir"
+    echo "        <sublist> is a text file that contains the subids"
+    echo "                of each participant"
+    echo "        <dti_identifier> is the folder within SUB_DATA/<subid>/"
+    echo "                that contains the output from dti_preprocessing.sh"
+    echo "                eg: t1/DTI_AP or DTI/MRI0 etc"
+    exit
+}
 
 #------------------------------------------------------------------------------
 # Being a Nice Person - checking the inputs are all correct before starting
 #------------------------------------------------------------------------------
 # If no arguments are given then echo the usage and exit
 if [[ $# -ne 4 ]]; then
-    echo "Not enough options given"
-    echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
-    exit
+    print_usage=1
 fi
 #
 # If the first argument is not a directory then print error and exit
 if [[ ! -d $1 ]]; then
     echo "First argument is not an existing directory"
-    echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
-    exit
+    print_usage=1
 fi
 #
 # If the third argument is not a file then print error and exit
 if [[ ! -f $3 ]]; then
     echo "Third argument is not an existing file"
-    echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
-    exit
+    print_usage=1
 fi
 
 # If the fourth argument is not a string then print error and exit
 if [[ -z $4 ]]; then
     echo "Fourth argument (dti_identifier) has not been given"
-    echo "Usage: TBSS_SkelDataSetup.sh <data_dir> <tbss_dir> <sublist> <dti_identifier>"
-    exit
+    print_usage=1
 fi
-#
-#
+
+if [[ ${print_usage} == 1 ]]; then
+    usage()
+fi
+
 #------------------------------------------------------------------------------
 # Define Variables - many of these are hard coded - CHECK if they make sense!
 #------------------------------------------------------------------------------
