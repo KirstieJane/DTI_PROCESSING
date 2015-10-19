@@ -114,31 +114,24 @@ fi
 #------------------------------------------------------------------------------
 # Set up the rot_bvecs_script
 
-# If you're Kirstie, then you're fine
-# First try the bcni:
-rot_bvecs_script=(/home/kw401/CAMBRIDGE_SCRIPTS/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
+# Check first to see if it's in the same folder
+# as this script
+scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
+# (Handily stolen from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in)
+rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
 
 if [[ ! -w ${rot_bvecs_script} ]]; then
-    # Then try the cbu:
-    rot_bvecs_script=(/home/kw02/FSL_SCRIPTS/fdt_rotate_bvecs.sh)
-    # And if it's not in either of those places
-    if [[ ! -f ${rot_bvecs_script} ]]; then
-        # Find out where this script is saved, and download the fdt_rotate_bvecs.sh
-        # script into the same folder:
-        scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
-        # (Handily stolen from http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in)
+    # Download the fdt_rotate_bvecs.sh
+    scripts_dir="$( cd "$( dirname "$0" )" && pwd )"
 
-        rot_bvecs_script=${scripts_dir}/fdt_rotate_bvecs.sh
+    wget -O ${rot_bvecs_script} https://raw.github.com/KirstieJane/FSL_COMMUNITY_CODE/master/fdt_rotate_bvecs.sh --no-check-certificate
 
-        wget -O ${rot_bvecs_script} https://raw.github.com/HappyPenguin/FSL_COMMUNITY_CODE/master/fdt_rotate_bvecs.sh --no-check-certificate
-    fi
+    # Make that script executable
+    chmod +x ${rot_bvecs_script}
+
+    # And make sure that it's in unix form
+    dos2unix ${rot_bvecs_script} > /dev/null
 fi
-
-# Make that script executable
-chmod +x ${rot_bvecs_script}
-
-# And make sure that it's in unix form
-dos2unix ${rot_bvecs_script} > /dev/null
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
